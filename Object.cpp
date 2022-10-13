@@ -1030,7 +1030,7 @@ void CHeightMapTerrain::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCame
 		}
 	}
 	
-	pd3dCommandList->SetGraphicsRootDescriptorTable(11, m_d3dCbvGPUDescriptorHandle);
+	pd3dCommandList->SetGraphicsRootDescriptorTable(13, m_d3dCbvGPUDescriptorHandle);
 
 	if (m_ppMeshes)
 	{
