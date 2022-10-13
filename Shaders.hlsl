@@ -20,6 +20,11 @@ cbuffer cbGameObjectInfo : register(b2)
 	uint		gnTexturesMask : packoffset(c8);
 };
 
+cbuffer cbChildGameObjectInfo : register(b3)
+{
+    matrix gmtxChildGameObject : packoffset(c0);
+};
+
 #include "Light.hlsl"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -252,7 +257,7 @@ VS_TERRAIN_OUTPUT VSTerrain(VS_TERRAIN_INPUT input)
 {
     VS_TERRAIN_OUTPUT output;
 
-    output.position = mul(mul(mul(float4(input.position, 1.0f), gmtxGameObject), gmtxView), gmtxProjection);
+    output.position = mul(mul(mul(float4(input.position, 1.0f), gmtxChildGameObject), gmtxView), gmtxProjection);
     output.color = input.color;
     output.uv = input.uv;
 
