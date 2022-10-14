@@ -26,8 +26,12 @@ CTexture::CTexture(int nTextures, UINT nTextureType, int nSamplers, int nRootPar
 		for (int i = 0; i < m_nTextures; i++) m_pd3dSrvGpuDescriptorHandles[i].ptr = NULL;
 
 		m_pnResourceTypes = new UINT[m_nTextures];
+		for (int i = 0; i < m_nTextures; i++) m_pnResourceTypes[i] = -1;
+
 		m_pdxgiBufferFormats = new DXGI_FORMAT[m_nTextures];
+		for (int i = 0; i < m_nTextures; i++) m_pnResourceTypes[i] = DXGI_FORMAT_UNKNOWN;
 		m_pnBufferElements = new int[m_nTextures];
+		for (int i = 0; i < m_nTextures; i++) m_pnBufferElements[i] = 0;
 	}
 	m_nRootParameters = nRootParameters;
 	if (nRootParameters > 0) m_pnRootParameterIndices = new int[nRootParameters];
@@ -987,23 +991,24 @@ CHeightMapTerrain::CHeightMapTerrain(ID3D12Device* pd3dDevice, ID3D12GraphicsCom
 
 	pTerrainTexture->LoadTextureFromDDSFile(pd3dDevice, pd3dCommandList, L"Image/Base_Texture.dds", RESOURCE_TEXTURE2D, 0);
 
-	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256의 배수
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256의 배수//쉐이더에 넣어줄 요소
 
 	CTerrainShader* pTerrainShader = new CTerrainShader();
 	pTerrainShader->CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);//->루트 파라미터 만든 뒤
 	pTerrainShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);//->이럴거면 여기서 만들어줘도 되지 않나,,,?라는 생각이 들기도 하는데..
 	pTerrainShader->CreateCbvSrvDescriptorHeaps(pd3dDevice, 1, 1);//constantbuffer와 srv 갯수 1개씩 디스크립터 힙 생성
 	pTerrainShader->CreateConstantBufferViews(pd3dDevice, 1, m_pd3dcbGameObject, ncbElementBytes);
-//	pTerrainShader->CreateShaderResourceViews(pd3dDevice, pTerrainTexture, 0, 4);// 0인이유 텍스쳐를 하나만 사용하기 때문에,4번 파라미터에 연결
+	pTerrainShader->CreateShaderResourceViews(pd3dDevice, pTerrainTexture, 0, 11);// 0인이유 텍스쳐를 하나만 사용하기 때문에,12번 파라미터에 연결
 
-	//CMaterial* pTerrainMaterial = new CMaterial();
-	//pTerrainMaterial->SetTexture(pTerrainTexture);
-
-	//SetMaterial(0,pTerrainMaterial);
-
+	CMaterial* pTerrainMaterial = new CMaterial();
+	pTerrainMaterial->SetTexture(pTerrainTexture);
 	SetCbvGPUDescriptorHandle(pTerrainShader->GetGPUCbvDescriptorStartHandle());//터레인 쉐이더의 지피유 스타
-
 	SetShader(pTerrainShader);
+	SetMaterial(0,pTerrainMaterial);
+
+	//SetCbvGPUDescriptorHandle(pTerrainShader->GetGPUCbvDescriptorStartHandle());//터레인 쉐이더의 지피유 스타
+
+	
 }
 
 CHeightMapTerrain::~CHeightMapTerrain()

@@ -624,12 +624,13 @@ void CTexturedShader::CreateShader(ID3D12Device* pd3dDevice, ID3D12GraphicsComma
 
 D3D12_SHADER_BYTECODE CTexturedShader::CreateVertexShader()
 {
-	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PSTextured", "ps_5_1", &m_pd3dVertexShaderBlob));
+	
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "VSTextured", "vs_5_1", &m_pd3dPixelShaderBlob));
 }
 
 D3D12_SHADER_BYTECODE CTexturedShader::CreatePixelShader()
 {
-	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "VSTextured", "vs_5_1", &m_pd3dPixelShaderBlob));
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PSTextured", "ps_5_1", &m_pd3dVertexShaderBlob));
 }
 
 CTerrainShader::CTerrainShader()

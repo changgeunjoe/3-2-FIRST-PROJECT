@@ -204,7 +204,7 @@ float4 PSTextured(VS_SPRITE_TEXTURED_OUTPUT input, uint nPrimitiveID : SV_Primit
 }
 */
 Texture2D gtxtTexture : register(t0);
-SamplerState gSamplerState : register(s0);
+SamplerState gSamplerState : register(s1);
 
 struct VS_TEXTURED_INPUT
 {
@@ -218,7 +218,7 @@ struct VS_TEXTURED_OUTPUT
     float2 uv : TEXCOORD;
 };
 
-VS_TEXTURED_OUTPUT VSTextured(VS_TEXTURED_INPUT input)
+VS_TEXTURED_OUTPUT VSChildTextured(VS_TEXTURED_INPUT input)
 {
     VS_TEXTURED_OUTPUT output;
 
