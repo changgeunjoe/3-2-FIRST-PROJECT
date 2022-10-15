@@ -952,7 +952,7 @@ void CMi24Object::Animate(float fTimeElapsed, XMFLOAT4X4 *pxmf4x4Parent)
 	CGameObject::Animate(fTimeElapsed, pxmf4x4Parent);
 }
 
-CHeightMapTerrain::CHeightMapTerrain(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, LPCTSTR pFileName, int nWidth, int nLength, int nBlockWidth, int nBlockLength, XMFLOAT3 xmf3Scale, XMFLOAT4 xmf4Color)
+CHeightMapTerrain::CHeightMapTerrain(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, LPCTSTR pFileName, int nWidth, int nLength, int nBlockWidth, int nBlockLength, XMFLOAT3 xmf3Scale, XMFLOAT4 xmf4Color) :CGameObject(1)
 {
 	m_nWidth = nWidth;
 	m_nLength = nLength;
@@ -998,13 +998,14 @@ CHeightMapTerrain::CHeightMapTerrain(ID3D12Device* pd3dDevice, ID3D12GraphicsCom
 	pTerrainShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);//->이럴거면 여기서 만들어줘도 되지 않나,,,?라는 생각이 들기도 하는데..
 	pTerrainShader->CreateCbvSrvDescriptorHeaps(pd3dDevice, 1, 1);//constantbuffer와 srv 갯수 1개씩 디스크립터 힙 생성
 	pTerrainShader->CreateConstantBufferViews(pd3dDevice, 1, m_pd3dcbGameObject, ncbElementBytes);
-	pTerrainShader->CreateShaderResourceViews(pd3dDevice, pTerrainTexture, 0, 11);// 0인이유 텍스쳐를 하나만 사용하기 때문에,12번 파라미터에 연결
+	pTerrainShader->CreateShaderResourceViews(pd3dDevice, pTerrainTexture, 0, 12);// 0인이유 텍스쳐를 하나만 사용하기 때문에,12번 파라미터에 연결
 
 	CMaterial* pTerrainMaterial = new CMaterial();
 	pTerrainMaterial->SetTexture(pTerrainTexture);
 	SetCbvGPUDescriptorHandle(pTerrainShader->GetGPUCbvDescriptorStartHandle());//터레인 쉐이더의 지피유 스타
+	SetMaterial(0, pTerrainMaterial);
 	SetShader(pTerrainShader);
-	SetMaterial(0,pTerrainMaterial);
+
 
 	//SetCbvGPUDescriptorHandle(pTerrainShader->GetGPUCbvDescriptorStartHandle());//터레인 쉐이더의 지피유 스타
 
