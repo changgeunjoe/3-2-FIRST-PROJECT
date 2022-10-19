@@ -23,6 +23,7 @@ cbuffer cbGameObjectInfo : register(b2)
 cbuffer cbChildGameObjectInfo : register(b3)
 {
     matrix gmtxChildGameObject : packoffset(c0);
+    //MATERIAL gMaterial : packoffset(c4);
 };
 
 #include "Light.hlsl"
@@ -53,7 +54,8 @@ Texture2D gtxtDetailNormalTexture : register(t12);
 Texture2D gtxtStandardTextures[7] : register(t6);
 #endif
 
-SamplerState gssWrap : register(s0);
+SamplerState gWrapSamplerState : register(s0);
+SamplerState gClampSamplerState : register(s1);
 
 struct VS_STANDARD_INPUT
 {
@@ -97,17 +99,17 @@ float4 PSStandard(VS_STANDARD_OUTPUT input) : SV_TARGET
 	float4 cEmissionColor = float4(0.0f, 0.0f, 0.0f, 1.0f);
 
 #ifdef _WITH_STANDARD_TEXTURE_MULTIPLE_DESCRIPTORS
-	if (gnTexturesMask & MATERIAL_ALBEDO_MAP) cAlbedoColor = gtxtAlbedoTexture.Sample(gssWrap, input.uv);
-	if (gnTexturesMask & MATERIAL_SPECULAR_MAP) cSpecularColor = gtxtSpecularTexture.Sample(gssWrap, input.uv);
-	if (gnTexturesMask & MATERIAL_NORMAL_MAP) cNormalColor = gtxtNormalTexture.Sample(gssWrap, input.uv);
-	if (gnTexturesMask & MATERIAL_METALLIC_MAP) cMetallicColor = gtxtMetallicTexture.Sample(gssWrap, input.uv);
-	if (gnTexturesMask & MATERIAL_EMISSION_MAP) cEmissionColor = gtxtEmissionTexture.Sample(gssWrap, input.uv);
+	if (gnTexturesMask & MATERIAL_ALBEDO_MAP) cAlbedoColor = gtxtAlbedoTexture.Sample(gWrapSamplerState, input.uv);
+	if (gnTexturesMask & MATERIAL_SPECULAR_MAP) cSpecularColor = gtxtSpecularTexture.Sample(gWrapSamplerState, input.uv);
+	if (gnTexturesMask & MATERIAL_NORMAL_MAP) cNormalColor = gtxtNormalTexture.Sample(gWrapSamplerState, input.uv);
+	if (gnTexturesMask & MATERIAL_METALLIC_MAP) cMetallicColor = gtxtMetallicTexture.Sample(gWrapSamplerState, input.uv);
+	if (gnTexturesMask & MATERIAL_EMISSION_MAP) cEmissionColor = gtxtEmissionTexture.Sample(gWrapSamplerState, input.uv);
 #else
-	if (gnTexturesMask & MATERIAL_ALBEDO_MAP) cAlbedoColor = gtxtStandardTextures[0].Sample(gssWrap, input.uv);
-	if (gnTexturesMask & MATERIAL_SPECULAR_MAP) cSpecularColor = gtxtStandardTextures[1].Sample(gssWrap, input.uv);
-	if (gnTexturesMask & MATERIAL_NORMAL_MAP) cNormalColor = gtxtStandardTextures[2].Sample(gssWrap, input.uv);
-	if (gnTexturesMask & MATERIAL_METALLIC_MAP) cMetallicColor = gtxtStandardTextures[3].Sample(gssWrap, input.uv);
-	if (gnTexturesMask & MATERIAL_EMISSION_MAP) cEmissionColor = gtxtStandardTextures[4].Sample(gssWrap, input.uv);
+	if (gnTexturesMask & MATERIAL_ALBEDO_MAP) cAlbedoColor = gtxtStandardTextures[0].Sample(gWrapSamplerState, input.uv);
+	if (gnTexturesMask & MATERIAL_SPECULAR_MAP) cSpecularColor = gtxtStandardTextures[1].Sample(gWrapSamplerState, input.uv);
+	if (gnTexturesMask & MATERIAL_NORMAL_MAP) cNormalColor = gtxtStandardTextures[2].Sample(gWrapSamplerState, input.uv);
+	if (gnTexturesMask & MATERIAL_METALLIC_MAP) cMetallicColor = gtxtStandardTextures[3].Sample(gWrapSamplerState, input.uv);
+	if (gnTexturesMask & MATERIAL_EMISSION_MAP) cEmissionColor = gtxtStandardTextures[4].Sample(gWrapSamplerState, input.uv);
 #endif
 
 	float4 cIllumination = float4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -149,11 +151,10 @@ VS_SKYBOX_CUBEMAP_OUTPUT VSSkyBox(VS_SKYBOX_CUBEMAP_INPUT input)
 }
 
 TextureCube gtxtSkyCubeTexture : register(t13);
-SamplerState gssClamp : register(s1);
 
 float4 PSSkyBox(VS_SKYBOX_CUBEMAP_OUTPUT input) : SV_TARGET
 {
-	float4 cColor = gtxtSkyCubeTexture.Sample(gssClamp, input.positionL);
+    float4 cColor = gtxtSkyCubeTexture.Sample(gClampSamplerState, input.positionL);
 
 	return(cColor);
 }
@@ -204,7 +205,7 @@ float4 PSTextured(VS_SPRITE_TEXTURED_OUTPUT input, uint nPrimitiveID : SV_Primit
 }
 */
 Texture2D gtxtTexture : register(t0);
-SamplerState gSamplerState : register(s1);
+
 
 struct VS_TEXTURED_INPUT
 {
@@ -218,19 +219,19 @@ struct VS_TEXTURED_OUTPUT
     float2 uv : TEXCOORD;
 };
 
-VS_TEXTURED_OUTPUT VSChildTextured(VS_TEXTURED_INPUT input)
+VS_TEXTURED_OUTPUT VSBillBoardTextured(VS_TEXTURED_INPUT input)
 {
     VS_TEXTURED_OUTPUT output;
 
-    output.position = mul(mul(mul(float4(input.position, 1.0f), gmtxGameObject), gmtxView), gmtxProjection);
+    output.position = mul(mul(mul(float4(input.position, 1.0f), gmtxChildGameObject), gmtxView), gmtxProjection);
     output.uv = input.uv;
 
     return (output);
 }
 
-float4 PSTextured(VS_TEXTURED_OUTPUT input) : SV_TARGET
+float4 PSBillBoardTextured(VS_TEXTURED_OUTPUT input) : SV_TARGET
 {
-    float4 cColor = gtxtTexture.Sample(gSamplerState, input.uv);
+    float4 cColor = gtxtTexture.Sample(gWrapSamplerState, input.uv);
 
     return (cColor);
 }
@@ -266,7 +267,7 @@ VS_TERRAIN_OUTPUT VSTerrain(VS_TERRAIN_INPUT input)
 
 float4 PSTerrain(VS_TERRAIN_OUTPUT input) : SV_TARGET
 {
-    float4 cBaseTexColor = gtxtTerrainBaseTexture.Sample(gSamplerState, input.uv);
+    float4 cBaseTexColor = gtxtTerrainBaseTexture.Sample(gWrapSamplerState, input.uv);
     float4 cColor = input.color * cBaseTexColor;
 
     return (cColor);
