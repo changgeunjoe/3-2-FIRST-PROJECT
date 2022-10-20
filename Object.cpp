@@ -1127,7 +1127,7 @@ void CGrassObject::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* p
 {
 	OnPrepareRender();
 
-	/*if (m_ppMaterials)
+	if (m_ppMaterials)
 	{
 		if (m_ppMaterials[0]->m_pShader)
 		{
@@ -1141,7 +1141,7 @@ void CGrassObject::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* p
 			m_ppMaterials[0]->m_pTexture->UpdateShaderVariables(pd3dCommandList);
 			if (m_pcbMappedGameObject) XMStoreFloat4x4(&m_pcbMappedGameObject->m_xmf4x4Texture, XMMatrixTranspose(XMLoadFloat4x4(&m_ppMaterials[0]->m_pTexture->m_xmf4x4Texture)));
 		}
-	}*/
+	}
 
 	pd3dCommandList->SetGraphicsRootDescriptorTable(13, m_d3dCbvGPUDescriptorHandle);
 
