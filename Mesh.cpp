@@ -281,7 +281,7 @@ CSkyBoxMesh::CSkyBoxMesh(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd
 
 	float fx = fWidth * 0.5f, fy = fHeight * 0.5f, fz = fDepth * 0.5f;
 	// Front Quad (quads point inward)
-	m_pxmf3Positions[0] = XMFLOAT3(-fx, +fx, +fx);
+	m_pxmf3Positions[0] = XMFLOAT3(-fx, +fx, +fx);//-
 	m_pxmf3Positions[1] = XMFLOAT3(+fx, +fx, +fx);
 	m_pxmf3Positions[2] = XMFLOAT3(-fx, -fx, +fx);
 	m_pxmf3Positions[3] = XMFLOAT3(-fx, -fx, +fx);
@@ -638,6 +638,82 @@ CHeightMapGridMesh::CHeightMapGridMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsC
 	delete[] pnIndices;
 }
 
+CHeightMapGridMesh::CHeightMapGridMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, float Height,int xStart, int zStart, int nWidth, int nLength, XMFLOAT3 xmf3Scale, XMFLOAT4 xmf4Color, void* pContext) :CMesh(pd3dDevice, pd3dCommandList)
+{
+	m_nVertices = nWidth * nLength;
+	//	m_nStride = sizeof(CTexturedVertex);
+	m_nStride = sizeof(CDiffusedTexturedVertex);
+	m_nOffset = 0;
+	m_nSlot = 0;
+	m_d3dPrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
+
+	m_nWidth = nWidth;
+	m_nLength = nLength;
+	m_xmf3Scale = xmf3Scale;
+
+	//	CTexturedVertex *pVertices = new CTexturedVertex[m_nVertices];
+	CDiffusedTexturedVertex* pVertices = new CDiffusedTexturedVertex[m_nVertices];
+
+	CHeightMapImage* pHeightMapImage = (CHeightMapImage*)pContext;
+	int cxHeightMap = pHeightMapImage->GetHeightMapWidth();
+	int czHeightMap = pHeightMapImage->GetHeightMapLength();
+
+	float fHeight = 0.0f, fMinHeight = +FLT_MAX, fMaxHeight = -FLT_MAX;
+	for (int i = 0, z = zStart; z < (zStart + nLength); z++)
+	{
+		for (int x = xStart; x < (xStart + nWidth); x++, i++)
+		{
+			fHeight = OnGetHeight(x, z, pContext);
+			pVertices[i].m_xmf3Position = XMFLOAT3((x * m_xmf3Scale.x), Height, (z * m_xmf3Scale.z));
+			pVertices[i].m_xmf4Diffuse = Vector4::Add(OnGetColor(x, z, pContext), xmf4Color);
+			pVertices[i].m_xmf2TexCoord = XMFLOAT2(float(x) / float(cxHeightMap - 1), float(czHeightMap - 1 - z) / float(czHeightMap - 1));//ÅØ½ºÃÄ ÁÂÇ¥
+			if (fHeight < fMinHeight) fMinHeight = fHeight;
+			if (fHeight > fMaxHeight) fMaxHeight = fHeight;
+		}
+	}
+
+	m_pd3dVertexBuffer = CreateBufferResource(pd3dDevice, pd3dCommandList, pVertices, m_nStride * m_nVertices, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, &m_pd3dVertexUploadBuffer);
+
+	m_d3dVertexBufferView.BufferLocation = m_pd3dVertexBuffer->GetGPUVirtualAddress();
+	m_d3dVertexBufferView.StrideInBytes = m_nStride;
+	m_d3dVertexBufferView.SizeInBytes = m_nStride * m_nVertices;
+
+	delete[] pVertices;
+
+	m_nIndices = ((nWidth * 2) * (nLength - 1)) + ((nLength - 1) - 1);
+	UINT* pnIndices = new UINT[m_nIndices];
+
+	for (int j = 0, z = 0; z < nLength - 1; z++)
+	{
+		if ((z % 2) == 0)
+		{
+			for (int x = 0; x < nWidth; x++)
+			{
+				if ((x == 0) && (z > 0)) pnIndices[j++] = (UINT)(x + (z * nWidth));
+				pnIndices[j++] = (UINT)(x + (z * nWidth));
+				pnIndices[j++] = (UINT)((x + (z * nWidth)) + nWidth);
+			}
+		}
+		else
+		{
+			for (int x = nWidth - 1; x >= 0; x--)
+			{
+				if (x == (nWidth - 1)) pnIndices[j++] = (UINT)(x + (z * nWidth));
+				pnIndices[j++] = (UINT)(x + (z * nWidth));
+				pnIndices[j++] = (UINT)((x + (z * nWidth)) + nWidth);
+			}
+		}
+	}
+
+	m_pd3dIndexBuffer = CreateBufferResource(pd3dDevice, pd3dCommandList, pnIndices, sizeof(UINT) * m_nIndices, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_INDEX_BUFFER, &m_pd3dIndexUploadBuffer);
+
+	m_d3dIndexBufferView.BufferLocation = m_pd3dIndexBuffer->GetGPUVirtualAddress();
+	m_d3dIndexBufferView.Format = DXGI_FORMAT_R32_UINT;
+	m_d3dIndexBufferView.SizeInBytes = sizeof(UINT) * m_nIndices;
+
+	delete[] pnIndices;
+}
+
 CHeightMapGridMesh::~CHeightMapGridMesh()
 {
 }
@@ -650,6 +726,7 @@ float CHeightMapGridMesh::OnGetHeight(int x, int z, void* pContext)
 	int nWidth = pHeightMapImage->GetHeightMapWidth();
 	float fHeight = pHeightMapPixels[x + (z * nWidth)] * xmf3Scale.y;
 	return(fHeight);
+	return 0;
 }
 
 XMFLOAT4 CHeightMapGridMesh::OnGetColor(int x, int z, void* pContext)

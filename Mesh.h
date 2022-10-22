@@ -71,9 +71,9 @@ protected:
 
 	XMFLOAT3						*m_pxmf3Positions = NULL;
 
-	ID3D12Resource					*m_pd3dPositionBuffer = NULL;
-	ID3D12Resource					*m_pd3dPositionUploadBuffer = NULL;
-	D3D12_VERTEX_BUFFER_VIEW		m_d3dPositionBufferView;
+	ID3D12Resource					*m_pd3dPositionBuffer = NULL; //포지션 저장
+	ID3D12Resource					*m_pd3dPositionUploadBuffer = NULL; //포지션 업로드 
+	D3D12_VERTEX_BUFFER_VIEW		m_d3dPositionBufferView; //포지션 업로드 주소 보는 뷰
 
 	int								m_nSubMeshes = 0;
 	int								*m_pnSubSetIndices = NULL;
@@ -213,6 +213,7 @@ protected:
 
 public:
 	CHeightMapGridMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, int xStart, int zStart, int nWidth, int nLength, XMFLOAT3 xmf3Scale = XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT4 xmf4Color = XMFLOAT4(1.0f, 1.0f, 0.0f, 0.0f), void* pContext = NULL);
+	CHeightMapGridMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, float Height,int xStart, int zStart, int nWidth, int nLength, XMFLOAT3 xmf3Scale = XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT4 xmf4Color = XMFLOAT4(1.0f, 1.0f, 0.0f, 0.0f), void* pContext = NULL);
 	virtual ~CHeightMapGridMesh();
 
 	XMFLOAT3 GetScale() { return(m_xmf3Scale); }

@@ -17,8 +17,8 @@ private:
 	int									m_nReferences = 0;
 
 protected:
-	ID3DBlob*							m_pd3dVertexShaderBlob = NULL;
-	ID3DBlob*							m_pd3dPixelShaderBlob = NULL;
+	ID3DBlob*							m_pd3dVertexShaderBlob = NULL;//¡§¡° Ω¶¿Ã¥ı 
+	ID3DBlob*							m_pd3dPixelShaderBlob = NULL;//« ºø Ω¶¿Ã¥ı
 
 	int									m_nPipelineStates = 0;
 	ID3D12PipelineState**				m_ppd3dPipelineStates = NULL;
@@ -188,6 +188,16 @@ public:
 	virtual void CreateShader(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature);
 };
 
+class CTerrainWaterShader : public CTerrainShader
+{
+public:
+	CTerrainWaterShader();
+	virtual ~CTerrainWaterShader();
+
+	virtual D3D12_SHADER_BYTECODE CreateVertexShader();
+	virtual D3D12_SHADER_BYTECODE CreatePixelShader();
+};
+
 class CBillboardObjectsShader : public CObjectsShader
 {
 public:
@@ -205,7 +215,6 @@ public:
 	virtual void CreateShader(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature);
 
 	virtual D3D12_INPUT_LAYOUT_DESC CreateInputLayout();
-
 	virtual D3D12_SHADER_BYTECODE CreateVertexShader();
 	virtual D3D12_SHADER_BYTECODE CreatePixelShader();
 

@@ -37,6 +37,12 @@ struct LIGHTS
 	int						m_nLights;
 };
 
+struct TIMER
+{
+	float						m_nTimer;
+	float						m_nAlpha;
+};
+
 class CScene
 {
 public:
@@ -78,7 +84,7 @@ public:
 
 	CSkyBox								*m_pSkyBox = NULL;
 	CHeightMapTerrain					*m_pTerrain = NULL;
-
+	CHeightMapTerrain					*m_pWater = NULL;
 
 	LIGHT								*m_pLights = NULL;
 	int									m_nLights = 0;
@@ -87,4 +93,10 @@ public:
 
 	ID3D12Resource						*m_pd3dcbLights = NULL;
 	LIGHTS								*m_pcbMappedLights = NULL;
+
+	ID3D12Resource						*m_pd3dcbTimer = NULL;
+	TIMER								*m_pcbMappedTimer = NULL;
+
+	float								fTimer = 0.3f;
+	float								fAlPha = 0.3f;
 };

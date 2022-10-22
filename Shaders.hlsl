@@ -22,8 +22,14 @@ cbuffer cbGameObjectInfo : register(b2)
 
 cbuffer cbChildGameObjectInfo : register(b3)
 {
-    matrix gmtxChildGameObject : packoffset(c0);
+    matrix gmtxChildGameObject : packoffset(c0);//worldmatrix
     //MATERIAL gMaterial : packoffset(c4);
+};
+
+cbuffer cbTimerinfo : register(b5)
+{
+    float Timer;
+    float Alpha;
 };
 
 #include "Light.hlsl"
@@ -225,18 +231,20 @@ VS_TEXTURED_OUTPUT VSBillBoardTextured(VS_TEXTURED_INPUT input)
 
     output.position = mul(mul(mul(float4(input.position, 1.0f), gmtxChildGameObject), gmtxView), gmtxProjection);
     output.uv = input.uv;
-
+   // output.uv.y += Timer;
     return (output);
 }
 
 float4 PSBillBoardTextured(VS_TEXTURED_OUTPUT input) : SV_TARGET
 {
     float4 cColor = gtxtTexture.Sample(gWrapSamplerState, input.uv);
-
+    
+    //cColor.a = Alpha;
+	
     return (cColor);
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 Texture2D gtxtTerrainBaseTexture : register(t1);
 
@@ -265,10 +273,29 @@ VS_TERRAIN_OUTPUT VSTerrain(VS_TERRAIN_INPUT input)
     return (output);
 }
 
+VS_TERRAIN_OUTPUT VSWaterTerrain(VS_TERRAIN_INPUT input)
+{
+    VS_TERRAIN_OUTPUT output;
+
+    output.position = mul(mul(mul(float4(input.position, 1.0f), gmtxChildGameObject), gmtxView), gmtxProjection);
+    output.color = input.color;
+    output.uv = input.uv;
+    output.uv.y += Timer/100;
+    return (output);
+}
+
 float4 PSTerrain(VS_TERRAIN_OUTPUT input) : SV_TARGET
 {
     float4 cBaseTexColor = gtxtTerrainBaseTexture.Sample(gWrapSamplerState, input.uv);
-    float4 cColor = input.color * cBaseTexColor;
+    float4 cColor =  cBaseTexColor;
+ //   cColor.a = 0.3;
+    return (cColor);
+}
 
+float4 PSWaterTerrain(VS_TERRAIN_OUTPUT input) : SV_TARGET
+{
+    float4 cBaseTexColor = gtxtTerrainBaseTexture.Sample(gWrapSamplerState, input.uv);
+    float4 cColor = cBaseTexColor;
+    cColor.a = 0.3;
     return (cColor);
 }

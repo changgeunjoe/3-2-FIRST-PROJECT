@@ -1049,9 +1049,66 @@ CHeightMapTerrain::CHeightMapTerrain(ID3D12Device* pd3dDevice, ID3D12GraphicsCom
 	SetShader(pTerrainShader);
 
 
-	//SetCbvGPUDescriptorHandle(pTerrainShader->GetGPUCbvDescriptorStartHandle());//터레인 쉐이더의 지피유 스타
+	
 
 	
+}
+
+CHeightMapTerrain::CHeightMapTerrain(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, LPCTSTR pFileName, int nWidth, int nLength, int nBlockWidth, int nBlockLength, XMFLOAT3 xmf3Scale, XMFLOAT4 xmf4Color, int Height) :CGameObject(1)
+{
+	m_nWidth = nWidth;
+	m_nLength = nLength;
+
+	int cxQuadsPerBlock = nBlockWidth - 1;
+	int czQuadsPerBlock = nBlockLength - 1;
+
+	m_xmf3Scale = xmf3Scale;
+
+	m_pHeightMapImage = new CHeightMapImage(pFileName, nWidth, nLength, xmf3Scale);
+
+
+	long cxBlocks = (m_nWidth - 1) / cxQuadsPerBlock;
+	long czBlocks = (m_nLength - 1) / czQuadsPerBlock;
+
+	m_nMeshes = cxBlocks * czBlocks;
+	m_ppMeshes = new CMesh * [m_nMeshes];
+	for (int i = 0; i < m_nMeshes; i++)	m_ppMeshes[i] = NULL;
+
+	CHeightMapGridMesh* pHeightMapGridMesh = NULL;
+	for (int z = 0, zStart = 0; z < czBlocks; z++)
+	{
+		for (int x = 0, xStart = 0; x < cxBlocks; x++)
+		{
+			xStart = x * (nBlockWidth - 1);
+			zStart = z * (nBlockLength - 1);
+			pHeightMapGridMesh = new CHeightMapGridMesh(pd3dDevice, pd3dCommandList, Height, xStart, zStart,
+				nBlockWidth, nBlockLength, xmf3Scale, xmf4Color, m_pHeightMapImage);//디바이스의 커멘드 리스트에 저장 ->메쉬값 저장
+			SetMesh(x + (z * cxBlocks), pHeightMapGridMesh);//mesh 세팅
+		}
+	}
+
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);//m_pd3dcbGameObject->리소스 저장 995줄 constantbuffer에서 사용 
+
+	CTexture* pTerrainTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0, 1);//->루트 파라미터 하나를 사용하여 텍스쳐를 만들겠다.
+
+	pTerrainTexture->LoadTextureFromDDSFile(pd3dDevice, pd3dCommandList, L"Image/Water.dds", RESOURCE_TEXTURE2D, 0);
+
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256의 배수//쉐이더에 넣어줄 요소
+
+	CTerrainWaterShader* pTerrainWaterShader = new CTerrainWaterShader();
+	pTerrainWaterShader->CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);//->루트 파라미터 만든 뒤
+	pTerrainWaterShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);//->이럴거면 여기서 만들어줘도 되지 않나,,,?라는 생각이 들기도 하는데..
+	pTerrainWaterShader->CreateCbvSrvDescriptorHeaps(pd3dDevice, 1, 1);//constantbuffer와 srv 갯수 1개씩 디스크립터 힙 생성
+	pTerrainWaterShader->CreateConstantBufferViews(pd3dDevice, 1, m_pd3dcbGameObject, ncbElementBytes);
+	pTerrainWaterShader->CreateShaderResourceViews(pd3dDevice, pTerrainTexture, 0, 12);// 0인이유 텍스쳐를 하나만 사용하기 때문에,12번 파라미터에 연결
+
+	CMaterial* pTerrainMaterial = new CMaterial();
+	pTerrainMaterial->SetTexture(pTerrainTexture);
+	SetCbvGPUDescriptorHandle(pTerrainWaterShader->GetGPUCbvDescriptorStartHandle());//터레인 쉐이더의 지피유 스타
+	SetMaterial(0, pTerrainMaterial);
+	SetShader(pTerrainWaterShader);
+
+
 }
 
 CHeightMapTerrain::~CHeightMapTerrain()
@@ -1129,7 +1186,7 @@ void CGrassObject::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* p
 
 	if (m_ppMaterials)
 	{
-		if (m_ppMaterials[0]->m_pShader)
+		if (m_ppMaterials[0]->m_pShader)//->쉐이더 
 		{
 			m_ppMaterials[0]->m_pShader->Render(pd3dCommandList, pCamera);
 			m_ppMaterials[0]->m_pShader->UpdateShaderVariables(pd3dCommandList);
@@ -1153,3 +1210,5 @@ void CGrassObject::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* p
 		}
 	}
 }
+
+
