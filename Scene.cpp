@@ -79,7 +79,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_pWater = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Image/HeightMap2.raw"), 257, 257, 257, 257, xmf3Scale, xmf4Color,150);
 	m_pSkyBox = new CSkyBox(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
-	m_nShaders = 1;
+	m_nShaders = 2;
 	m_ppShaders = new CShader*[m_nShaders];
 
 	//CObjectsShader *pObjectsShader = new CObjectsShader();
@@ -90,8 +90,13 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	CBillboardObjectsShader* pBillboardObjectShader = new CBillboardObjectsShader();
 	pBillboardObjectShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	pBillboardObjectShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature,m_pTerrain);
-	m_ppShaders[0] = pBillboardObjectShader;
+	m_ppShaders[1] = pBillboardObjectShader;
 
+
+	C2dUIObjectsShader* p2dUIObjectShader = new C2dUIObjectsShader();
+	p2dUIObjectShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	p2dUIObjectShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, m_pTerrain);
+	m_ppShaders[0] = p2dUIObjectShader;
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }
@@ -386,6 +391,8 @@ void CScene::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList)
 	::memcpy(&m_pcbMappedLights->m_nLights, &m_nLights, sizeof(int));
 	::memcpy(&m_pcbMappedTimer->m_nAlpha, &fAlPha, sizeof(float));
 	::memcpy(&m_pcbMappedTimer->m_nTimer, &fTimer, sizeof(float));
+	XMFLOAT4X4 m_xmf4x4World = Matrix4x4::Identity();
+	XMStoreFloat4x4(&m_pcbMappedTimer->m_identityview, XMMatrixTranspose(XMLoadFloat4x4(&m_xmf4x4World)));
 
 }
 

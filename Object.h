@@ -181,6 +181,7 @@ public:
 public:
 	CGameObject();
 	CGameObject(int nMaterials);
+	CGameObject(int nMaterials, int meshes);
     virtual ~CGameObject();
 
 public:
@@ -378,3 +379,15 @@ public:
 	float m_fRotationAngle = 0.0f;
 	float m_fRotationDelta = 1.0f;
 };
+class CUiObject : public CGameObject
+{
+public:
+	CUiObject();
+	virtual ~CUiObject();
+
+	//virtual void Animate(float fTimeElapsed);
+	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
+	//float m_fRotationAngle = 0.0f;
+//	float m_fRotationDelta = 1.0f;
+};
+

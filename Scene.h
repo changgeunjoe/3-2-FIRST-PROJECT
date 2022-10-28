@@ -41,6 +41,7 @@ struct TIMER
 {
 	float						m_nTimer;
 	float						m_nAlpha;
+	XMFLOAT4X4					m_identityview;
 };
 
 class CScene

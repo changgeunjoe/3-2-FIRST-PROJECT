@@ -316,6 +316,24 @@ CGameObject::CGameObject(int nMaterials) : CGameObject()
 	}
 }
 
+CGameObject::CGameObject(int nMaterials,int meshes) : CGameObject()
+{
+	m_nMaterials = nMaterials;
+	if (m_nMaterials > 0)
+	{
+		m_ppMaterials = new CMaterial * [m_nMaterials];
+		for (int i = 0; i < m_nMaterials; i++) m_ppMaterials[i] = NULL;
+	}
+	m_nMeshes = meshes;
+	m_ppMeshes = NULL;
+	if (m_nMeshes > 0)//메시 저장 //오류
+	{
+		m_ppMeshes = new CMesh * [m_nMeshes];
+		for (int i = 0; i < m_nMeshes; i++)	m_ppMeshes[i] = NULL;
+	}
+}
+
+
 CGameObject::~CGameObject()
 {
 	if (m_pMesh) m_pMesh->Release();
@@ -1211,4 +1229,41 @@ void CGrassObject::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* p
 	}
 }
 
+CUiObject::CUiObject() :CGameObject(1,1)
+{
+}
 
+CUiObject::~CUiObject()
+{
+}
+
+void CUiObject::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
+{
+	OnPrepareRender();
+
+	if (m_ppMaterials)
+	{
+		if (m_ppMaterials[0]->m_pShader)//->쉐이더 
+		{
+			m_ppMaterials[0]->m_pShader->Render(pd3dCommandList, pCamera);
+			m_ppMaterials[0]->m_pShader->UpdateShaderVariables(pd3dCommandList);
+
+			UpdateShaderVariables(pd3dCommandList);
+		}
+		if (m_ppMaterials[0]->m_pTexture)
+		{
+			m_ppMaterials[0]->m_pTexture->UpdateShaderVariables(pd3dCommandList);
+			if (m_pcbMappedGameObject) XMStoreFloat4x4(&m_pcbMappedGameObject->m_xmf4x4Texture, XMMatrixTranspose(XMLoadFloat4x4(&m_ppMaterials[0]->m_pTexture->m_xmf4x4Texture)));
+		}
+	}
+
+	pd3dCommandList->SetGraphicsRootDescriptorTable(13, m_d3dCbvGPUDescriptorHandle);
+
+	if (m_ppMeshes)
+	{
+		for (int i = 0; i < m_nMeshes; i++)
+		{
+			if (m_ppMeshes[i]) m_ppMeshes[i]->Render(pd3dCommandList);
+		}
+	}
+}

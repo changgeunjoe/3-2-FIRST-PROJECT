@@ -11,6 +11,7 @@ cbuffer cbCameraInfo : register(b1)
 	matrix		gmtxView : packoffset(c0);
 	matrix		gmtxProjection : packoffset(c4);
 	float3		gvCameraPosition : packoffset(c8);
+   // matrix		gmtxidentityView : packoffset(c12);
 };
 
 cbuffer cbGameObjectInfo : register(b2)
@@ -30,6 +31,7 @@ cbuffer cbTimerinfo : register(b5)
 {
     float Timer;
     float Alpha;
+
 };
 
 #include "Light.hlsl"
@@ -236,6 +238,25 @@ VS_TEXTURED_OUTPUT VSBillBoardTextured(VS_TEXTURED_INPUT input)
 }
 
 float4 PSBillBoardTextured(VS_TEXTURED_OUTPUT input) : SV_TARGET
+{
+    float4 cColor = gtxtTexture.Sample(gWrapSamplerState, input.uv);
+    
+    //cColor.a = Alpha;
+	
+    return (cColor);
+}
+
+VS_TEXTURED_OUTPUT VSUITextured(VS_TEXTURED_INPUT input)
+{
+    VS_TEXTURED_OUTPUT output;
+
+    output.position = mul(mul(float4(input.position, 1.0f), gmtxChildGameObject), gmtxProjection);
+    output.uv = input.uv;
+   // output.uv.y += Timer;
+    return (output);
+}
+
+float4 PSUITextured(VS_TEXTURED_OUTPUT input) : SV_TARGET
 {
     float4 cColor = gtxtTexture.Sample(gWrapSamplerState, input.uv);
     
