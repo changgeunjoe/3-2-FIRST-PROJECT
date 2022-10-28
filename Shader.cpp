@@ -1126,30 +1126,33 @@ void C2dUIObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCo
 	ppMiniMapMaterials[0] = new CMaterial();
 	ppMiniMapMaterials[0]->SetTexture(ppMiniMapTexture[0]);
 
+	CTexture* ppHPBarTexture[1];
+	ppHPBarTexture[0] = new CTexture(1, RESOURCE_TEXTURE2D, 0, 1);
+	ppHPBarTexture[0]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UIimage/hpBar2.dds", RESOURCE_TEXTURE2D, 0);//미니맵 텍스 쳐생성
+
+	CMaterial* ppHPBarMaterials[1]; //->메테리얼 생성 텍스쳐와 쉐이더를 넣어야되는데 쉐이더이므로 안 넣어도 됨
+	ppHPBarMaterials[0] = new CMaterial();
+	ppHPBarMaterials[0]->SetTexture(ppHPBarTexture[0]);
+
 	CTexturedRectMesh* pMiniMapMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList, 4.0f, 4.0f, 0.0f, 5.0f, 5.0f, 0.0f);
+	CTexturedRectMesh* pHPBarMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList, 4.0f, 2.0f, 0.0f, 5.0f, 5.0f, 0.0f);
 
 	//CRawFormatImage* pRawFormatImage = new CRawFormatImage(L"BillboardImage/ObjectsMap.raw", 257, 257, true);
-	m_nObjects = 1;
+	m_nObjects =2;
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 
 	//CreateShader(pd3dDevice,  pd3dCommandList,pd3dGraphicsRootSignature);
-	CreateCbvSrvDescriptorHeaps(pd3dDevice, 1, 1);
+	CreateCbvSrvDescriptorHeaps(pd3dDevice, m_nObjects, 2);
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
-	CreateConstantBufferViews(pd3dDevice, 1, m_pd3dcbGameObjects, ncbElementBytes);
+	CreateConstantBufferViews(pd3dDevice, m_nObjects, m_pd3dcbGameObjects, ncbElementBytes);
 	CreateShaderResourceViews(pd3dDevice, ppMiniMapTexture[0], 0, 11);
+	CreateShaderResourceViews(pd3dDevice, ppHPBarTexture[0], 0, 11);
 	
 		
-	CHeightMapTerrain* pTerrain = (CHeightMapTerrain*)pContext;
-
-	int nTerrainWidth = int(pTerrain->GetWidth());
-	int nTerrainLength = int(pTerrain->GetLength());
-
-	XMFLOAT3 xmf3Scale = pTerrain->GetScale();
-
 	m_ppObjects = new CGameObject * [m_nObjects];//UI오브젝트의 개수
 
 	CUiObject* pUiObject = NULL;
-
+	CHPObject* pHpObject = NULL;
 	CMaterial* pMaterial = NULL;
 	CMesh* pMesh = NULL;
 	int nObjects = 0;
@@ -1160,12 +1163,19 @@ void C2dUIObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCo
 
 	pUiObject->SetMesh(0, pMiniMapMesh);
 	pUiObject->SetMaterial(0, ppMiniMapMaterials[0]);
-
-	
 	pUiObject->SetPosition(15, 8.5, 30);
 	pUiObject->Rotate(0.0f, 180.0f, 0.0f);
 	pUiObject->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * nObjects));
 	m_ppObjects[nObjects++] = pUiObject;
+
+	pHpObject = new CHPObject();
+
+	pHpObject->SetMesh(0, pHPBarMesh);
+	pHpObject->SetMaterial(0, ppHPBarMaterials[0]);
+	pHpObject->SetPosition(0, -15, 20);
+	pHpObject->Rotate(0.0f, 180.0f, 0.0f);
+	pHpObject->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * nObjects));
+	m_ppObjects[nObjects++] = pHpObject;
 }
 
 void C2dUIObjectsShader::ReleaseUploadBuffers()

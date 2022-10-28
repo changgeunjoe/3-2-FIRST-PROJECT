@@ -259,10 +259,13 @@ VS_TEXTURED_OUTPUT VSUITextured(VS_TEXTURED_INPUT input)
 float4 PSUITextured(VS_TEXTURED_OUTPUT input) : SV_TARGET
 {
     float4 cColor = gtxtTexture.Sample(gWrapSamplerState, input.uv);
-    
+   // if (cColor.x > 0.99)
+   // {
+		 //cColor.a = 0;
+   // }
     //cColor.a = Alpha;
 	
-    return (cColor);
+        return (cColor);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
