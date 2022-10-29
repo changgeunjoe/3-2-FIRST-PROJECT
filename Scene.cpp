@@ -84,7 +84,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 
 	//CObjectsShader *pObjectsShader = new CObjectsShader();
 	//pObjectsShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	//pObjectsShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, NULL);
+	//pObjectsShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, nullptr);
 	//m_ppShaders[1] = pObjectsShader;
 
 	CBillboardObjectsShader* pBillboardObjectShader = new CBillboardObjectsShader();
@@ -132,7 +132,7 @@ void CScene::ReleaseObjects()
 
 ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevice)
 {
-	ID3D12RootSignature *pd3dGraphicsRootSignature = NULL;
+	ID3D12RootSignature *pd3dGraphicsRootSignature = nullptr;
 
 #ifdef _WITH_STANDARD_TEXTURE_MULTIPLE_DESCRIPTORS
 	D3D12_DESCRIPTOR_RANGE pd3dDescriptorRanges[11];
@@ -361,8 +361,8 @@ ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevic
 	d3dRootSignatureDesc.pStaticSamplers = pd3dSamplerDescs;
 	d3dRootSignatureDesc.Flags = d3dRootSignatureFlags;
 
-	ID3DBlob *pd3dSignatureBlob = NULL;
-	ID3DBlob *pd3dErrorBlob = NULL;
+	ID3DBlob *pd3dSignatureBlob = nullptr;
+	ID3DBlob *pd3dErrorBlob = nullptr;
 	D3D12SerializeRootSignature(&d3dRootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &pd3dSignatureBlob, &pd3dErrorBlob);
 	pd3dDevice->CreateRootSignature(0, pd3dSignatureBlob->GetBufferPointer(), pd3dSignatureBlob->GetBufferSize(), __uuidof(ID3D12RootSignature), (void **)&pd3dGraphicsRootSignature);
 	if (pd3dSignatureBlob) pd3dSignatureBlob->Release();
@@ -374,14 +374,14 @@ ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevic
 void CScene::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
 	UINT ncbElementBytesLight = ((sizeof(LIGHTS) + 255) & ~255); //256의 배수
-	m_pd3dcbLights = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytesLight, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
+	m_pd3dcbLights = ::CreateBufferResource(pd3dDevice, pd3dCommandList, nullptr, ncbElementBytesLight, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, nullptr);
 
-	m_pd3dcbLights->Map(0, NULL, (void **)&m_pcbMappedLights);
+	m_pd3dcbLights->Map(0, nullptr, (void **)&m_pcbMappedLights);
 
 	UINT ncbElementBytesTimer = ((sizeof(TIMER) + 255) & ~255); //256의 배수
-	m_pd3dcbTimer = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytesTimer, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
+	m_pd3dcbTimer = ::CreateBufferResource(pd3dDevice, pd3dCommandList, nullptr, ncbElementBytesTimer, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, nullptr);
 
-	m_pd3dcbTimer->Map(0, NULL, (void**)&m_pcbMappedTimer);
+	m_pd3dcbTimer->Map(0, nullptr, (void**)&m_pcbMappedTimer);
 }
 
 void CScene::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList)
@@ -400,12 +400,12 @@ void CScene::ReleaseShaderVariables()
 {
 	if (m_pd3dcbLights)
 	{
-		m_pd3dcbLights->Unmap(0, NULL);
+		m_pd3dcbLights->Unmap(0, nullptr);
 		m_pd3dcbLights->Release();
 	}
 	if (m_pd3dcbTimer)
 	{
-		m_pd3dcbTimer->Unmap(0, NULL);
+		m_pd3dcbTimer->Unmap(0, nullptr);
 		m_pd3dcbTimer->Release();
 	}
 }
@@ -457,8 +457,8 @@ bool CScene::ProcessInput(UCHAR *pKeysBuffer)
 void CScene::AnimateObjects(float fTimeElapsed)
 {
 	fTimer += fTimeElapsed;
-	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Animate(fTimeElapsed, NULL);
-	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->UpdateTransform(NULL);
+	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Animate(fTimeElapsed, nullptr);
+	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->UpdateTransform(nullptr);
 	
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->AnimateObjects(fTimeElapsed);
 	

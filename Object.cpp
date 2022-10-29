@@ -17,7 +17,7 @@ CTexture::CTexture(int nTextures, UINT nTextureType, int nSamplers, int nRootPar
 	{
 		m_ppd3dTextureUploadBuffers = new ID3D12Resource * [m_nTextures];
 		m_ppd3dTextures = new ID3D12Resource * [m_nTextures];
-		for (int i = 0; i < m_nTextures; i++) m_ppd3dTextureUploadBuffers[i] = m_ppd3dTextures[i] = NULL;
+		for (int i = 0; i < m_nTextures; i++) m_ppd3dTextureUploadBuffers[i] = m_ppd3dTextures[i] = nullptr;
 
 		m_ppstrTextureNames = new _TCHAR[m_nTextures][64];
 		for (int i = 0; i < m_nTextures; i++) m_ppstrTextureNames[i][0] = '\0';
@@ -106,7 +106,7 @@ void CTexture::ReleaseUploadBuffers()
 	{
 		for (int i = 0; i < m_nTextures; i++) if (m_ppd3dTextureUploadBuffers[i]) m_ppd3dTextureUploadBuffers[i]->Release();
 		delete[] m_ppd3dTextureUploadBuffers;
-		m_ppd3dTextureUploadBuffers = NULL;
+		m_ppd3dTextureUploadBuffers = nullptr;
 	}
 }
 
@@ -142,7 +142,7 @@ int CTexture::LoadTextureFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsComman
 
 	bool bDuplicated = false;
 	bool bLoaded = false;
-	if (strcmp(pstrTextureName, "null"))
+	if (strcmp(pstrTextureName, "nullptr"))
 	{
 		bLoaded = true;
 		char pstrFilePath[64] = { '\0' };
@@ -312,7 +312,7 @@ CGameObject::CGameObject(int nMaterials) : CGameObject()
 	if (m_nMaterials > 0)
 	{
 		m_ppMaterials = new CMaterial*[m_nMaterials];
-		for(int i = 0; i < m_nMaterials; i++) m_ppMaterials[i] = NULL;
+		for(int i = 0; i < m_nMaterials; i++) m_ppMaterials[i] = nullptr;
 	}
 }
 
@@ -322,14 +322,14 @@ CGameObject::CGameObject(int nMaterials,int meshes) : CGameObject()
 	if (m_nMaterials > 0)
 	{
 		m_ppMaterials = new CMaterial * [m_nMaterials];
-		for (int i = 0; i < m_nMaterials; i++) m_ppMaterials[i] = NULL;
+		for (int i = 0; i < m_nMaterials; i++) m_ppMaterials[i] = nullptr;
 	}
 	m_nMeshes = meshes;
-	m_ppMeshes = NULL;
+	m_ppMeshes = nullptr;
 	if (m_nMeshes > 0)//메시 저장 //오류
 	{
 		m_ppMeshes = new CMesh * [m_nMeshes];
-		for (int i = 0; i < m_nMeshes; i++)	m_ppMeshes[i] = NULL;
+		for (int i = 0; i < m_nMeshes; i++)	m_ppMeshes[i] = nullptr;
 	}
 }
 
@@ -429,13 +429,13 @@ void CGameObject::Animate(float fTimeElapsed, XMFLOAT4X4 *pxmf4x4Parent)
 
 CGameObject *CGameObject::FindFrame(char *pstrFrameName)
 {
-	CGameObject *pFrameObject = NULL;
+	CGameObject *pFrameObject = nullptr;
 	if (!strncmp(m_pstrFrameName, pstrFrameName, strlen(pstrFrameName))) return(this);
 
 	if (m_pSibling) if (pFrameObject = m_pSibling->FindFrame(pstrFrameName)) return(pFrameObject);
 	if (m_pChild) if (pFrameObject = m_pChild->FindFrame(pstrFrameName)) return(pFrameObject);
 
-	return(NULL);
+	return(nullptr);
 }
 
 void CGameObject::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
@@ -471,9 +471,9 @@ void CGameObject::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pC
 void CGameObject::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256의 배수
-	m_pd3dcbGameObject = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
+	m_pd3dcbGameObject = ::CreateBufferResource(pd3dDevice, pd3dCommandList, nullptr, ncbElementBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, nullptr);
 
-	m_pd3dcbGameObject->Map(0, NULL, (void**)&m_pcbMappedGameObject);
+	m_pd3dcbGameObject->Map(0, nullptr, (void**)&m_pcbMappedGameObject);
 }
 
 void CGameObject::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList)
@@ -496,7 +496,7 @@ void CGameObject::ReleaseShaderVariables()
 {
 	if (m_pd3dcbGameObject)
 	{
-		m_pd3dcbGameObject->Unmap(0, NULL);
+		m_pd3dcbGameObject->Unmap(0, nullptr);
 		m_pd3dcbGameObject->Release();
 	}
 	for (int i = 0; i < m_nMaterials; i++)
@@ -535,7 +535,7 @@ void CGameObject::SetPosition(float x, float y, float z)
 	m_xmf4x4Transform._42 = y;
 	m_xmf4x4Transform._43 = z;
 
-	UpdateTransform(NULL);
+	UpdateTransform(nullptr);
 }
 
 void CGameObject::SetPosition(XMFLOAT3 xmf3Position)
@@ -548,7 +548,7 @@ void CGameObject::SetScale(float x, float y, float z)
 	XMMATRIX mtxScale = XMMatrixScaling(x, y, z);
 	m_xmf4x4Transform = Matrix4x4::Multiply(mtxScale, m_xmf4x4Transform);
 
-	UpdateTransform(NULL);
+	UpdateTransform(nullptr);
 }
 
 XMFLOAT3 CGameObject::GetPosition()
@@ -600,7 +600,7 @@ void CGameObject::Rotate(float fPitch, float fYaw, float fRoll)
 	XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(fPitch), XMConvertToRadians(fYaw), XMConvertToRadians(fRoll));
 	m_xmf4x4Transform = Matrix4x4::Multiply(mtxRotate, m_xmf4x4Transform);
 
-	UpdateTransform(NULL);
+	UpdateTransform(nullptr);
 }
 
 void CGameObject::Rotate(XMFLOAT3 *pxmf3Axis, float fAngle)
@@ -608,7 +608,7 @@ void CGameObject::Rotate(XMFLOAT3 *pxmf3Axis, float fAngle)
 	XMMATRIX mtxRotate = XMMatrixRotationAxis(XMLoadFloat3(pxmf3Axis), XMConvertToRadians(fAngle));
 	m_xmf4x4Transform = Matrix4x4::Multiply(mtxRotate, m_xmf4x4Transform);
 
-	UpdateTransform(NULL);
+	UpdateTransform(nullptr);
 }
 
 void CGameObject::Rotate(XMFLOAT4 *pxmf4Quaternion)
@@ -616,7 +616,7 @@ void CGameObject::Rotate(XMFLOAT4 *pxmf4Quaternion)
 	XMMATRIX mtxRotate = XMMatrixRotationQuaternion(XMLoadFloat4(pxmf4Quaternion));
 	m_xmf4x4Transform = Matrix4x4::Multiply(mtxRotate, m_xmf4x4Transform);
 
-	UpdateTransform(NULL);
+	UpdateTransform(nullptr);
 }
 
 void CGameObject::SetBillboardLookAt(XMFLOAT3& xmf3Target, XMFLOAT3& xmf3Up)
@@ -674,10 +674,10 @@ void CGameObject::LoadMaterialsFromFile(ID3D12Device *pd3dDevice, ID3D12Graphics
 	UINT nReads = (UINT)::fread(&m_nMaterials, sizeof(int), 1, pInFile);
 
 	m_ppMaterials = new CMaterial*[m_nMaterials];
-	for (int i = 0; i < m_nMaterials; i++) m_ppMaterials[i] = NULL;
+	for (int i = 0; i < m_nMaterials; i++) m_ppMaterials[i] = nullptr;
 
-	CMaterial *pMaterial = NULL;
-	CTexture* pTexture = NULL;
+	CMaterial *pMaterial = nullptr;
+	CTexture* pTexture = nullptr;
 
 	for ( ; ; )
 	{
@@ -779,7 +779,7 @@ CGameObject *CGameObject::LoadFrameHierarchyFromFile(ID3D12Device *pd3dDevice, I
 
 	int nFrame = 0, nTextures = 0;
 
-	CGameObject *pGameObject = NULL;
+	CGameObject *pGameObject = nullptr;
 
 	for ( ; ; )
 	{
@@ -860,18 +860,18 @@ void CGameObject::PrintFrameInfo(CGameObject *pGameObject, CGameObject *pParent)
 
 CGameObject *CGameObject::LoadGeometryFromFile(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, char *pstrFileName, CShader *pShader)
 {
-	FILE *pInFile = NULL;
+	FILE *pInFile = nullptr;
 	::fopen_s(&pInFile, pstrFileName, "rb");
 	::rewind(pInFile);
 
-	CGameObject *pGameObject = CGameObject::LoadFrameHierarchyFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, NULL, pInFile, pShader);
+	CGameObject *pGameObject = CGameObject::LoadFrameHierarchyFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, nullptr, pInFile, pShader);
 
 #ifdef _WITH_DEBUG_FRAME_HIERARCHY
 	TCHAR pstrDebug[256] = { 0 };
 	_stprintf_s(pstrDebug, 256, _T("Frame Hierarchy\n"));
 	OutputDebugString(pstrDebug);
 
-	CGameObject::PrintFrameInfo(pGameObject, NULL);
+	CGameObject::PrintFrameInfo(pGameObject, nullptr);
 #endif
 
 	return(pGameObject);
@@ -1030,9 +1030,9 @@ CHeightMapTerrain::CHeightMapTerrain(ID3D12Device* pd3dDevice, ID3D12GraphicsCom
 
 	m_nMeshes = cxBlocks * czBlocks;
 	m_ppMeshes = new CMesh * [m_nMeshes];
-	for (int i = 0; i < m_nMeshes; i++)	m_ppMeshes[i] = NULL;
+	for (int i = 0; i < m_nMeshes; i++)	m_ppMeshes[i] = nullptr;
 
-	CHeightMapGridMesh* pHeightMapGridMesh = NULL;
+	CHeightMapGridMesh* pHeightMapGridMesh = nullptr;
 	for (int z = 0, zStart = 0; z < czBlocks; z++)
 	{
 		for (int x = 0, xStart = 0; x < cxBlocks; x++)
@@ -1090,9 +1090,9 @@ CHeightMapTerrain::CHeightMapTerrain(ID3D12Device* pd3dDevice, ID3D12GraphicsCom
 
 	m_nMeshes = cxBlocks * czBlocks;
 	m_ppMeshes = new CMesh * [m_nMeshes];
-	for (int i = 0; i < m_nMeshes; i++)	m_ppMeshes[i] = NULL;
+	for (int i = 0; i < m_nMeshes; i++)	m_ppMeshes[i] = nullptr;
 
-	CHeightMapGridMesh* pHeightMapGridMesh = NULL;
+	CHeightMapGridMesh* pHeightMapGridMesh = nullptr;
 	for (int z = 0, zStart = 0; z < czBlocks; z++)
 	{
 		for (int x = 0, xStart = 0; x < cxBlocks; x++)
@@ -1167,11 +1167,11 @@ void CHeightMapTerrain::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCame
 CGrassObject::CGrassObject() :CGameObject(1)
 {
 	m_nMeshes = 1;
-	m_ppMeshes = NULL;
+	m_ppMeshes = nullptr;
 	if (m_nMeshes > 0)//메시 저장 //오류
 	{
 		m_ppMeshes = new CMesh * [m_nMeshes];
-		for (int i = 0; i < m_nMeshes; i++)	m_ppMeshes[i] = NULL;
+		for (int i = 0; i < m_nMeshes; i++)	m_ppMeshes[i] = nullptr;
 	}
 }
 
@@ -1183,7 +1183,7 @@ CGrassObject::~CGrassObject()
 		for (int i = 0; i < m_nMeshes; i++)
 		{
 			if (m_ppMeshes[i]) m_ppMeshes[i]->Release();
-			m_ppMeshes[i] = NULL;
+			m_ppMeshes[i] = nullptr;
 		}
 		delete[] m_ppMeshes;
 	}
@@ -1306,4 +1306,38 @@ void CHPObject::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCam
 		}
 	}
 
+}
+
+CBullet::CBullet()
+{
+	m_xmf3RotationAxis = XMFLOAT3(0.0f, 0.0f, 1.0f);
+	m_xmf3MovingDirection = XMFLOAT3(0.0f, 0.0f, 1.0f);
+	m_fRotationSpeed = 900.f;
+	m_fMovingSpeed = 120.f;
+
+	SetOOBB(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.25f, 1.25f, 2.5f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
+}
+
+CBullet::~CBullet()
+{
+}
+
+void CBullet::Move(XMFLOAT3& vDirection, float fSpeed)
+{
+}
+
+void CBullet::Rotate(XMFLOAT3& xmf3RotationAxis, float fAngle)
+{
+}
+
+void CBullet::Animate(float fElapsedTime)
+{
+}
+
+void CBullet::OnPrepareRender()
+{
+}
+
+void CBullet::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
+{
 }

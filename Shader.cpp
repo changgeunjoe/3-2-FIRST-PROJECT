@@ -28,7 +28,7 @@ D3D12_SHADER_BYTECODE CShader::CreateVertexShader()
 {
 	D3D12_SHADER_BYTECODE d3dShaderByteCode;
 	d3dShaderByteCode.BytecodeLength = 0;
-	d3dShaderByteCode.pShaderBytecode = NULL;
+	d3dShaderByteCode.pShaderBytecode = nullptr;
 
 	return(d3dShaderByteCode);
 }
@@ -37,7 +37,7 @@ D3D12_SHADER_BYTECODE CShader::CreatePixelShader()
 {
 	D3D12_SHADER_BYTECODE d3dShaderByteCode;
 	d3dShaderByteCode.BytecodeLength = 0;
-	d3dShaderByteCode.pShaderBytecode = NULL;
+	d3dShaderByteCode.pShaderBytecode = nullptr;
 
 	return(d3dShaderByteCode);
 }
@@ -49,9 +49,9 @@ D3D12_SHADER_BYTECODE CShader::CompileShaderFromFile(WCHAR *pszFileName, LPCSTR 
 	nCompileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 #endif
 
-	ID3DBlob *pd3dErrorBlob = NULL;
-	HRESULT hResult = ::D3DCompileFromFile(pszFileName, NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, pszShaderName, pszShaderProfile, nCompileFlags, 0, ppd3dShaderBlob, &pd3dErrorBlob);
-	char *pErrorString = NULL;
+	ID3DBlob *pd3dErrorBlob = nullptr;
+	HRESULT hResult = ::D3DCompileFromFile(pszFileName, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, pszShaderName, pszShaderProfile, nCompileFlags, 0, ppd3dShaderBlob, &pd3dErrorBlob);
+	char *pErrorString = nullptr;
 	if (pd3dErrorBlob) pErrorString = (char *)pd3dErrorBlob->GetBufferPointer();
 
 	D3D12_SHADER_BYTECODE d3dShaderByteCode;
@@ -75,7 +75,7 @@ D3D12_SHADER_BYTECODE CShader::ReadCompiledShaderFromFile(WCHAR *pszFileName, ID
 {
 	UINT nReadBytes = 0;
 #ifdef _WITH_WFOPEN
-	FILE *pFile = NULL;
+	FILE *pFile = nullptr;
 	::_wfopen_s(&pFile, pszFileName, L"rb");
 	::fseek(pFile, 0, SEEK_END);
 	int nFileSize = ::ftell(pFile);
@@ -97,7 +97,7 @@ D3D12_SHADER_BYTECODE CShader::ReadCompiledShaderFromFile(WCHAR *pszFileName, ID
 	D3D12_SHADER_BYTECODE d3dShaderByteCode;
 	if (ppd3dShaderBlob)
 	{
-		*ppd3dShaderBlob = NULL;
+		*ppd3dShaderBlob = nullptr;
 		HRESULT hResult = D3DCreateBlob(nReadBytes, ppd3dShaderBlob);
 		memcpy((*ppd3dShaderBlob)->GetBufferPointer(), pByteCode, nReadBytes);
 		d3dShaderByteCode.BytecodeLength = (*ppd3dShaderBlob)->GetBufferSize();
@@ -115,7 +115,7 @@ D3D12_SHADER_BYTECODE CShader::ReadCompiledShaderFromFile(WCHAR *pszFileName, ID
 D3D12_INPUT_LAYOUT_DESC CShader::CreateInputLayout()
 {
 	D3D12_INPUT_LAYOUT_DESC d3dInputLayoutDesc;
-	d3dInputLayoutDesc.pInputElementDescs = NULL;
+	d3dInputLayoutDesc.pInputElementDescs = nullptr;
 	d3dInputLayoutDesc.NumElements = 0;
 
 	return(d3dInputLayoutDesc);
@@ -533,9 +533,9 @@ void CObjectsShader::ReleaseObjects()
 void CObjectsShader::CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
 {
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256의 배수
-	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nObjects, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
+	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, nullptr, ncbElementBytes * m_nObjects, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, nullptr);
 
-	m_pd3dcbGameObjects->Map(0, NULL, (void**)&m_pcbMappedGameObjects);
+	m_pd3dcbGameObjects->Map(0, nullptr, (void**)&m_pcbMappedGameObjects);
 }
 
 void CObjectsShader::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList)
@@ -559,7 +559,7 @@ void CObjectsShader::ReleaseShaderVariables()
 {
 	if (m_pd3dcbGameObjects)
 	{
-		m_pd3dcbGameObjects->Unmap(0, NULL);
+		m_pd3dcbGameObjects->Unmap(0, nullptr);
 		m_pd3dcbGameObjects->Release();
 	}
 
@@ -588,7 +588,7 @@ void CObjectsShader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera 
 		if (m_ppObjects[j])
 		{
 			m_ppObjects[j]->Animate(0.16f); //->헬기 
-		//	m_ppObjects[j]->UpdateTransform(NULL);//오류
+		//	m_ppObjects[j]->UpdateTransform(nullptr);//오류
 			m_ppObjects[j]->Render(pd3dCommandList, pCamera);
 		}
 	}
@@ -923,7 +923,7 @@ void CBillboardObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12Graph
 
 	m_ppObjects = new CGameObject * [m_nObjects];
 
-	CGrassObject* pBillboardObject = NULL;
+	CGrassObject* pBillboardObject = nullptr;
 	for (int nObjects = 0, z = 2; z <= 254; z++)
 	{
 		for (int x = 2; x <= 254; x++)
@@ -932,8 +932,8 @@ void CBillboardObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12Graph
 
 			float fyOffset = 0.0f;
 
-			CMaterial* pMaterial = NULL;
-			CMesh* pMesh = NULL;
+			CMaterial* pMaterial = nullptr;
+			CMesh* pMesh = nullptr;
 
 			switch (nPixel)
 			{
@@ -1151,10 +1151,10 @@ void C2dUIObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCo
 		
 	m_ppObjects = new CGameObject * [m_nObjects];//UI오브젝트의 개수
 
-	CUiObject* pUiObject = NULL;
-	CHPObject* pHpObject = NULL;
-	CMaterial* pMaterial = NULL;
-	CMesh* pMesh = NULL;
+	CUiObject* pUiObject = nullptr;
+	CHPObject* pHpObject = nullptr;
+	CMaterial* pMaterial = nullptr;
+	CMesh* pMesh = nullptr;
 	int nObjects = 0;
 	/*case 102:
 	pMesh = pGrassMesh;

@@ -67,36 +67,36 @@ public:
 
 	bool ProcessInput(UCHAR *pKeysBuffer);
     void AnimateObjects(float fTimeElapsed);
-    void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera=NULL);
+    void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera=nullptr);
 
 	void ReleaseUploadBuffers();
 	CHeightMapTerrain* GetTerrain() { return(m_pTerrain); }
 
-	CPlayer								*m_pPlayer = NULL;
+	CPlayer								*m_pPlayer = nullptr;
 
 public:
-	ID3D12RootSignature					*m_pd3dGraphicsRootSignature = NULL;
+	ID3D12RootSignature					*m_pd3dGraphicsRootSignature = nullptr;
 
 	int									m_nGameObjects = 0;
-	CGameObject							**m_ppGameObjects = NULL;
+	CGameObject							**m_ppGameObjects = nullptr;
 
 	int									m_nShaders = 0;
-	CShader								**m_ppShaders = NULL;
+	CShader								**m_ppShaders = nullptr;
 
-	CSkyBox								*m_pSkyBox = NULL;
-	CHeightMapTerrain					*m_pTerrain = NULL;
-	CHeightMapTerrain					*m_pWater = NULL;
+	CSkyBox								*m_pSkyBox = nullptr;
+	CHeightMapTerrain					*m_pTerrain = nullptr;
+	CHeightMapTerrain					*m_pWater = nullptr;
 
-	LIGHT								*m_pLights = NULL;
+	LIGHT								*m_pLights = nullptr;
 	int									m_nLights = 0;
 
 	XMFLOAT4							m_xmf4GlobalAmbient;
 
-	ID3D12Resource						*m_pd3dcbLights = NULL;
-	LIGHTS								*m_pcbMappedLights = NULL;
+	ID3D12Resource						*m_pd3dcbLights = nullptr;
+	LIGHTS								*m_pcbMappedLights = nullptr;
 
-	ID3D12Resource						*m_pd3dcbTimer = NULL;
-	TIMER								*m_pcbMappedTimer = NULL;
+	ID3D12Resource						*m_pd3dcbTimer = nullptr;
+	TIMER								*m_pcbMappedTimer = nullptr;
 
 	float								fTimer = 0.3f;
 	float								fAlPha = 0.3f;
