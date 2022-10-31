@@ -152,6 +152,8 @@
     <ClInclude Include="GameFramework.h" />
     <ClInclude Include="LabProject08-0-1.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Missileobject.h" />
+    <ClInclude Include="MissileObjectShader.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Resource.h" />
@@ -169,6 +171,8 @@
     <ClCompile Include="GameFramework.cpp" />
     <ClCompile Include="LabProject08-0-1.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Missileobject.cpp" />
+    <ClCompile Include="MissileObjectShader.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Scene.cpp" />

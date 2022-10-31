@@ -153,17 +153,17 @@ namespace
     {
         static INIT_ONCE s_initOnce = INIT_ONCE_STATIC_INIT;
 
-        IWICImagingFactory2* factory = nullptr;
+        IWICImagingFactory2* factory = NULL;
         (void)InitOnceExecuteOnce(&s_initOnce,
             [](PINIT_ONCE, PVOID, PVOID *factory) -> BOOL
             {
                 return SUCCEEDED( CoCreateInstance(
                     CLSID_WICImagingFactory2,
-                    nullptr,
+                    NULL,
                     CLSCTX_INPROC_SERVER,
                     __uuidof(IWICImagingFactory2),
                     factory) ) ? TRUE : FALSE;
-            }, nullptr, reinterpret_cast<LPVOID*>(&factory));
+            }, NULL, reinterpret_cast<LPVOID*>(&factory));
 
         return factory;
     }
@@ -451,7 +451,7 @@ namespace
                     return E_UNEXPECTED;
                 }
 
-                hr = FC->Initialize(scaler.Get(), convertGUID, WICBitmapDitherTypeErrorDiffusion, nullptr, 0, WICBitmapPaletteTypeMedianCut);
+                hr = FC->Initialize(scaler.Get(), convertGUID, WICBitmapDitherTypeErrorDiffusion, NULL, 0, WICBitmapPaletteTypeMedianCut);
                 if (FAILED(hr))
                     return hr;
 
@@ -479,7 +479,7 @@ namespace
                 return E_UNEXPECTED;
             }
 
-            hr = FC->Initialize(frame, convertGUID, WICBitmapDitherTypeErrorDiffusion, nullptr, 0, WICBitmapPaletteTypeMedianCut);
+            hr = FC->Initialize(frame, convertGUID, WICBitmapDitherTypeErrorDiffusion, NULL, 0, WICBitmapPaletteTypeMedianCut);
             if (FAILED(hr))
                 return hr;
 
@@ -505,13 +505,13 @@ namespace
 
         CD3DX12_HEAP_PROPERTIES defaultHeapProperties(D3D12_HEAP_TYPE_DEFAULT);
 
-        ID3D12Resource* tex = nullptr;
+        ID3D12Resource* tex = NULL;
         hr = d3dDevice->CreateCommittedResource(
             &defaultHeapProperties,
             D3D12_HEAP_FLAG_NONE,
             &desc,
             D3D12_RESOURCE_STATE_COPY_DEST,
-            nullptr,
+            NULL,
             IID_PPV_ARGS(&tex));
 
         if (FAILED(hr))
@@ -570,7 +570,7 @@ HRESULT DirectX::LoadWICTextureFromMemoryEx(
 {
     if ( texture )
     {
-        *texture = nullptr;
+        *texture = NULL;
     }
 
     if (!d3dDevice || !wicData  || !texture)
@@ -614,7 +614,7 @@ HRESULT DirectX::LoadWICTextureFromMemoryEx(
     if ( FAILED(hr)) 
         return hr;
 
-    _Analysis_assume_(*texture != nullptr);
+    _Analysis_assume_(*texture != NULL);
     SetDebugObjectName(*texture, L"WICTextureLoader");
 
     return hr;
@@ -657,7 +657,7 @@ HRESULT DirectX::LoadWICTextureFromFileEx(
 {
     if ( texture )
     {
-        *texture = nullptr;
+        *texture = NULL;
     }
 
     if (!d3dDevice || !fileName || !texture )

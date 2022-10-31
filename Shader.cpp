@@ -28,7 +28,7 @@ D3D12_SHADER_BYTECODE CShader::CreateVertexShader()
 {
 	D3D12_SHADER_BYTECODE d3dShaderByteCode;
 	d3dShaderByteCode.BytecodeLength = 0;
-	d3dShaderByteCode.pShaderBytecode = nullptr;
+	d3dShaderByteCode.pShaderBytecode = NULL;
 
 	return(d3dShaderByteCode);
 }
@@ -37,7 +37,7 @@ D3D12_SHADER_BYTECODE CShader::CreatePixelShader()
 {
 	D3D12_SHADER_BYTECODE d3dShaderByteCode;
 	d3dShaderByteCode.BytecodeLength = 0;
-	d3dShaderByteCode.pShaderBytecode = nullptr;
+	d3dShaderByteCode.pShaderBytecode = NULL;
 
 	return(d3dShaderByteCode);
 }
@@ -49,9 +49,9 @@ D3D12_SHADER_BYTECODE CShader::CompileShaderFromFile(WCHAR *pszFileName, LPCSTR 
 	nCompileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 #endif
 
-	ID3DBlob *pd3dErrorBlob = nullptr;
-	HRESULT hResult = ::D3DCompileFromFile(pszFileName, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, pszShaderName, pszShaderProfile, nCompileFlags, 0, ppd3dShaderBlob, &pd3dErrorBlob);
-	char *pErrorString = nullptr;
+	ID3DBlob *pd3dErrorBlob = NULL;
+	HRESULT hResult = ::D3DCompileFromFile(pszFileName, NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, pszShaderName, pszShaderProfile, nCompileFlags, 0, ppd3dShaderBlob, &pd3dErrorBlob);
+	char *pErrorString = NULL;
 	if (pd3dErrorBlob) pErrorString = (char *)pd3dErrorBlob->GetBufferPointer();
 
 	D3D12_SHADER_BYTECODE d3dShaderByteCode;
@@ -75,7 +75,7 @@ D3D12_SHADER_BYTECODE CShader::ReadCompiledShaderFromFile(WCHAR *pszFileName, ID
 {
 	UINT nReadBytes = 0;
 #ifdef _WITH_WFOPEN
-	FILE *pFile = nullptr;
+	FILE *pFile = NULL;
 	::_wfopen_s(&pFile, pszFileName, L"rb");
 	::fseek(pFile, 0, SEEK_END);
 	int nFileSize = ::ftell(pFile);
@@ -97,7 +97,7 @@ D3D12_SHADER_BYTECODE CShader::ReadCompiledShaderFromFile(WCHAR *pszFileName, ID
 	D3D12_SHADER_BYTECODE d3dShaderByteCode;
 	if (ppd3dShaderBlob)
 	{
-		*ppd3dShaderBlob = nullptr;
+		*ppd3dShaderBlob = NULL;
 		HRESULT hResult = D3DCreateBlob(nReadBytes, ppd3dShaderBlob);
 		memcpy((*ppd3dShaderBlob)->GetBufferPointer(), pByteCode, nReadBytes);
 		d3dShaderByteCode.BytecodeLength = (*ppd3dShaderBlob)->GetBufferSize();
@@ -115,7 +115,7 @@ D3D12_SHADER_BYTECODE CShader::ReadCompiledShaderFromFile(WCHAR *pszFileName, ID
 D3D12_INPUT_LAYOUT_DESC CShader::CreateInputLayout()
 {
 	D3D12_INPUT_LAYOUT_DESC d3dInputLayoutDesc;
-	d3dInputLayoutDesc.pInputElementDescs = nullptr;
+	d3dInputLayoutDesc.pInputElementDescs = NULL;
 	d3dInputLayoutDesc.NumElements = 0;
 
 	return(d3dInputLayoutDesc);
@@ -533,9 +533,9 @@ void CObjectsShader::ReleaseObjects()
 void CObjectsShader::CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
 {
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256의 배수
-	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, nullptr, ncbElementBytes * m_nObjects, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, nullptr);
+	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nObjects, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
-	m_pd3dcbGameObjects->Map(0, nullptr, (void**)&m_pcbMappedGameObjects);
+	m_pd3dcbGameObjects->Map(0, NULL, (void**)&m_pcbMappedGameObjects);
 }
 
 void CObjectsShader::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList)
@@ -559,7 +559,7 @@ void CObjectsShader::ReleaseShaderVariables()
 {
 	if (m_pd3dcbGameObjects)
 	{
-		m_pd3dcbGameObjects->Unmap(0, nullptr);
+		m_pd3dcbGameObjects->Unmap(0, NULL);
 		m_pd3dcbGameObjects->Release();
 	}
 
@@ -588,7 +588,7 @@ void CObjectsShader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera 
 		if (m_ppObjects[j])
 		{
 			m_ppObjects[j]->Animate(0.16f); //->헬기 
-		//	m_ppObjects[j]->UpdateTransform(nullptr);//오류
+		//	m_ppObjects[j]->UpdateTransform(NULL);//오류
 			m_ppObjects[j]->Render(pd3dCommandList, pCamera);
 		}
 	}
@@ -871,6 +871,10 @@ void CBillboardObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12Graph
 	ppTreeMaterials[2] = new CMaterial();
 	ppTreeMaterials[2]->SetTexture(ppTreeTextures[2]);
 
+	/*CCubeMeshTextured* pGrassMesh = new CCubeMeshTextured(pd3dDevice, pd3dCommandList, 10.f, 10.5f, 5.f);
+	CCubeMeshTextured* pFlowerMesh = new CCubeMeshTextured(pd3dDevice, pd3dCommandList, 10.f, 10.5f, 5.f);
+	CCubeMeshTextured* pTreeMesh01 = new CCubeMeshTextured(pd3dDevice, pd3dCommandList, 10.f, 10.5f, 5.f);
+	CCubeMeshTextured* pTreeMesh02 = new CCubeMeshTextured(pd3dDevice, pd3dCommandList, 10.f, 10.5f, 5.f);*/
 	CTexturedRectMesh* pGrassMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList, 8.0f, 8.0f, 0.0f, 0.0f, 0.0f, 0.0f);
 	CTexturedRectMesh* pFlowerMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList, 8.0f, 16.0f, 0.0f, 0.0f, 0.0f, 0.0f);
 	CTexturedRectMesh* pTreeMesh01 = new CTexturedRectMesh(pd3dDevice, pd3dCommandList, 24.0f, 36.0f, 0.0f, 0.0f, 0.0f, 0.0f);
@@ -923,7 +927,7 @@ void CBillboardObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12Graph
 
 	m_ppObjects = new CGameObject * [m_nObjects];
 
-	CGrassObject* pBillboardObject = nullptr;
+	CGrassObject* pBillboardObject = NULL;
 	for (int nObjects = 0, z = 2; z <= 254; z++)
 	{
 		for (int x = 2; x <= 254; x++)
@@ -932,8 +936,8 @@ void CBillboardObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12Graph
 
 			float fyOffset = 0.0f;
 
-			CMaterial* pMaterial = nullptr;
-			CMesh* pMesh = nullptr;
+			CMaterial* pMaterial = NULL;
+			CMesh* pMesh = NULL;
 
 			switch (nPixel)
 			{
@@ -1151,10 +1155,10 @@ void C2dUIObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCo
 		
 	m_ppObjects = new CGameObject * [m_nObjects];//UI오브젝트의 개수
 
-	CUiObject* pUiObject = nullptr;
-	CHPObject* pHpObject = nullptr;
-	CMaterial* pMaterial = nullptr;
-	CMesh* pMesh = nullptr;
+	CUiObject* pUiObject = NULL;
+	CHPObject* pHpObject = NULL;
+	CMaterial* pMaterial = NULL;
+	CMesh* pMesh = NULL;
 	int nObjects = 0;
 	/*case 102:
 	pMesh = pGrassMesh;
@@ -1231,4 +1235,212 @@ void C2dUIObjectsShader::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCam
 
 	CObjectsShader::Render(pd3dCommandList, pCamera);
 }
+int CBulletShader::m_BulletCount = 0;//->static 변수
+CBulletShader::CBulletShader()
+{
+}
 
+CBulletShader::~CBulletShader()
+{
+}
+
+void CBulletShader::CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
+{
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256의 배수
+	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nObjects, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
+
+	m_pd3dcbGameObjects->Map(0, NULL, (void**)&m_pcbMappedGameObjects);
+}
+
+void CBulletShader::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList)
+{
+
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
+
+	int i = 0;
+	for (auto iter = m_BulletList.begin(); iter != m_BulletList.end(); ++iter)
+	{
+		
+		CB_GAMEOBJECT_INFO* pbMappedcbGameObject = (CB_GAMEOBJECT_INFO*)((UINT8*)m_pcbMappedGameObjects + (i * ncbElementBytes));
+		XMStoreFloat4x4(&pbMappedcbGameObject->m_xmf4x4World, XMMatrixTranspose(XMLoadFloat4x4(&(*iter)->m_xmf4x4World)));
+		i++;
+	}
+}
+
+void CBulletShader::ReleaseShaderVariables()
+{
+	if (m_pd3dcbGameObjects)
+	{
+		m_pd3dcbGameObjects->Unmap(0, NULL);
+		m_pd3dcbGameObjects->Release();
+	}
+
+	CShader::ReleaseShaderVariables();
+}
+
+D3D12_SHADER_BYTECODE CBulletShader::CreatePixelShader()
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PSBillBoardTextured", "ps_5_1", &m_pd3dPixelShaderBlob));
+}
+
+D3D12_SHADER_BYTECODE CBulletShader::CreateVertexShader()
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "VSBillBoardTextured", "vs_5_1", &m_pd3dVertexShaderBlob));
+}
+
+void CBulletShader::ReleaseUploadBuffers()
+{
+	for (auto iter = m_BulletList.begin(); iter != m_BulletList.end(); ++iter)
+		(*iter)->ReleaseUploadBuffers();
+}
+
+bool CBulletShader::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
+{
+	switch (nMessageID)
+	{
+	case WM_KEYDOWN:
+		switch (wParam)
+		{
+			// 총알 발사 키
+		case VK_CONTROL:
+		{
+			//if (m_pPlayer)
+			//{
+			//	CBullet* pBullet = new CBullet;
+			//	// ID는 1번부터 시작
+			//	pBullet->SetID(++m_BulletCount);
+			//	pBullet->SetMesh(0, pGrassMesh);
+			//	pBullet->SetMaterial(0,m_pBulletMaterial);
+			//	pBullet->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * 0));
+			//	pBullet->SetLook(m_pPlayer->GetLook());
+			//	// 플레이어의 Up벡터, Right벡터도 똑같이 설정해주어야 플레이어가 회전했을 때,
+			//	// 총알 모양도 회전이 된 모양으로 바뀐다.
+			//	pBullet->SetUp(m_pPlayer->GetUpVector());
+			//	pBullet->SetRight(m_pPlayer->GetRightVector());
+			//	// 총알의 생성위치는 플레이어의 위치로 설정
+			//	//pBullet->SetPosition(m_pPlayer->GetPosition());
+			//	pBullet->SetPosition(XMFLOAT3(0,0,0));
+
+			//	//pBullet->SetPosition(m_pFramePlayer->GetCamera()->GetPosition());
+			//	// 총알이 나아가는 방향은 총알이 바라보는 방향으로 준다.
+			//	pBullet->SetMovingDirection(pBullet->GetLook());
+			//	m_BulletList.push_back(pBullet);
+			//	std::cout << "컨트롤 키 눌림 " << std::endl;
+			//	//m_pFireParticleShader->Initialize(pBullet, m_BulletCount);
+			//}
+			//return true;
+		}
+		default:
+			break;
+		}
+		break;
+	default:
+		break;
+	}
+	return(false);
+}
+
+void CBulletShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, void* pContext)
+{
+	//발사 물체 메쉬 생성
+	m_pBulletTexturedMesh = new CCubeMeshTextured(pd3dDevice, pd3dCommandList, 10.f, 10.5f, 5.f);
+	 pGrassMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList, 8.0f, 8.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+	//발사 물체의 텍스처 생성
+	m_pBulletTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0, 1);
+	m_pBulletTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/Base_Texture.dds", RESOURCE_TEXTURE2D, 0);
+	//발사 물체의 matrial을 만들어준다.
+	m_pBulletMaterial = new CMaterial;
+	m_pBulletMaterial->SetTexture(m_pBulletTexture);
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
+	m_nObjects = 1;
+	m_ppObjects = new CGameObject * [m_nObjects];//UI오브젝트의 개수
+	CreateCbvSrvDescriptorHeaps(pd3dDevice, m_nObjects, 1);
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+	CreateConstantBufferViews(pd3dDevice, m_nObjects, m_pd3dcbGameObjects, ncbElementBytes);
+	CreateShaderResourceViews(pd3dDevice, m_pBulletTexture, 0, 11);
+
+	CBullet* pBullet = new CBullet; 
+	int nObjects = 0;
+
+	pBullet->SetMesh(0, pGrassMesh);
+	pBullet->SetMaterial(0, m_pBulletMaterial);
+	pBullet->SetPosition(0, 0, 0);
+	pBullet->Rotate(0.0f, 180.0f, 0.0f);
+	pBullet->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * nObjects));
+	//m_BulletList.push_back(pBullet);
+	//m_ppObjects[]
+	m_ppObjects[nObjects++] = pBullet;
+}
+
+void CBulletShader::AnimateObjects(float fTimeElapsed)
+{
+	//double distance = 0.f;
+	//// 플레이어의 총알 리스트를 루프를 통해 순회하면서, 애니메이트 시켜준다.
+	//for (auto iter = m_BulletList.begin(); iter != m_BulletList.end();)
+	//{
+	//	// 총알이 충돌이라면
+	//	if (((CBullet*)(*iter))->GetCollision() == true)
+	//	{
+	//		// 삭제해야하는 Fire파티클 ID를 넘겨준다.
+	//		//m_pFireParticleShader->SetDeleteFireParticleID(((CBullet*)(*iter))->GetID());
+
+	//		// 마지막에 터지는 파티클을 총알의 위치에 생성
+	//	//	m_pExplosionParticleShader->Initialize((*iter)->GetPosition());
+
+	//		// 총알 삭제
+	//		delete (*iter);
+	//		iter = m_BulletList.erase(iter);
+	//	}
+	//	// 충돌된 총알이 아니면
+	//	else
+	//	{
+	//		// 플레이어 위치와 총알의 위치 거리를 계산하는 공식이다. 
+	//		distance = sqrt((pow(((*iter)->GetPosition().x - m_pPlayer->GetPosition().x), 2.0)
+	//			+ pow(((*iter)->GetPosition().y - m_pPlayer->GetPosition().y), 2.0)
+	//			+ pow(((*iter)->GetPosition().z - m_pPlayer->GetPosition().z), 2.0)));
+
+	//		// 플레이어와 총알의 거리가 250m보다 커지면, 총알의 유효사거리를 벗어난거므로
+	//			// 총알을 계속 그리지 않고, 지워주어야 프레임레이트를 올릴 수 있다.
+	//		if (distance >= MaxBulletDistance)
+	//		{
+	//			// 삭제해야하는 Fire파티클 ID를 넘겨준다.
+	//			//m_pFireParticleShader->SetDeleteFireParticleID(((CBullet*)(*iter))->GetID());
+
+	//			// 마지막에 터지는 파티클을 총알의 위치에 생성
+	//			//m_pExplosionParticleShader->Initialize((*iter)->GetPosition());
+
+	//			// 총알 삭제
+	//			delete (*iter);
+	//			iter = m_BulletList.erase(iter);
+	//			cout << "플레이어 총알 거리벗어남 삭제" << endl;
+	//		}
+	//		else
+	//		{
+	//			//((CBullet*)(*iter))->Animate(fTimeElapsed);
+	//			++iter;
+	//		}
+	//	}
+	//}
+}
+
+void CBulletShader::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
+{
+	//CShader::Render(pd3dCommandList, pCamera);
+	CObjectsShader::Render(pd3dCommandList, pCamera);
+}
+
+void CBulletShader::ReleaseObjects()
+{
+	/*for (auto iter = m_BulletList.begin(); iter != m_BulletList.end(); )
+	{
+		(*iter)->Delete();
+		delete (*iter);
+		iter = m_BulletList.erase(iter);
+	}
+	m_BulletList.clear();*/
+	if (m_ppObjects)
+	{
+		for (int j = 0; j < m_nObjects; j++) if (m_ppObjects[j]) m_ppObjects[j]->Release();
+		delete[] m_ppObjects;
+	}
+}

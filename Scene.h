@@ -6,7 +6,7 @@
 
 #include "Shader.h"
 #include "Player.h"
-
+#include"MissileObjectShader.h"
 #define MAX_LIGHTS			16 
 
 #define POINT_LIGHT			1
@@ -67,36 +67,37 @@ public:
 
 	bool ProcessInput(UCHAR *pKeysBuffer);
     void AnimateObjects(float fTimeElapsed);
-    void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera=nullptr);
+    void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera=NULL);
 
 	void ReleaseUploadBuffers();
 	CHeightMapTerrain* GetTerrain() { return(m_pTerrain); }
 
-	CPlayer								*m_pPlayer = nullptr;
+	CPlayer								*m_pPlayer = NULL;
+	CBulletShader						*m_pBulletShader{ NULL };
 
 public:
-	ID3D12RootSignature					*m_pd3dGraphicsRootSignature = nullptr;
+	ID3D12RootSignature					*m_pd3dGraphicsRootSignature = NULL;
 
 	int									m_nGameObjects = 0;
-	CGameObject							**m_ppGameObjects = nullptr;
+	CGameObject							**m_ppGameObjects = NULL;
 
 	int									m_nShaders = 0;
-	CShader								**m_ppShaders = nullptr;
+	CShader								**m_ppShaders = NULL;
 
-	CSkyBox								*m_pSkyBox = nullptr;
-	CHeightMapTerrain					*m_pTerrain = nullptr;
-	CHeightMapTerrain					*m_pWater = nullptr;
+	CSkyBox								*m_pSkyBox = NULL;
+	CHeightMapTerrain					*m_pTerrain = NULL;
+	CHeightMapTerrain					*m_pWater = NULL;
 
-	LIGHT								*m_pLights = nullptr;
+	LIGHT								*m_pLights = NULL;
 	int									m_nLights = 0;
 
 	XMFLOAT4							m_xmf4GlobalAmbient;
 
-	ID3D12Resource						*m_pd3dcbLights = nullptr;
-	LIGHTS								*m_pcbMappedLights = nullptr;
+	ID3D12Resource						*m_pd3dcbLights = NULL;
+	LIGHTS								*m_pcbMappedLights = NULL;
 
-	ID3D12Resource						*m_pd3dcbTimer = nullptr;
-	TIMER								*m_pcbMappedTimer = nullptr;
+	ID3D12Resource						*m_pd3dcbTimer = NULL;
+	TIMER								*m_pcbMappedTimer = NULL;
 
 	float								fTimer = 0.3f;
 	float								fAlPha = 0.3f;

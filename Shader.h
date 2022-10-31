@@ -6,6 +6,8 @@
 
 #include "Object.h"
 #include "Camera.h"
+#include "Player.h"
+#include"stdafx.h"
 
 class CShader
 {
@@ -17,15 +19,15 @@ private:
 	int									m_nReferences = 0;
 
 protected:
-	ID3DBlob*							m_pd3dVertexShaderBlob = nullptr;//Á¤Á¡ ½¦ÀÌ´õ 
-	ID3DBlob*							m_pd3dPixelShaderBlob = nullptr;//ÇÊ¼¿ ½¦ÀÌ´õ
+	ID3DBlob*							m_pd3dVertexShaderBlob = NULL;//Á¤Á¡ ½¦ÀÌ´õ 
+	ID3DBlob*							m_pd3dPixelShaderBlob = NULL;//ÇÊ¼¿ ½¦ÀÌ´õ
 
 	int									m_nPipelineStates = 0;
-	ID3D12PipelineState**				m_ppd3dPipelineStates = nullptr;
+	ID3D12PipelineState**				m_ppd3dPipelineStates = NULL;
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC	m_d3dPipelineStateDesc;
 
-	ID3D12DescriptorHeap*				m_pd3dCbvSrvDescriptorHeap = nullptr;
+	ID3D12DescriptorHeap*				m_pd3dCbvSrvDescriptorHeap = NULL;
 
 	D3D12_CPU_DESCRIPTOR_HANDLE			m_d3dCbvCPUDescriptorStartHandle;
 	D3D12_GPU_DESCRIPTOR_HANDLE			m_d3dCbvGPUDescriptorStartHandle;
@@ -48,7 +50,7 @@ public:
 	virtual D3D12_SHADER_BYTECODE CreatePixelShader();
 
 	D3D12_SHADER_BYTECODE CompileShaderFromFile(WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderProfile, ID3DBlob **ppd3dShaderBlob);
-	D3D12_SHADER_BYTECODE ReadCompiledShaderFromFile(WCHAR *pszFileName, ID3DBlob **ppd3dShaderBlob=nullptr);
+	D3D12_SHADER_BYTECODE ReadCompiledShaderFromFile(WCHAR *pszFileName, ID3DBlob **ppd3dShaderBlob=NULL);
 
 	virtual void CreateShader(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature);
 
@@ -63,7 +65,7 @@ public:
 
 	virtual void ReleaseUploadBuffers() { }
 
-	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, void *pContext = nullptr) { }
+	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, void *pContext = NULL) { }
 	virtual void AnimateObjects(float fTimeElapsed) { }
 	virtual void ReleaseObjects() { }
 
@@ -122,7 +124,7 @@ public:
 	CObjectsShader();
 	virtual ~CObjectsShader();
 
-	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, void *pContext = nullptr);
+	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, void *pContext = NULL);
 	virtual void AnimateObjects(float fTimeElapsed);
 	virtual void ReleaseObjects();
 
@@ -137,8 +139,8 @@ protected:
 	CGameObject						**m_ppObjects = 0;
 	int								m_nObjects = 0;
 
-	ID3D12Resource					*m_pd3dcbGameObjects = nullptr;
-	CB_GAMEOBJECT_INFO				*m_pcbMappedGameObjects = nullptr;
+	ID3D12Resource					*m_pd3dcbGameObjects = NULL;
+	CB_GAMEOBJECT_INFO				*m_pcbMappedGameObjects = NULL;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -207,7 +209,7 @@ public:
 	virtual D3D12_RASTERIZER_DESC CreateRasterizerState();
 	virtual D3D12_BLEND_DESC CreateBlendState();
 
-	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList,  ID3D12RootSignature* pd3dGraphicsRootSignature, void* pContext = nullptr);
+	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList,  ID3D12RootSignature* pd3dGraphicsRootSignature, void* pContext = NULL);
 	virtual void ReleaseObjects();
 	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera, int pipelinestate);
 
@@ -219,8 +221,8 @@ public:
 	virtual D3D12_SHADER_BYTECODE CreatePixelShader();
 
 #ifdef _WITH_BATCH_MATERIAL
-	CMaterial* m_ppGrassMaterials[2] = { nullptr, nullptr };
-	CMaterial* m_ppFlowerMaterials[2] = { nullptr, nullptr };
+	CMaterial* m_ppGrassMaterials[2] = { NULL, NULL };
+	CMaterial* m_ppFlowerMaterials[2] = { NULL, NULL };
 #endif
 };
 class C2dUIObjectsShader : public CObjectsShader
@@ -233,7 +235,7 @@ public:
 	virtual D3D12_RASTERIZER_DESC CreateRasterizerState();
 	virtual D3D12_BLEND_DESC CreateBlendState();
 
-	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, void* pContext = nullptr);
+	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, void* pContext = NULL);
 	virtual void ReleaseObjects();
 	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera, int pipelinestate);
 
@@ -245,55 +247,58 @@ public:
 	virtual D3D12_SHADER_BYTECODE CreatePixelShader();
 
 #ifdef _WITH_BATCH_MATERIAL
-	CMaterial* m_ppGrassMaterials[2] = { nullptr, nullptr };
-	CMaterial* m_ppFlowerMaterials[2] = { nullptr, nullptr };
+	CMaterial* m_ppGrassMaterials[2] = { NULL, NULL };
+	CMaterial* m_ppFlowerMaterials[2] = { NULL, NULL };
 #endif
 };
-//class CBulletShader : public CTexturedShader
-//{
-//public:
-//	CBulletShader();
-//	virtual ~CBulletShader();
-//
-//	virtual void CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
-//	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList);
-//	virtual void ReleaseShaderVariables();
-//	virtual D3D12_SHADER_BYTECODE CreatePixelShader(ID3DBlob** ppd3dShaderBlob);
-//	virtual void ReleaseUploadBuffers();
-//
-//	bool CBulletShader::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
-//	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, void* pContext = NULL);
-//	virtual void AnimateObjects(float fTimeElapsed);
-//	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
-//	virtual void ReleaseObjects();
-//
-//	CFramePlayer* GetFramePlayer() const { return m_pFramePlayer; }
-//	void SetFramePlayer(CFramePlayer* p) { m_pFramePlayer = p; }
-//
-//	list<CGameObject*>& GetBulletList() { return m_BulletList; }
-//
-////	void SetParticleShader(CFireParticleShader* pFireParticleShader) { m_pFireParticleShader = pFireParticleShader; }
-//	//void SetExplosionParticleShader(CExplosionParticleShader* pExplosionParticleShader) { m_pExplosionParticleShader = pExplosionParticleShader; }
-//private:
-//	int											m_nObjects = 0;
-//
-//	ID3D12Resource* m_pd3dcbGameObjects = NULL;
-//	CB_GAMEOBJECT_INFO* m_pcbMappedGameObjects = NULL;
-//
-//	CCubeMeshTextured* m_pBulletTexturedMesh{ nullptr };
-//	CTexture* m_pBulletTexture{ nullptr };
-//	CMaterial* m_pBulletMaterial{ nullptr };
-//	CFramePlayer* m_pFramePlayer{ nullptr };
-//	list<CGameObject*>		m_BulletList;
-//
-//	const double					MaxBulletDistance = 250.f;
-//	static int						m_BulletCount;
-//	CFireParticleShader* m_pFireParticleShader{ nullptr };
-//	CFireParticle* m_pFireParticle{ nullptr };
-//
-//	CExplosionParticleShader* m_pExplosionParticleShader{ nullptr };
-//	CExplosionParticle* m_pExplosionParticle{ nullptr };
-//};
+class CBulletShader : public CObjectsShader
+{
+public:
+	CBulletShader();
+	virtual ~CBulletShader();
+
+	virtual void CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
+	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList);
+	virtual void ReleaseShaderVariables();
+	virtual D3D12_SHADER_BYTECODE CreatePixelShader();
+	virtual D3D12_SHADER_BYTECODE CreateVertexShader();
+
+	virtual void ReleaseUploadBuffers();
+
+	bool CBulletShader::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, void* pContext = NULL);
+	virtual void AnimateObjects(float fTimeElapsed);
+	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
+	virtual void ReleaseObjects();
+
+	CPlayer* GetFramePlayer() const { return m_pPlayer; }
+	void SetPlayer(CPlayer* p) { m_pPlayer = p; }
+
+	list<CGameObject*>& GetBulletList() { return m_BulletList; }
+
+//	void SetParticleShader(CFireParticleShader* pFireParticleShader) { m_pFireParticleShader = pFireParticleShader; }
+	//void SetExplosionParticleShader(CExplosionParticleShader* pExplosionParticleShader) { m_pExplosionParticleShader = pExplosionParticleShader; }
+private:
+	int											m_nObjects = 0;
+
+	//ID3D12Resource* m_pd3dcbGameObjects = NULL;
+	//CB_GAMEOBJECT_INFO* m_pcbMappedGameObjects = NULL;
+
+	CCubeMeshTextured* m_pBulletTexturedMesh{ NULL };
+	CTexturedRectMesh* pGrassMesh;
+	CTexture* m_pBulletTexture{ NULL };
+	CMaterial* m_pBulletMaterial{ NULL };
+	CPlayer* m_pPlayer{ NULL };
+	list<CGameObject*>		m_BulletList;
+
+	const double					MaxBulletDistance = 250.f;
+	static int						m_BulletCount;
+	/*CFireParticleShader* m_pFireParticleShader{ NULL };
+	CFireParticle* m_pFireParticle{ NULL };
+
+	CExplosionParticleShader* m_pExplosionParticleShader{ NULL };
+	CExplosionParticle* m_pExplosionParticle{ NULL };*/
+};
 
 
 

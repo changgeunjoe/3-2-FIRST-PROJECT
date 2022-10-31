@@ -30,11 +30,11 @@ namespace DirectX
 {
     enum DDS_ALPHA_MODE
     {
-        DDS_ALPHA_MODE_UNKNOWN       = 0,
-        DDS_ALPHA_MODE_STRAIGHT      = 1,
+        DDS_ALPHA_MODE_UNKNOWN = 0,
+        DDS_ALPHA_MODE_STRAIGHT = 1,
         DDS_ALPHA_MODE_PREMULTIPLIED = 2,
-        DDS_ALPHA_MODE_OPAQUE        = 3,
-        DDS_ALPHA_MODE_CUSTOM        = 4,
+        DDS_ALPHA_MODE_OPAQUE = 3,
+        DDS_ALPHA_MODE_CUSTOM = 4,
     };
 
     enum DDS_LOADER_FLAGS
@@ -52,8 +52,8 @@ namespace DirectX
         _Outptr_ ID3D12Resource** texture,
         std::vector<D3D12_SUBRESOURCE_DATA>& subresources,
         size_t maxsize = 0,
-        _Out_opt_ DDS_ALPHA_MODE* alphaMode = nullptr,
-        _Out_opt_ bool* isCubeMap = nullptr);
+        _Out_opt_ DDS_ALPHA_MODE* alphaMode = NULL,
+        _Out_opt_ bool* isCubeMap = NULL);
 
     HRESULT __cdecl LoadDDSTextureFromFile(
         _In_ ID3D12Device* d3dDevice,
@@ -62,8 +62,8 @@ namespace DirectX
         std::unique_ptr<uint8_t[]>& ddsData,
         std::vector<D3D12_SUBRESOURCE_DATA>& subresources,
         size_t maxsize = 0,
-        _Out_opt_ DDS_ALPHA_MODE* alphaMode = nullptr,
-        _Out_opt_ bool* isCubeMap = nullptr);
+        _Out_opt_ DDS_ALPHA_MODE* alphaMode = NULL,
+        _Out_opt_ bool* isCubeMap = NULL);
 
     // Extended version
     HRESULT __cdecl LoadDDSTextureFromMemoryEx(
@@ -75,8 +75,8 @@ namespace DirectX
         unsigned int loadFlags,
         _Outptr_ ID3D12Resource** texture,
         std::vector<D3D12_SUBRESOURCE_DATA>& subresources,
-        _Out_opt_ DDS_ALPHA_MODE* alphaMode = nullptr,
-        _Out_opt_ bool* isCubeMap = nullptr);
+        _Out_opt_ DDS_ALPHA_MODE* alphaMode = NULL,
+        _Out_opt_ bool* isCubeMap = NULL);
 
     HRESULT __cdecl LoadDDSTextureFromFileEx(
         _In_ ID3D12Device* d3dDevice,
@@ -87,6 +87,6 @@ namespace DirectX
         _Outptr_ ID3D12Resource** texture,
         std::unique_ptr<uint8_t[]>& ddsData,
         std::vector<D3D12_SUBRESOURCE_DATA>& subresources,
-        _Out_opt_ DDS_ALPHA_MODE* alphaMode = nullptr,
-        _Out_opt_ bool* isCubeMap = nullptr);
+        _Out_opt_ DDS_ALPHA_MODE* alphaMode = NULL,
+        _Out_opt_ bool* isCubeMap = NULL);
 }

@@ -31,9 +31,9 @@ protected:
 	LPVOID						m_pPlayerUpdatedContext;
 	LPVOID						m_pCameraUpdatedContext;
 
-	CCamera						*m_pCamera = nullptr;
+	CCamera						*m_pCamera = NULL;
 
-	CShader						*m_pShader = nullptr;
+	CShader						*m_pShader = NULL;
 
 public:
 	CPlayer();
@@ -78,9 +78,9 @@ public:
 
 	CCamera *OnChangeCamera(DWORD nNewCameraMode, DWORD nCurrentCameraMode);
 
-	virtual CCamera *ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed) { return(nullptr); }
+	virtual CCamera *ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed) { return(NULL); }
 	virtual void OnPrepareRender();
-	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera = nullptr);
+	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera = NULL);
 };
 
 class CAirplanePlayer : public CPlayer
@@ -89,12 +89,12 @@ public:
 	CAirplanePlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature);
 	virtual ~CAirplanePlayer();
 
-	CGameObject					*m_pMainRotorFrame = nullptr;
-	CGameObject					*m_pTailRotorFrame = nullptr;
+	CGameObject					*m_pMainRotorFrame = NULL;
+	CGameObject					*m_pTailRotorFrame = NULL;
 
 private:
 	virtual void PrepareAnimate();
-	virtual void Animate(float fTimeElapsed, XMFLOAT4X4 *pxmf4x4Parent = nullptr);
+	virtual void Animate(float fTimeElapsed, XMFLOAT4X4 *pxmf4x4Parent = NULL);
 
 public:
 	virtual CCamera *ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed);

@@ -161,7 +161,7 @@ namespace
             GENERIC_READ,
             FILE_SHARE_READ,
             OPEN_EXISTING,
-            nullptr)));
+            NULL)));
 
         if (!hFile)
         {
@@ -200,7 +200,7 @@ namespace
             ddsData.get(),
             fileInfo.EndOfFile.LowPart,
             &BytesRead,
-            nullptr
+            NULL
         ))
         {
             return HRESULT_FROM_WIN32(GetLastError());
@@ -931,7 +931,7 @@ namespace
                         format,
                         &NumBytes,
                         &RowBytes,
-                        nullptr
+                        NULL
                     );
 
                     if ((mipCount <= 1) || !maxsize || (w <= maxsize && h <= maxsize && d <= maxsize))
@@ -1032,7 +1032,7 @@ namespace
             D3D12_HEAP_FLAG_NONE,
             &desc,
             D3D12_RESOURCE_STATE_COPY_DEST,
-            nullptr,
+            NULL,
             IID_PPV_ARGS(texture));
         if (SUCCEEDED(hr))
         {
@@ -1234,7 +1234,7 @@ namespace
             return HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
         }
 
-        if (outIsCubeMap != nullptr)
+        if (outIsCubeMap != NULL)
         {
             *outIsCubeMap = isCubeMap;
         }
@@ -1369,7 +1369,7 @@ HRESULT DirectX::LoadDDSTextureFromMemoryEx(
 {
     if (texture)
     {
-        *texture = nullptr;
+        *texture = NULL;
     }
     if (alphaMode)
     {
@@ -1483,7 +1483,7 @@ HRESULT DirectX::LoadDDSTextureFromFileEx(
 {
     if (texture)
     {
-        *texture = nullptr;
+        *texture = NULL;
     }
     if (alphaMode)
     {
@@ -1499,8 +1499,8 @@ HRESULT DirectX::LoadDDSTextureFromFileEx(
         return E_INVALIDARG;
     }
 
-    const DDS_HEADER* header = nullptr;
-    const uint8_t* bitData = nullptr;
+    const DDS_HEADER* header = NULL;
+    const uint8_t* bitData = NULL;
     size_t bitSize = 0;
 
     HRESULT hr = LoadTextureDataFromFile(fileName,
@@ -1531,7 +1531,7 @@ HRESULT DirectX::LoadDDSTextureFromFileEx(
                 -1,
                 strFileA,
                 MAX_PATH,
-                nullptr,
+                NULL,
                 FALSE
             );
             if (result > 0)

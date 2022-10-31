@@ -79,26 +79,40 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_pWater = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Image/HeightMap2.raw"), 257, 257, 257, 257, xmf3Scale, xmf4Color,150);
 	m_pSkyBox = new CSkyBox(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
-	m_nShaders = 2;
+	m_nShaders = 1;
 	m_ppShaders = new CShader*[m_nShaders];
 
 	//CObjectsShader *pObjectsShader = new CObjectsShader();
 	//pObjectsShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	//pObjectsShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, nullptr);
+	//pObjectsShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, NULL);
 	//m_ppShaders[1] = pObjectsShader;
 
-	CBillboardObjectsShader* pBillboardObjectShader = new CBillboardObjectsShader();
-	pBillboardObjectShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	pBillboardObjectShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature,m_pTerrain);
-	m_ppShaders[1] = pBillboardObjectShader;
+	//CBillboardObjectsShader* pBillboardObjectShader = new CBillboardObjectsShader();
+	//pBillboardObjectShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	//pBillboardObjectShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature,m_pTerrain);
+	//m_ppShaders[0] = pBillboardObjectShader;
+
+	CMissileObjectsShader* pMissileobjectShader = new CMissileObjectsShader();
+	pMissileobjectShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	pMissileobjectShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	m_ppShaders[0] = pMissileobjectShader;
 
 
-	C2dUIObjectsShader* p2dUIObjectShader = new C2dUIObjectsShader();
-	p2dUIObjectShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	p2dUIObjectShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, m_pTerrain);
-	m_ppShaders[0] = p2dUIObjectShader;
-
+	//C2dUIObjectsShader* p2dUIObjectShader = new C2dUIObjectsShader();
+	//p2dUIObjectShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	//p2dUIObjectShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, m_pTerrain);
+	//m_ppShaders[0] = p2dUIObjectShader;
+	//if (!m_pBulletShader)
+	//{
+	//	m_pBulletShader = new CBulletShader;
+	//	m_pBulletShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	//	m_pBulletShader->BuildObjects(pd3dDevice, pd3dCommandList, NULL);
+	//	m_pBulletShader->SetPlayer(m_pPlayer);
+	//}
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+	
+	
+	//m_ppShaders[0] = m_pBulletShader;
 }
 
 void CScene::ReleaseObjects()
@@ -132,7 +146,7 @@ void CScene::ReleaseObjects()
 
 ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevice)
 {
-	ID3D12RootSignature *pd3dGraphicsRootSignature = nullptr;
+	ID3D12RootSignature *pd3dGraphicsRootSignature = NULL;
 
 #ifdef _WITH_STANDARD_TEXTURE_MULTIPLE_DESCRIPTORS
 	D3D12_DESCRIPTOR_RANGE pd3dDescriptorRanges[11];
@@ -361,8 +375,8 @@ ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevic
 	d3dRootSignatureDesc.pStaticSamplers = pd3dSamplerDescs;
 	d3dRootSignatureDesc.Flags = d3dRootSignatureFlags;
 
-	ID3DBlob *pd3dSignatureBlob = nullptr;
-	ID3DBlob *pd3dErrorBlob = nullptr;
+	ID3DBlob *pd3dSignatureBlob = NULL;
+	ID3DBlob *pd3dErrorBlob = NULL;
 	D3D12SerializeRootSignature(&d3dRootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &pd3dSignatureBlob, &pd3dErrorBlob);
 	pd3dDevice->CreateRootSignature(0, pd3dSignatureBlob->GetBufferPointer(), pd3dSignatureBlob->GetBufferSize(), __uuidof(ID3D12RootSignature), (void **)&pd3dGraphicsRootSignature);
 	if (pd3dSignatureBlob) pd3dSignatureBlob->Release();
@@ -374,14 +388,14 @@ ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevic
 void CScene::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
 	UINT ncbElementBytesLight = ((sizeof(LIGHTS) + 255) & ~255); //256의 배수
-	m_pd3dcbLights = ::CreateBufferResource(pd3dDevice, pd3dCommandList, nullptr, ncbElementBytesLight, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, nullptr);
+	m_pd3dcbLights = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytesLight, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
-	m_pd3dcbLights->Map(0, nullptr, (void **)&m_pcbMappedLights);
+	m_pd3dcbLights->Map(0, NULL, (void **)&m_pcbMappedLights);
 
 	UINT ncbElementBytesTimer = ((sizeof(TIMER) + 255) & ~255); //256의 배수
-	m_pd3dcbTimer = ::CreateBufferResource(pd3dDevice, pd3dCommandList, nullptr, ncbElementBytesTimer, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, nullptr);
+	m_pd3dcbTimer = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytesTimer, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
-	m_pd3dcbTimer->Map(0, nullptr, (void**)&m_pcbMappedTimer);
+	m_pd3dcbTimer->Map(0, NULL, (void**)&m_pcbMappedTimer);
 }
 
 void CScene::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList)
@@ -400,12 +414,12 @@ void CScene::ReleaseShaderVariables()
 {
 	if (m_pd3dcbLights)
 	{
-		m_pd3dcbLights->Unmap(0, nullptr);
+		m_pd3dcbLights->Unmap(0, NULL);
 		m_pd3dcbLights->Release();
 	}
 	if (m_pd3dcbTimer)
 	{
-		m_pd3dcbTimer->Unmap(0, nullptr);
+		m_pd3dcbTimer->Unmap(0, NULL);
 		m_pd3dcbTimer->Release();
 	}
 }
@@ -439,6 +453,15 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 		case 'D': m_ppGameObjects[0]->MoveStrafe(+1.0f); break;
 		case 'Q': m_ppGameObjects[0]->MoveUp(+1.0f); break;
 		case 'R': m_ppGameObjects[0]->MoveUp(-1.0f); break;
+
+		// 총알 발사 키
+		case VK_CONTROL:
+			if (m_pBulletShader && m_pPlayer)
+			{
+				//m_pBulletShader->SetParticleShader(m_pFireParticleShader);
+				m_pBulletShader->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
+			}
+			break;
 		default:
 			break;
 		}
@@ -457,11 +480,14 @@ bool CScene::ProcessInput(UCHAR *pKeysBuffer)
 void CScene::AnimateObjects(float fTimeElapsed)
 {
 	fTimer += fTimeElapsed;
-	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Animate(fTimeElapsed, nullptr);
-	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->UpdateTransform(nullptr);
+	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Animate(fTimeElapsed, NULL);
+	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->UpdateTransform(NULL);
 	
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->AnimateObjects(fTimeElapsed);
 	
+	if (m_pPlayer&& m_pBulletShader) {
+		m_pBulletShader->SetPlayer(m_pPlayer);
+	}
 	if (m_pLights)
 	{
 		m_pLights[1].m_xmf3Position = m_pPlayer->GetPosition();
@@ -484,16 +510,16 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 	D3D12_GPU_VIRTUAL_ADDRESS d3dcbTimerGpuVirtualAddress = m_pd3dcbTimer->GetGPUVirtualAddress();
 	pd3dCommandList->SetGraphicsRootConstantBufferView(14, d3dcbTimerGpuVirtualAddress); //Timer
 
-	if (m_pSkyBox) m_pSkyBox->Render(pd3dCommandList, pCamera);
+	//if (m_pSkyBox) m_pSkyBox->Render(pd3dCommandList, pCamera);
 
 
 
-	if (m_pTerrain) m_pTerrain->Render(pd3dCommandList, pCamera);
+//	if (m_pTerrain) m_pTerrain->Render(pd3dCommandList, pCamera);
 	
 
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->Render(pd3dCommandList, pCamera);
-	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Render(pd3dCommandList, pCamera);
-	if (m_pWater) m_pWater->Render(pd3dCommandList, pCamera);
+//	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Render(pd3dCommandList, pCamera);
+//	if (m_pWater) m_pWater->Render(pd3dCommandList, pCamera);
 
 	
 }

@@ -7,32 +7,32 @@
 
 CGameFramework::CGameFramework()
 {
-	m_pdxgiFactory = nullptr;
-	m_pdxgiSwapChain = nullptr;
-	m_pd3dDevice = nullptr;
+	m_pdxgiFactory = NULL;
+	m_pdxgiSwapChain = NULL;
+	m_pd3dDevice = NULL;
 
-	for (int i = 0; i < m_nSwapChainBuffers; i++) m_ppd3dSwapChainBackBuffers[i] = nullptr;
+	for (int i = 0; i < m_nSwapChainBuffers; i++) m_ppd3dSwapChainBackBuffers[i] = NULL;
 	m_nSwapChainBufferIndex = 0;
 
-	m_pd3dCommandAllocator = nullptr;
-	m_pd3dCommandQueue = nullptr;
-	m_pd3dCommandList = nullptr;
+	m_pd3dCommandAllocator = NULL;
+	m_pd3dCommandQueue = NULL;
+	m_pd3dCommandList = NULL;
 
-	m_pd3dRtvDescriptorHeap = nullptr;
-	m_pd3dDsvDescriptorHeap = nullptr;
+	m_pd3dRtvDescriptorHeap = NULL;
+	m_pd3dDsvDescriptorHeap = NULL;
 
 	gnRtvDescriptorIncrementSize = 0;
 	gnDsvDescriptorIncrementSize = 0;
 
-	m_hFenceEvent = nullptr;
-	m_pd3dFence = nullptr;
+	m_hFenceEvent = NULL;
+	m_pd3dFence = NULL;
 	for (int i = 0; i < m_nSwapChainBuffers; i++) m_nFenceValues[i] = 0;
 
 	m_nWndClientWidth = FRAME_BUFFER_WIDTH;
 	m_nWndClientHeight = FRAME_BUFFER_HEIGHT;
 
-	m_pScene = nullptr;
-	m_pPlayer = nullptr;
+	m_pScene = NULL;
+	m_pPlayer = NULL;
 
 	_tcscpy_s(m_pszFrameRate, _T("LabProject ("));
 }
@@ -52,7 +52,7 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 	CreateSwapChain();
 	CreateDepthStencilView();
 
-	CoInitialize(nullptr);
+	CoInitialize(NULL);
 
 	BuildObjects();
 
@@ -89,7 +89,7 @@ void CGameFramework::CreateSwapChain()
 	dxgiSwapChainFullScreenDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 	dxgiSwapChainFullScreenDesc.Windowed = TRUE;
 
-	HRESULT hResult = m_pdxgiFactory->CreateSwapChainForHwnd(m_pd3dCommandQueue, m_hWnd, &dxgiSwapChainDesc, &dxgiSwapChainFullScreenDesc, nullptr, (IDXGISwapChain1 **)&m_pdxgiSwapChain);
+	HRESULT hResult = m_pdxgiFactory->CreateSwapChainForHwnd(m_pd3dCommandQueue, m_hWnd, &dxgiSwapChainDesc, &dxgiSwapChainFullScreenDesc, NULL, (IDXGISwapChain1 **)&m_pdxgiSwapChain);
 #else
 	DXGI_SWAP_CHAIN_DESC dxgiSwapChainDesc;
 	::ZeroMemory(&dxgiSwapChainDesc, sizeof(dxgiSwapChainDesc));
@@ -124,7 +124,7 @@ void CGameFramework::CreateDirect3DDevice()
 
 	UINT nDXGIFactoryFlags = 0;
 #if defined(_DEBUG)
-	ID3D12Debug *pd3dDebugController = nullptr;
+	ID3D12Debug *pd3dDebugController = NULL;
 	hResult = D3D12GetDebugInterface(__uuidof(ID3D12Debug), (void **)&pd3dDebugController);
 	if (pd3dDebugController)
 	{
@@ -136,7 +136,7 @@ void CGameFramework::CreateDirect3DDevice()
 
 	hResult = ::CreateDXGIFactory2(nDXGIFactoryFlags, __uuidof(IDXGIFactory4), (void **)&m_pdxgiFactory);
 
-	IDXGIAdapter1 *pd3dAdapter = nullptr;
+	IDXGIAdapter1 *pd3dAdapter = NULL;
 
 	for (UINT i = 0; DXGI_ERROR_NOT_FOUND != m_pdxgiFactory->EnumAdapters1(i, &pd3dAdapter); i++)
 	{
@@ -168,7 +168,7 @@ void CGameFramework::CreateDirect3DDevice()
 	hResult = m_pd3dDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, __uuidof(ID3D12Fence), (void **)&m_pd3dFence);
 	for (UINT i = 0; i < m_nSwapChainBuffers; i++) m_nFenceValues[i] = 0;
 
-	m_hFenceEvent = ::CreateEvent(nullptr, FALSE, FALSE, nullptr);
+	m_hFenceEvent = ::CreateEvent(NULL, FALSE, FALSE, NULL);
 
 	if (pd3dAdapter) pd3dAdapter->Release();
 }
@@ -185,7 +185,7 @@ void CGameFramework::CreateCommandQueueAndList()
 
 	hResult = m_pd3dDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, __uuidof(ID3D12CommandAllocator), (void **)&m_pd3dCommandAllocator);
 
-	hResult = m_pd3dDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, m_pd3dCommandAllocator, nullptr, __uuidof(ID3D12GraphicsCommandList), (void **)&m_pd3dCommandList);
+	hResult = m_pd3dDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, m_pd3dCommandAllocator, NULL, __uuidof(ID3D12GraphicsCommandList), (void **)&m_pd3dCommandList);
 	hResult = m_pd3dCommandList->Close();
 }
 
@@ -210,7 +210,7 @@ void CGameFramework::CreateRenderTargetViews()
 	for (UINT i = 0; i < m_nSwapChainBuffers; i++)
 	{
 		m_pdxgiSwapChain->GetBuffer(i, __uuidof(ID3D12Resource), (void **)&m_ppd3dSwapChainBackBuffers[i]);
-		m_pd3dDevice->CreateRenderTargetView(m_ppd3dSwapChainBackBuffers[i], nullptr, d3dRtvCPUDescriptorHandle);
+		m_pd3dDevice->CreateRenderTargetView(m_ppd3dSwapChainBackBuffers[i], NULL, d3dRtvCPUDescriptorHandle);
 		d3dRtvCPUDescriptorHandle.ptr += gnRtvDescriptorIncrementSize;
 	}
 }
@@ -260,8 +260,8 @@ void CGameFramework::ChangeSwapChainState()
 	WaitForGpuComplete();
 
 	BOOL bFullScreenState = FALSE;
-	m_pdxgiSwapChain->GetFullscreenState(&bFullScreenState, nullptr);
-	m_pdxgiSwapChain->SetFullscreenState(!bFullScreenState, nullptr);
+	m_pdxgiSwapChain->GetFullscreenState(&bFullScreenState, NULL);
+	m_pdxgiSwapChain->SetFullscreenState(!bFullScreenState, NULL);
 
 	DXGI_MODE_DESC dxgiTargetParameters;
 	dxgiTargetParameters.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -384,13 +384,13 @@ void CGameFramework::OnDestroy()
 
 	if (m_pd3dFence) m_pd3dFence->Release();
 
-	m_pdxgiSwapChain->SetFullscreenState(FALSE, nullptr);
+	m_pdxgiSwapChain->SetFullscreenState(FALSE, NULL);
 	if (m_pdxgiSwapChain) m_pdxgiSwapChain->Release();
     if (m_pd3dDevice) m_pd3dDevice->Release();
 	if (m_pdxgiFactory) m_pdxgiFactory->Release();
 
 #if defined(_DEBUG)
-	IDXGIDebug1	*pdxgiDebug = nullptr;
+	IDXGIDebug1	*pdxgiDebug = NULL;
 	DXGIGetDebugInterface1(0, __uuidof(IDXGIDebug1), (void **)&pdxgiDebug);
 	HRESULT hResult = pdxgiDebug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_DETAIL);
 	pdxgiDebug->Release();
@@ -399,7 +399,7 @@ void CGameFramework::OnDestroy()
 
 void CGameFramework::BuildObjects()
 {
-	m_pd3dCommandList->Reset(m_pd3dCommandAllocator, nullptr);
+	m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
 
 	m_pScene = new CScene();
 	if (m_pScene) m_pScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList);
@@ -448,7 +448,7 @@ void CGameFramework::ProcessInput()
 		POINT ptCursorPos;
 		if (GetCapture() == m_hWnd)
 		{
-			SetCursor(nullptr);
+			SetCursor(NULL);
 			GetCursorPos(&ptCursorPos);
 			cxDelta = (float)(ptCursorPos.x - m_ptOldCursorPos.x) / 3.0f;
 			cyDelta = (float)(ptCursorPos.y - m_ptOldCursorPos.y) / 3.0f;
@@ -476,7 +476,7 @@ void CGameFramework::AnimateObjects()
 
 	if (m_pScene) m_pScene->AnimateObjects(fTimeElapsed);
 
-	m_pPlayer->Animate(fTimeElapsed, nullptr);
+	m_pPlayer->Animate(fTimeElapsed, NULL);
 }
 
 void CGameFramework::WaitForGpuComplete()
@@ -517,7 +517,7 @@ void CGameFramework::FrameAdvance()
     AnimateObjects();
 
 	HRESULT hResult = m_pd3dCommandAllocator->Reset();
-	hResult = m_pd3dCommandList->Reset(m_pd3dCommandAllocator, nullptr);
+	hResult = m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
 
 	D3D12_RESOURCE_BARRIER d3dResourceBarrier;
 	::ZeroMemory(&d3dResourceBarrier, sizeof(D3D12_RESOURCE_BARRIER));
@@ -533,17 +533,17 @@ void CGameFramework::FrameAdvance()
 	d3dRtvCPUDescriptorHandle.ptr += (m_nSwapChainBufferIndex * gnRtvDescriptorIncrementSize);
 
 	float pfClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
-	m_pd3dCommandList->ClearRenderTargetView(d3dRtvCPUDescriptorHandle, pfClearColor/*Colors::Azure*/, 0, nullptr);
+	m_pd3dCommandList->ClearRenderTargetView(d3dRtvCPUDescriptorHandle, pfClearColor/*Colors::Azure*/, 0, NULL);
 
 	D3D12_CPU_DESCRIPTOR_HANDLE d3dDsvCPUDescriptorHandle = m_pd3dDsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
-	m_pd3dCommandList->ClearDepthStencilView(d3dDsvCPUDescriptorHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
+	m_pd3dCommandList->ClearDepthStencilView(d3dDsvCPUDescriptorHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, NULL);
 
 	m_pd3dCommandList->OMSetRenderTargets(1, &d3dRtvCPUDescriptorHandle, TRUE, &d3dDsvCPUDescriptorHandle);
 
 	if (m_pScene) m_pScene->Render(m_pd3dCommandList, m_pCamera);
 
 #ifdef _WITH_PLAYER_TOP
-	m_pd3dCommandList->ClearDepthStencilView(d3dDsvCPUDescriptorHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
+	m_pd3dCommandList->ClearDepthStencilView(d3dDsvCPUDescriptorHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, NULL);
 #endif
 	if (m_pPlayer) m_pPlayer->Render(m_pd3dCommandList, m_pCamera);
 
@@ -562,9 +562,9 @@ void CGameFramework::FrameAdvance()
 #ifdef _WITH_PRESENT_PARAMETERS
 	DXGI_PRESENT_PARAMETERS dxgiPresentParameters;
 	dxgiPresentParameters.DirtyRectsCount = 0;
-	dxgiPresentParameters.pDirtyRects = nullptr;
-	dxgiPresentParameters.pScrollRect = nullptr;
-	dxgiPresentParameters.pScrollOffset = nullptr;
+	dxgiPresentParameters.pDirtyRects = NULL;
+	dxgiPresentParameters.pScrollRect = NULL;
+	dxgiPresentParameters.pScrollOffset = NULL;
 	m_pdxgiSwapChain->Present1(1, 0, &dxgiPresentParameters);
 #else
 #ifdef _WITH_SYNCH_SWAPCHAIN

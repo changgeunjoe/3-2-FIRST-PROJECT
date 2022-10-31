@@ -40,10 +40,10 @@ protected:
 	D3D12_VIEWPORT					m_d3dViewport;
 	D3D12_RECT						m_d3dScissorRect;
 
-	CPlayer							*m_pPlayer = nullptr;
+	CPlayer							*m_pPlayer = NULL;
 
-	ID3D12Resource					*m_pd3dcbCamera = nullptr;
-	VS_CB_CAMERA_INFO				*m_pcbMappedCamera = nullptr;
+	ID3D12Resource					*m_pd3dcbCamera = NULL;
+	VS_CB_CAMERA_INFO				*m_pcbMappedCamera = NULL;
 
 public:
 	CCamera();
