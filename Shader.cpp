@@ -490,7 +490,8 @@ void CObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 				m_ppObjects[nObjects]->SetChild(pGunshipModel);
 				pGunshipModel->AddRef();
 			}
-			m_ppObjects[nObjects]->SetPosition(RandomPositionInSphere(XMFLOAT3(0.0f, 0.0f, 0.0f), Random(20.0f, 100.0f), h - int(floor(nColumnSize / 2.0f)), nColumnSpace));
+			//m_ppObjects[nObjects]->SetPosition(RandomPositionInSphere(XMFLOAT3(0.0f, 0.0f, 0.0f), Random(20.0f, 100.0f), h - int(floor(nColumnSize / 2.0f)), nColumnSpace));
+			m_ppObjects[nObjects]->SetPosition(560,402,595);
 			m_ppObjects[nObjects]->Rotate(0.0f, 90.0f, 0.0f);
 			m_ppObjects[nObjects++]->PrepareAnimate();
 		}
@@ -570,6 +571,7 @@ void CObjectsShader::AnimateObjects(float fTimeElapsed)
 {
 	for (int j = 0; j < m_nObjects; j++)
 	{
+		if(m_ppObjects)
 		m_ppObjects[j]->Animate(fTimeElapsed);
 	}
 }

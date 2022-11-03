@@ -173,7 +173,7 @@ class CGameObject
 {
 private:
 	int								m_nReferences = 0;
-
+	bool							b_Active = FALSE;
 public:
 	void AddRef();
 	void Release();
@@ -200,7 +200,7 @@ public:
 	CMaterial						**m_ppMaterials = NULL;
 	//CMaterial						*m_pMaterial = NULL;
 
-	bool							b_Active = FALSE;
+	
 	D3D12_GPU_DESCRIPTOR_HANDLE		m_d3dCbvGPUDescriptorHandle;
 
 	BoundingOrientedBox m_xmOOBB;
@@ -221,6 +221,8 @@ protected:
 	XMFLOAT3	m_xmf3Right;
 	XMFLOAT3	m_xmf3Up;
 	XMFLOAT3	m_xmf3Look;
+
+	
 
 public:
 
@@ -244,6 +246,7 @@ public:
 
 	virtual void PrepareAnimate() { }
 	virtual void Animate(float fTimeElapsed, XMFLOAT4X4 *pxmf4x4Parent=NULL);
+	virtual void AnimateObject(float fTimeElapsed);
 
 	virtual void OnPrepareRender() { }
 	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera=NULL);
@@ -297,7 +300,9 @@ public:
 
 	BoundingOrientedBox GetBoundingBox() { return m_xmOOBB; }
 	
-	void Delete();
+	bool GetActive() { return b_Active; };
+	void SetActive(bool Active) { b_Active = Active; }
+	void DeleteMesh();
 
 public:
 	void LoadMaterialsFromFile(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, CGameObject *pParent, FILE *pInFile, CShader *pShader);

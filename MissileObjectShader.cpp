@@ -69,19 +69,19 @@ D3D12_BLEND_DESC CMissileObjectsShader::CreateBlendState()
 	//return(d3dBlendDesc);
 }
 
-void CMissileObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, void* pContext)
+void CMissileObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature)
 {
-	CTexture* ppMissileTextures[1];
-	ppMissileTextures[0] = new CTexture(1, RESOURCE_TEXTURE2D, 0, 1);
-	ppMissileTextures[0]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/stones.dds", RESOURCE_TEXTURE2D, 0);
+	
+	m_pMissileTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0, 1);
+	m_pMissileTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/stones.dds", RESOURCE_TEXTURE2D, 0);
 
-	CMaterial* ppMissileMaterials[1]; //->메테리얼 생성 텍스쳐와 쉐이더를 넣어야되는데 쉐이더이므로 안 넣어도 됨
-	ppMissileMaterials[0] = new CMaterial();
-	ppMissileMaterials[0]->SetTexture(ppMissileTextures[0]);
+	//->메테리얼 생성 텍스쳐와 쉐이더를 넣어야되는데 쉐이더이므로 안 넣어도 됨
+	m_pMissileMaterial = new CMaterial();
+	m_pMissileMaterial->SetTexture(m_pMissileTexture);
 
-	CCubeMeshTextured* pMissileMesh = new CCubeMeshTextured(pd3dDevice, pd3dCommandList, 10.f, 10.5f, 5.f);
+	m_pMissileTexturedMesh = new CCubeMeshTextured(pd3dDevice, pd3dCommandList, 10.f, 10.5f, 5.f);
 
-	m_nObjects++;
+	m_nObjects=10;
 	m_ppObjects = new CGameObject * [m_nObjects];
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 
@@ -89,17 +89,18 @@ void CMissileObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12Graphic
 	CreateCbvSrvDescriptorHeaps(pd3dDevice, m_nObjects, 7);
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 	CreateConstantBufferViews(pd3dDevice, m_nObjects, m_pd3dcbGameObjects, ncbElementBytes);
-	CreateShaderResourceViews(pd3dDevice, ppMissileTextures[0], 0, 11);
+	CreateShaderResourceViews(pd3dDevice, m_pMissileTexture, 0, 11);
 
 	int nObjects = 0;
-	CMissleObject* pMissleObject = NULL;
-	pMissleObject = new CMissleObject();
-	pMissleObject->SetMesh(0, pMissileMesh);
-	pMissleObject->SetMaterial(0, ppMissileMaterials[0]);
-	pMissleObject->SetPosition(0.f, 0.f, 0.f);
-	pMissleObject->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * nObjects));
-	m_ppObjects[nObjects++] = pMissleObject;
-
+	for (int i = 0; i < m_nObjects; i++) {
+		pMissleObject = new CMissleObject();
+		pMissleObject->SetMesh(0, m_pMissileTexturedMesh);
+		pMissleObject->SetMaterial(0, m_pMissileMaterial);
+		pMissleObject->SetPosition(0.f, 0.f, i);
+		pMissleObject->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * nObjects));
+		m_ppObjects[nObjects++] = pMissleObject;
+	}
+	//m_BulletList.push_back(pBullet);
 }
 
 void CMissileObjectsShader::ReleaseUploadBuffers()
@@ -140,18 +141,117 @@ D3D12_SHADER_BYTECODE CMissileObjectsShader::CreatePixelShader()
 {
 	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PSBillBoardTextured", "ps_5_1", &m_pd3dPixelShaderBlob));
 }
+void CMissileObjectsShader::AnimateObjects(float fTimeElapsed)
+{
+	double distance = 0.f;
+	// 플레이어의 총알 리스트를 루프를 통해 순회하면서, 애니메이트 시켜준다.
+	for (int i = 0; i<m_nObjects;i++)
+	{
+		m_ppObjects[i]->AnimateObject(fTimeElapsed);
+		//// 총알이 충돌이라면
+		//if ((m_ppObjects[i]->GetCollision() == true)
+		//{
+		//	// 삭제해야하는 Fire파티클 ID를 넘겨준다.
+		//	//m_pFireParticleShader->SetDeleteFireParticleID(((CBullet*)(*iter))->GetID());
+
+		//	// 마지막에 터지는 파티클을 총알의 위치에 생성
+		////	m_pExplosionParticleShader->Initialize((*iter)->GetPosition());
+
+		//	// 총알 삭제
+		//	delete (*iter);
+		//	iter = m_BulletList.erase(iter);
+		//}
+		//// 충돌된 총알이 아니면
+		// 플레이어 위치와 총알의 위치 거리를 계산하는 공식이다. 
+		distance = sqrt((pow((m_ppObjects[i]->GetPosition().x - m_pPlayer->GetPosition().x), 2.0)
+			+ pow((m_ppObjects[i]->GetPosition().y - m_pPlayer->GetPosition().y), 2.0)
+			+ pow((m_ppObjects[i]->GetPosition().z - m_pPlayer->GetPosition().z), 2.0)));
+
+			// 플레이어와 총알의 거리가 250m보다 커지면, 총알의 유효사거리를 벗어난거므로
+				// 총알을 계속 그리지 않고, 지워주어야 프레임레이트를 올릴 수 있다.
+			if (distance >= MaxBulletDistance)
+			{
+				// 삭제해야하는 Fire파티클 ID를 넘겨준다.
+				//m_pFireParticleShader->SetDeleteFireParticleID(((CBullet*)(*iter))->GetID());
+
+				// 마지막에 터지는 파티클을 총알의 위치에 생성
+				//m_pExplosionParticleShader->Initialize((*iter)->GetPosition());
+
+				// 총알 삭제
+				m_ppObjects[i]->SetActive(false);
+			//	cout << "플레이어 총알 거리벗어남 삭제" << endl;
+			}
+			else
+			{
+				
+			
+			}
+	}
+}
+
+
+bool CMissileObjectsShader::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam,float *fTimeelapsed)
+{
+	switch (nMessageID)
+	{
+	case WM_KEYDOWN:
+		switch (wParam)
+		{
+			// 총알 발사 키
+		case VK_CONTROL:
+		{
+			 
+
+			if (m_pPlayer&& *fTimeelapsed>3)
+			{
+				*fTimeelapsed = 0.3;
+				if (m_MissileCount == 10) {
+					m_MissileCount = 0;
+				}
+				// ID는 1번부터 시작
+				m_ppObjects[m_MissileCount]->SetActive(true);
+				
+				m_ppObjects[m_MissileCount]->SetLook(m_pPlayer->GetLook());
+				// 플레이어의 Up벡터, Right벡터도 똑같이 설정해주어야 플레이어가 회전했을 때,
+				// 총알 모양도 회전이 된 모양으로 바뀐다.
+				m_ppObjects[m_MissileCount]->SetUp(m_pPlayer->GetUpVector());
+				m_ppObjects[m_MissileCount]->SetRight(m_pPlayer->GetRightVector());
+				// 총알의 생성위치는 플레이어의 위치로 설정
+				m_ppObjects[m_MissileCount]->SetPosition(m_pPlayer->GetPosition());
+				m_ppObjects[m_MissileCount]->SetScale(0.2,0.2,1.0);
+				// 총알이 나아가는 방향은 총알이 바라보는 방향으로 준다.
+				m_ppObjects[m_MissileCount]->SetMovingDirection(m_pPlayer->GetLook());
+				//m_BulletList.push_back(pBullet);
+				std::cout << "컨트롤 키 눌림 " << std::endl;
+				m_MissileCount++;
+				//m_pFireParticleShader->Initialize(pBullet, m_BulletCount);
+			}
+			return true;
+		}
+		default:
+			break;
+		}
+		break;
+	default:
+		break;
+	}
+	return(false);
+}
 void CMissileObjectsShader::ReleaseObjects()
 {
 	CObjectsShader::ReleaseObjects();
 }
 
-void CMissileObjectsShader::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera, int pipelinestate)
+void CMissileObjectsShader::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera, int npipelinestate)
 {
-	/*XMFLOAT3 xmf3CameraPosition = pCamera->GetPosition();
+	CShader::Render(pd3dCommandList, pCamera, npipelinestate);
+
 	for (int j = 0; j < m_nObjects; j++)
 	{
-		if (m_ppObjects[j]) m_ppObjects[j]->SetBillboardLookAt(xmf3CameraPosition, XMFLOAT3(0.0f, 1.0f, 0.0f));
-	}*/
-
-	CObjectsShader::Render(pd3dCommandList, pCamera);
+		if (m_ppObjects[j]&& m_ppObjects[j]->GetActive())
+		{
+			m_ppObjects[j]->Animate(0.16f); //->헬기 
+			m_ppObjects[j]->Render(pd3dCommandList, pCamera);
+		}
+	}
 }

@@ -433,6 +433,10 @@ void CGameObject::Animate(float fTimeElapsed, XMFLOAT4X4 *pxmf4x4Parent)
 	if (m_pSibling) m_pSibling->Animate(fTimeElapsed, pxmf4x4Parent);
 	if (m_pChild) m_pChild->Animate(fTimeElapsed, &m_xmf4x4World);
 }
+void CGameObject::AnimateObject(float fTimeElapsed)
+{
+
+}
 
 CGameObject *CGameObject::FindFrame(char *pstrFrameName)
 {
@@ -580,24 +584,24 @@ XMFLOAT3 CGameObject::GetRight()
 void CGameObject::SetLook(XMFLOAT3 value)
 {
 	m_xmf3Look = value;
-	m_xmf4x4World._31 = m_xmf3Look.x;
-	m_xmf4x4World._32 = m_xmf3Look.y;
-	m_xmf4x4World._33 = m_xmf3Look.z;
+	m_xmf4x4Transform._31 = m_xmf3Look.x;
+	m_xmf4x4Transform._32 = m_xmf3Look.y;
+	m_xmf4x4Transform._33 = m_xmf3Look.z;
 }
 
 void CGameObject::SetUp(XMFLOAT3 value)
 {
 	m_xmf3Up = value;
-	m_xmf4x4World._21 = m_xmf3Up.x;
-	m_xmf4x4World._22 = m_xmf3Up.y;
-	m_xmf4x4World._23 = m_xmf3Up.z;
+	m_xmf4x4Transform._21 = m_xmf3Up.x;
+	m_xmf4x4Transform._22 = m_xmf3Up.y;
+	m_xmf4x4Transform._23 = m_xmf3Up.z;
 }
 void CGameObject::SetRight(XMFLOAT3 value)
 {
 	m_xmf3Right = value;
-	m_xmf4x4World._11 = m_xmf3Right.x;
-	m_xmf4x4World._12 = m_xmf3Right.y;
-	m_xmf4x4World._13 = m_xmf3Right.z;
+	m_xmf4x4Transform._11 = m_xmf3Right.x;
+	m_xmf4x4Transform._12 = m_xmf3Right.y;
+	m_xmf4x4Transform._13 = m_xmf3Right.z;
 }
 
 
@@ -907,7 +911,7 @@ CGameObject *CGameObject::LoadGeometryFromFile(ID3D12Device *pd3dDevice, ID3D12G
 	return(pGameObject);
 }
 
-void CGameObject::Delete()
+void CGameObject::DeleteMesh()
 {
 	if (m_pMesh) m_pMesh->Release();
 

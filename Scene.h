@@ -87,6 +87,7 @@ public:
 	CSkyBox								*m_pSkyBox = NULL;
 	CHeightMapTerrain					*m_pTerrain = NULL;
 	CHeightMapTerrain					*m_pWater = NULL;
+	CMissileObjectsShader*				pMissileobjectShader;
 
 	LIGHT								*m_pLights = NULL;
 	int									m_nLights = 0;
@@ -99,6 +100,6 @@ public:
 	ID3D12Resource						*m_pd3dcbTimer = NULL;
 	TIMER								*m_pcbMappedTimer = NULL;
 
-	float								fTimer = 0.3f;
+	float								fTimer = 5.0f;
 	float								fAlPha = 0.3f;
 };

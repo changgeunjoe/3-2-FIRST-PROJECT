@@ -74,27 +74,28 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	//	m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("../Assets/Image/Terrain/HeightMap.raw"), 257, 257, 17, 17, xmf3Scale, xmf4Color);
 #else
 	m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Image/HeightMap.raw"), 257, 257, 257, 257, xmf3Scale, xmf4Color);
-	//	m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("../Assets/Image/Terrain/HeightMap.raw"), 257, 257, 257, 257, xmf3Scale, xmf4Color);
+	//m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("../Assets/Image/Terrain/HeightMap.raw"), 257, 257, 257, 257, xmf3Scale, xmf4Color);
 #endif
 	m_pWater = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Image/HeightMap2.raw"), 257, 257, 257, 257, xmf3Scale, xmf4Color,150);
 	m_pSkyBox = new CSkyBox(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
-	m_nShaders = 1;
+	m_nShaders = 2;
 	m_ppShaders = new CShader*[m_nShaders];
 
-	//CObjectsShader *pObjectsShader = new CObjectsShader();
-	//pObjectsShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	//pObjectsShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, NULL);
-	//m_ppShaders[1] = pObjectsShader;
+	CObjectsShader *pObjectsShader = new CObjectsShader();
+	pObjectsShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	pObjectsShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, NULL);
+	m_ppShaders[1] = pObjectsShader;
 
-	//CBillboardObjectsShader* pBillboardObjectShader = new CBillboardObjectsShader();
-	//pBillboardObjectShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	//pBillboardObjectShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature,m_pTerrain);
-	//m_ppShaders[0] = pBillboardObjectShader;
+	/*CBillboardObjectsShader* pBillboardObjectShader = new CBillboardObjectsShader();
+	pBillboardObjectShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	pBillboardObjectShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature,m_pTerrain);
+	m_ppShaders[2] = pBillboardObjectShader;*/
 
-	CMissileObjectsShader* pMissileobjectShader = new CMissileObjectsShader();
+	pMissileobjectShader = new CMissileObjectsShader();
 	pMissileobjectShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	pMissileobjectShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+//	pMissileobjectShader->SetPlayer(m_pPlayer);
 	m_ppShaders[0] = pMissileobjectShader;
 
 
@@ -456,10 +457,10 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 
 		// ÃÑ¾Ë ¹ß»ç Å°
 		case VK_CONTROL:
-			if (m_pBulletShader && m_pPlayer)
+			if (pMissileobjectShader && m_pPlayer)
 			{
 				//m_pBulletShader->SetParticleShader(m_pFireParticleShader);
-				m_pBulletShader->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
+				pMissileobjectShader->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam,&fTimer);
 			}
 			break;
 		default:
@@ -482,12 +483,11 @@ void CScene::AnimateObjects(float fTimeElapsed)
 	fTimer += fTimeElapsed;
 	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Animate(fTimeElapsed, NULL);
 	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->UpdateTransform(NULL);
-	
-	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->AnimateObjects(fTimeElapsed);
-	
-	if (m_pPlayer&& m_pBulletShader) {
-		m_pBulletShader->SetPlayer(m_pPlayer);
+	if (m_pPlayer&& pMissileobjectShader) {
+		pMissileobjectShader->SetPlayer(m_pPlayer);
 	}
+	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->AnimateObjects(fTimeElapsed);
+
 	if (m_pLights)
 	{
 		m_pLights[1].m_xmf3Position = m_pPlayer->GetPosition();
@@ -510,16 +510,18 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 	D3D12_GPU_VIRTUAL_ADDRESS d3dcbTimerGpuVirtualAddress = m_pd3dcbTimer->GetGPUVirtualAddress();
 	pd3dCommandList->SetGraphicsRootConstantBufferView(14, d3dcbTimerGpuVirtualAddress); //Timer
 
-	//if (m_pSkyBox) m_pSkyBox->Render(pd3dCommandList, pCamera);
+	if (m_pSkyBox) m_pSkyBox->Render(pd3dCommandList, pCamera);
 
 
 
-//	if (m_pTerrain) m_pTerrain->Render(pd3dCommandList, pCamera);
+	if (m_pTerrain) m_pTerrain->Render(pd3dCommandList, pCamera);
 	
-
+	/*if (m_pPlayer && pMissileobjectShader) {
+		pMissileobjectShader->SetPlayer(m_pPlayer);
+	}*/
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->Render(pd3dCommandList, pCamera);
-//	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Render(pd3dCommandList, pCamera);
-//	if (m_pWater) m_pWater->Render(pd3dCommandList, pCamera);
+	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Render(pd3dCommandList, pCamera);
+	if (m_pWater) m_pWater->Render(pd3dCommandList, pCamera);
 
 	
 }
