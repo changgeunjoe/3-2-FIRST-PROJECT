@@ -4,7 +4,8 @@
 
 #include "stdafx.h"
 #include "Player.h"
-#include "Shader.h"
+
+#include "MissileObjectShader.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CPlayer
@@ -39,6 +40,8 @@ CPlayer::~CPlayer()
 	if (m_pCamera) delete m_pCamera;
 
 	if (m_pShader) m_pShader->Release();
+
+	if (m_pMissileShader) m_pMissileShader->Release();
 }
 
 void CPlayer::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
@@ -234,6 +237,7 @@ void CPlayer::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamer
 	if (nCameraMode == THIRD_PERSON_CAMERA)
 	{
 		if (m_pShader) m_pShader->Render(pd3dCommandList, pCamera, 0);
+		//if(m_pMissileShader) m_pMissileShader->Render(pd3dCommandList, pCamera, 0);
 		CGameObject::Render(pd3dCommandList, pCamera);
 	}
 }
@@ -249,8 +253,13 @@ CAirplanePlayer::CAirplanePlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommand
 	m_pShader->CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
 	m_pShader->CreateCbvSrvDescriptorHeaps(pd3dDevice, 0, 1); //Mi24(1)
 
+	
 	CGameObject *pGameObject = CGameObject::LoadGeometryFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/Mi24.bin", m_pShader);
 	SetChild(pGameObject);
+
+	//m_pMissileShader = new CMissileObjectsShader();
+	//m_pMissileShader->CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
+	//m_pMissileShader->BuildObjects(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
 
 	PrepareAnimate();
 

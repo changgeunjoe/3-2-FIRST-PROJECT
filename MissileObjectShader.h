@@ -1,8 +1,10 @@
+
 #pragma once
 #include"stdafx.h"
 #include"Shader.h"
 #include"Missileobject.h"
 #include"Player.h"
+
 
 class CMissileObjectsShader : public CObjectsShader
 {
@@ -13,9 +15,9 @@ public:
 	virtual D3D12_RASTERIZER_DESC CreateRasterizerState();
 	virtual D3D12_BLEND_DESC CreateBlendState();
 
-	void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature );
+	void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature);
 	virtual void ReleaseObjects();
-	 void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera, int pipelinestate);
+	void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera, int pipelinestate);
 
 	virtual void ReleaseUploadBuffers();
 	virtual void CreateShader(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature);
@@ -42,7 +44,7 @@ private:
 	list<CGameObject*>		m_MissileList;
 
 
-	
+
 
 	const double					MaxBulletDistance = 250.f;
 	int						m_MissileCount;

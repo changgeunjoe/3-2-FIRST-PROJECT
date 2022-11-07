@@ -7,6 +7,7 @@
 #include "Shader.h"
 #include "Player.h"
 #include"MissileObjectShader.h"
+#include"MultiSpriteObjectsShader.h"
 #define MAX_LIGHTS			16 
 
 #define POINT_LIGHT			1

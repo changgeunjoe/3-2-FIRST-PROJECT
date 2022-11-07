@@ -19,6 +19,8 @@ private:
 	int									m_nReferences = 0;
 
 protected:
+	bool							m_bActive = true;
+protected:
 	ID3DBlob*							m_pd3dVertexShaderBlob = NULL;//¡§¡° Ω¶¿Ã¥ı 
 	ID3DBlob*							m_pd3dPixelShaderBlob = NULL;//« ºø Ω¶¿Ã¥ı
 
@@ -40,6 +42,8 @@ protected:
 public:
 	void AddRef() { m_nReferences++; }
 	void Release() { if (--m_nReferences <= 0) delete this; }
+
+	void SetActive(bool bActive) { m_bActive = bActive; }
 
 	virtual D3D12_INPUT_LAYOUT_DESC CreateInputLayout();
 	virtual D3D12_RASTERIZER_DESC CreateRasterizerState();

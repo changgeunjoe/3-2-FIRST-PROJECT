@@ -10,6 +10,9 @@
 #include "Object.h"
 #include "Camera.h"
 
+#include"Shader.h"
+
+
 class CPlayer : public CGameObject
 {
 protected:
@@ -32,9 +35,10 @@ protected:
 	LPVOID						m_pCameraUpdatedContext;
 
 	CCamera						*m_pCamera = NULL;
-
+	
 	CShader						*m_pShader = NULL;
 
+	CShader   *m_pMissileShader = NULL;
 public:
 	CPlayer();
 	virtual ~CPlayer();

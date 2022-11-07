@@ -32,6 +32,8 @@ struct MATERIAL
 	XMFLOAT4						m_xmf4Diffuse;
 	XMFLOAT4						m_xmf4Specular; //(r,g,b,a=power)
 	XMFLOAT4						m_xmf4Emissive;
+
+	
 };
 struct CB_GAMEOBJECT_INFO
 {
@@ -41,12 +43,14 @@ struct CB_GAMEOBJECT_INFO
 	XMFLOAT4X4						m_xmf4x4Texture;
 	XMINT2							m_xmi2TextureTiling;
 	XMFLOAT2						m_xmf2TextureOffset;
+	float							g_fDeltaTime;
 };
 
 class CTexture
 {
 public:
 	CTexture(int nTextureResources, UINT nResourceType, int nSamplers, int nRootParameters);
+	CTexture(int nTextureResources, UINT nResourceType, int nSamplers, int nRootParameters, int nRows , int nCols );
 	virtual ~CTexture();
 
 private:
@@ -70,6 +74,9 @@ private:
 
 	int								m_nSamplers = 0;
 	D3D12_GPU_DESCRIPTOR_HANDLE*	m_pd3dSamplerGpuDescriptorHandles = NULL;
+
+	int 							m_nRow = 0;
+	int 							m_nCol = 0;
 public:
 	int 							m_nRows = 1;
 	int 							m_nCols = 1;
@@ -110,6 +117,8 @@ public:
 	D3D12_SHADER_RESOURCE_VIEW_DESC GetShaderResourceViewDesc(int nIndex);
 
 	void ReleaseUploadBuffers();
+
+	void AnimateRowColumn(float fTime = 0.0f);
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -275,7 +284,7 @@ public:
 	{
 		m_xmOOBBTransformed = m_xmOOBB = BoundingOrientedBox(xmCenter, xmExtents, xmOrientation);
 	}
-
+	void SetLookAt(XMFLOAT3& xmf3Target, XMFLOAT3& xmf3Up);
 	XMFLOAT3 GetMovingDirection()					const { return m_xmf3MovingDirection; }
 	void SetMovingDirection(XMFLOAT3 value) { m_xmf3MovingDirection = value; }
 

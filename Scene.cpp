@@ -79,13 +79,13 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_pWater = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Image/HeightMap2.raw"), 257, 257, 257, 257, xmf3Scale, xmf4Color,150);
 	m_pSkyBox = new CSkyBox(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
-	m_nShaders = 2;
+	m_nShaders = 4;
 	m_ppShaders = new CShader*[m_nShaders];
 
 	CObjectsShader *pObjectsShader = new CObjectsShader();
 	pObjectsShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	pObjectsShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, NULL);
-	m_ppShaders[1] = pObjectsShader;
+	m_ppShaders[0] = pObjectsShader;
 
 	/*CBillboardObjectsShader* pBillboardObjectShader = new CBillboardObjectsShader();
 	pBillboardObjectShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
@@ -95,25 +95,25 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	pMissileobjectShader = new CMissileObjectsShader();
 	pMissileobjectShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	pMissileobjectShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-//	pMissileobjectShader->SetPlayer(m_pPlayer);
-	m_ppShaders[0] = pMissileobjectShader;
+	m_ppShaders[2] = pMissileobjectShader;
 
 
-	//C2dUIObjectsShader* p2dUIObjectShader = new C2dUIObjectsShader();
-	//p2dUIObjectShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	//p2dUIObjectShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, m_pTerrain);
-	//m_ppShaders[0] = p2dUIObjectShader;
-	//if (!m_pBulletShader)
-	//{
-	//	m_pBulletShader = new CBulletShader;
-	//	m_pBulletShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	//	m_pBulletShader->BuildObjects(pd3dDevice, pd3dCommandList, NULL);
-	//	m_pBulletShader->SetPlayer(m_pPlayer);
-	//}
+	C2dUIObjectsShader* p2dUIObjectShader = new C2dUIObjectsShader();
+	p2dUIObjectShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	p2dUIObjectShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, m_pTerrain);
+	m_ppShaders[1] = p2dUIObjectShader;
+
+	CMultiSpriteObjectsShader* pMultiSpriteObjectShader = new CMultiSpriteObjectsShader();
+	pMultiSpriteObjectShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	pMultiSpriteObjectShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	pMultiSpriteObjectShader->SetActive(true);
+	m_ppShaders[3] = pMultiSpriteObjectShader;
+
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+
 	
 	
-	//m_ppShaders[0] = m_pBulletShader;
+	
 }
 
 void CScene::ReleaseObjects()
@@ -459,6 +459,7 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 		case VK_CONTROL:
 			if (pMissileobjectShader && m_pPlayer)
 			{
+				std::cout << typeid(VK_CONTROL).name();
 				//m_pBulletShader->SetParticleShader(m_pFireParticleShader);
 				pMissileobjectShader->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam,&fTimer);
 			}

@@ -4,6 +4,12 @@ struct MATERIAL
 	float4					m_cDiffuse;
 	float4					m_cSpecular; //a = power
 	float4					m_cEmissive;
+	
+	
+    //matrix				gmtxTexture;
+    //int2					gi2TextureTiling;
+    //float2				gf2TextureOffset;
+    //float					gf1Deltatime;
 };
 
 cbuffer cbCameraInfo : register(b1)
@@ -24,14 +30,13 @@ cbuffer cbGameObjectInfo : register(b2)
 cbuffer cbChildGameObjectInfo : register(b3)
 {
     matrix gmtxChildGameObject : packoffset(c0);//worldmatrix
-    //MATERIAL gMaterial : packoffset(c4);
+    MATERIAL	gChildMaterial : packoffset(c4);
 };
 
 cbuffer cbTimerinfo : register(b5)
 {
     float Timer;
     float Alpha;
-
 };
 
 #include "Light.hlsl"
@@ -245,6 +250,24 @@ float4 PSBillBoardTextured(VS_TEXTURED_OUTPUT input) : SV_TARGET
 	
     return (cColor);
 }
+VS_TEXTURED_OUTPUT VSSpriteAnimation(VS_TEXTURED_INPUT input)
+{
+    VS_TEXTURED_OUTPUT output;
+
+    output.position = mul(mul(mul(float4(input.position, 1.0f), gmtxChildGameObject), gmtxView), gmtxProjection);
+	//output.uv = mul(float3(input.uv, 1.0f), (float3x3) (gChildMaterial.gmtxTexture)).xy;
+    output.uv = input.uv;
+    return (output);
+}
+float4 PSSpriteAnimation(VS_TEXTURED_OUTPUT input) : SV_TARGET
+{
+    float4 cColor = gtxtTexture.Sample(gWrapSamplerState, input.uv);
+    
+    //cColor.a = Alpha;
+	
+    return (cColor);
+}
+
 
 VS_TEXTURED_OUTPUT VSUITextured(VS_TEXTURED_INPUT input)
 {
