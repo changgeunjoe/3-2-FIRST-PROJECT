@@ -14,9 +14,9 @@ void CMissleObject::AnimateObject(float fElapsedTime)
 {
 	/*cout << "발사" << endl;
 	cout << b_Active << endl;*/
-	//cout << GetActive() << endl;
+	
 	if (GetActive()) {
-		
+		//cout << GetActive() << endl;
 		if (m_fRotationSpeed != 0.0f)
 			Rotate(m_xmf3RotationAxis, m_fRotationSpeed * fElapsedTime);
 		// 총알의 이동속도가 0이 아니면 이동을 한다.

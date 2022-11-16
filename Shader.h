@@ -23,6 +23,7 @@ protected:
 protected:
 	ID3DBlob*							m_pd3dVertexShaderBlob = NULL;//Á¤Á¡ ½¦ÀÌ´õ 
 	ID3DBlob*							m_pd3dPixelShaderBlob = NULL;//ÇÊ¼¿ ½¦ÀÌ´õ
+	ID3DBlob*							m_pd3dGeometeryShaderBlob = NULL;//ÇÊ¼¿ ½¦ÀÌ´õ
 
 	int									m_nPipelineStates = 0;
 	ID3D12PipelineState**				m_ppd3dPipelineStates = NULL;

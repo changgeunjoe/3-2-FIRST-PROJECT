@@ -32,8 +32,13 @@ struct MATERIAL
 	XMFLOAT4						m_xmf4Diffuse;
 	XMFLOAT4						m_xmf4Specular; //(r,g,b,a=power)
 	XMFLOAT4						m_xmf4Emissive;
-
-	
+};
+struct SPRITEANIMATIONMATERIAL
+{
+	XMFLOAT4						m_xmf4Ambient;
+	XMFLOAT4						m_xmf4Diffuse;
+	XMFLOAT4						m_xmf4Specular; //(r,g,b,a=power)
+	XMFLOAT4						m_xmf4Emissive;
 };
 struct CB_GAMEOBJECT_INFO
 {
@@ -255,6 +260,7 @@ public:
 
 	virtual void PrepareAnimate() { }
 	virtual void Animate(float fTimeElapsed, XMFLOAT4X4 *pxmf4x4Parent=NULL);
+//	virtual void Animate(float fTimeElapsed);
 	virtual void AnimateObject(float fTimeElapsed);
 
 	virtual void OnPrepareRender() { }

@@ -1,17 +1,29 @@
+
 struct MATERIAL
 {
-	float4					m_cAmbient;
-	float4					m_cDiffuse;
-	float4					m_cSpecular; //a = power
-	float4					m_cEmissive;
+    float4 m_cAmbient;
+    float4 m_cDiffuse;
+    float4 m_cSpecular; //a = power
+    float4 m_cEmissive;
 	
 	
-    //matrix				gmtxTexture;
-    //int2					gi2TextureTiling;
-    //float2				gf2TextureOffset;
-    //float					gf1Deltatime;
+    //matrix gmtxTexture;
+    //int2 gi2TextureTiling;
+    //float2 gf2TextureOffset;
+    //float gf1Deltatime;
 };
-
+struct SPRITEANIMATIONMATERIAL
+{
+    float4 m_cAmbient;
+    float4 m_cDiffuse;
+    float4 m_cSpecular; //a = power
+    float4 m_cEmissive;
+	
+    matrix				gmtxTexture;
+    int2				gi2TextureTiling;
+    float2				gf2TextureOffset;
+    float				gf1Deltatime;
+};
 cbuffer cbCameraInfo : register(b1)
 {
 	matrix		gmtxView : packoffset(c0);
@@ -30,7 +42,7 @@ cbuffer cbGameObjectInfo : register(b2)
 cbuffer cbChildGameObjectInfo : register(b3)
 {
     matrix gmtxChildGameObject : packoffset(c0);//worldmatrix
-    MATERIAL	gChildMaterial : packoffset(c4);
+    SPRITEANIMATIONMATERIAL gChildMaterial : packoffset(c4);//GMATERIAL
 };
 
 cbuffer cbTimerinfo : register(b5)
@@ -255,8 +267,8 @@ VS_TEXTURED_OUTPUT VSSpriteAnimation(VS_TEXTURED_INPUT input)
     VS_TEXTURED_OUTPUT output;
 
     output.position = mul(mul(mul(float4(input.position, 1.0f), gmtxChildGameObject), gmtxView), gmtxProjection);
-	//output.uv = mul(float3(input.uv, 1.0f), (float3x3) (gChildMaterial.gmtxTexture)).xy;
-    output.uv = input.uv;
+	output.uv = mul(float3(input.uv, 1.0f), (float3x3) (gChildMaterial.gmtxTexture)).xy;
+    //output.uv = input.uv;
     return (output);
 }
 float4 PSSpriteAnimation(VS_TEXTURED_OUTPUT input) : SV_TARGET
@@ -344,5 +356,81 @@ float4 PSWaterTerrain(VS_TERRAIN_OUTPUT input) : SV_TARGET
     float4 cBaseTexColor = gtxtTerrainBaseTexture.Sample(gWrapSamplerState, input.uv);
     float4 cColor = cBaseTexColor;
     cColor.a = 0.3;
+    return (cColor);
+}
+//기하셰이더 빌보드 오브젝트
+Texture2DArray gtxtTextureArray : register(t4);
+
+struct VS_IN
+{
+    float3 posW : POSITION;
+    float2 sizeW : SIZE;
+};
+struct VS_OUT
+{
+    float3 centerW : POSITION;
+    float2 sizeW : SIZE;
+};
+struct GS_OUT
+{
+    float4 posH : SV_POSITION;
+    float3 posW : POSITION;
+    float3 normalW : NORMAL;
+    float2 uv : TEXCOORD;
+    uint primID : SV_PrimitiveID;
+};
+
+VS_OUT VS_Geometry(VS_IN input)
+{
+    VS_OUT output;
+    output.centerW = input.posW;
+    output.sizeW = input.sizeW;
+    return output;
+}
+
+[maxvertexcount(4)]
+void GS_Geometry(point VS_OUT input[1], uint primID : SV_PrimitiveID, inout TriangleStream<GS_OUT> outStream)
+{
+    float3 vUp = float3(0.0f, 1.0f, 0.0f);
+    float3 vLook = gvCameraPosition.xyz - input[0].centerW;
+    vLook = normalize(vLook);
+    float3 vRight = cross(vUp, vLook);
+
+    float fHalfW = input[0].sizeW.x * 0.5f;
+    float fHalfH = input[0].sizeW.y * 0.5f;
+
+	// 사각형 정점들을 월드변환행렬로 변환하고, 그것들을 하나의 삼각형으로 출력
+    float4 pVertices[4];
+    pVertices[0] = float4(input[0].centerW + fHalfW * vRight - fHalfH * vUp, 1.0f);
+    pVertices[1] = float4(input[0].centerW + fHalfW * vRight + fHalfH * vUp, 1.0f);
+    pVertices[2] = float4(input[0].centerW - fHalfW * vRight - fHalfH * vUp, 1.0f);
+    pVertices[3] = float4(input[0].centerW - fHalfW * vRight + fHalfH * vUp, 1.0f);
+
+    float2 pUVs[4] = { float2(0.0f, 1.0f), float2(0.0f, 0.0f), float2(1.0f, 1.0f), float2(1.0f, 0.0f) };
+
+    GS_OUT output;
+    for (int i = 0; i < 4; ++i)
+    {
+        output.posW = pVertices[i].xyz;
+        output.posH = mul(mul(pVertices[i], gmtxView), gmtxProjection);
+        output.normalW = vLook;
+        output.uv = pUVs[i];
+        output.primID = primID;
+
+        outStream.Append(output);
+    }
+}
+
+float4 PS_Geometry(GS_OUT input) : SV_Target
+{
+	//float4 cillumination = Lighting(input.posW, input.normalW);
+	// 텍스처 배열에 텍스처가 3개있음
+    float3 uvw = float3(input.uv, (input.primID % 3));
+    float4 cTexture = gtxtTextureArray.Sample(gWrapSamplerState, uvw);
+	//float4 cTexture = gtxtTexture.Sample(gWrapSamplerState, input.uv);
+	//float4 cColor = cillumination * cTexture;
+    float4 cColor = cTexture;
+	//cColor.a = cTexture.a;
+
     return (cColor);
 }

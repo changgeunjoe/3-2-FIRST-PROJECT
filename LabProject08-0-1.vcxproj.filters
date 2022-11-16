@@ -49,6 +49,9 @@
     <Filter Include="Object\MultiSpriteObject">
       <UniqueIdentifier>{1bcb1e07-8a97-4a33-9783-a8d0341aaef2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader\GSBillBoardShader">
+      <UniqueIdentifier>{ec151bba-ddd3-49e0-b14a-63fe216c4809}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -70,9 +73,6 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Scene.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Shader.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Timer.h">
@@ -110,6 +110,12 @@
     </ClInclude>
     <ClInclude Include="CMultiSpriteObject.h">
       <Filter>Object\MultiSpriteObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GSBillBoardShader.h">
+      <Filter>Shader\GSBillBoardShader</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Shader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -166,6 +172,9 @@
     </ClCompile>
     <ClCompile Include="CMultiSpriteObject.cpp">
       <Filter>Object\MultiSpriteObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GSBillBoardShader.cpp">
+      <Filter>Shader\GSBillBoardShader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

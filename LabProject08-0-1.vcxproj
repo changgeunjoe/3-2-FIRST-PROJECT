@@ -151,6 +151,7 @@
     <ClInclude Include="DDSTextureLoader12.h" />
     <ClInclude Include="CMultiSpriteObject.h" />
     <ClInclude Include="GameFramework.h" />
+    <ClInclude Include="GSBillBoardShader.h" />
     <ClInclude Include="LabProject08-0-1.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Missileobject.h" />
@@ -173,6 +174,7 @@
     <ClCompile Include="DDSTextureLoader12.cpp" />
     <ClCompile Include="CMultiSpriteObject.cpp" />
     <ClCompile Include="GameFramework.cpp" />
+    <ClCompile Include="GSBillBoardShader.cpp" />
     <ClCompile Include="LabProject08-0-1.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Missileobject.cpp" />

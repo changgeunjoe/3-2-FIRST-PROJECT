@@ -85,7 +85,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	CObjectsShader *pObjectsShader = new CObjectsShader();
 	pObjectsShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	pObjectsShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, NULL);
-	m_ppShaders[0] = pObjectsShader;
+	m_ppShaders[3] = pObjectsShader;
 
 	/*CBillboardObjectsShader* pBillboardObjectShader = new CBillboardObjectsShader();
 	pBillboardObjectShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
@@ -107,7 +107,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	pMultiSpriteObjectShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	pMultiSpriteObjectShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	pMultiSpriteObjectShader->SetActive(true);
-	m_ppShaders[3] = pMultiSpriteObjectShader;
+	m_ppShaders[0] = pMultiSpriteObjectShader;
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 

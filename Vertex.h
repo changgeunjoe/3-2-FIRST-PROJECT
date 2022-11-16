@@ -46,3 +46,14 @@ public:
 	CDiffusedTexturedVertex(XMFLOAT3 xmf3Position, XMFLOAT4 xmf4Diffuse = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f), XMFLOAT2 xmf2TexCoord = XMFLOAT2(0.0f, 0.0f)) { m_xmf3Position = xmf3Position; m_xmf4Diffuse = xmf4Diffuse; m_xmf2TexCoord = xmf2TexCoord; }
 	~CDiffusedTexturedVertex() { }
 };
+
+class CBillboardVertex : public CVertex
+{
+public:
+	CBillboardVertex();
+	CBillboardVertex(XMFLOAT3 xmf3Position, XMFLOAT2 xmf2Size);
+	CBillboardVertex(float x, float y, float z, XMFLOAT2 xmf2Size);
+	~CBillboardVertex();
+
+	XMFLOAT2 m_xmf2Size;
+};

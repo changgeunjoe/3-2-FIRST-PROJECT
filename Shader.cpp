@@ -1261,8 +1261,7 @@ void CBulletShader::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommand
 
 	int i = 0;
 	for (auto iter = m_BulletList.begin(); iter != m_BulletList.end(); ++iter)
-	{
-		
+	{		
 		CB_GAMEOBJECT_INFO* pbMappedcbGameObject = (CB_GAMEOBJECT_INFO*)((UINT8*)m_pcbMappedGameObjects + (i * ncbElementBytes));
 		XMStoreFloat4x4(&pbMappedcbGameObject->m_xmf4x4World, XMMatrixTranspose(XMLoadFloat4x4(&(*iter)->m_xmf4x4World)));
 		i++;
