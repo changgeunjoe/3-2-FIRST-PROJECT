@@ -52,6 +52,21 @@
     <Filter Include="Shader\GSBillBoardShader">
       <UniqueIdentifier>{ec151bba-ddd3-49e0-b14a-63fe216c4809}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Object\Item">
+      <UniqueIdentifier>{8ea6bb5c-e441-4360-a205-0473bca881a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\HealObjectShader">
+      <UniqueIdentifier>{127d9604-544d-4f46-9f32-eced6c5c56d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\PaticleShader">
+      <UniqueIdentifier>{e4065617-31bb-4e43-ae00-0a8e99885d47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\ParticleObject">
+      <UniqueIdentifier>{0810afd3-2a15-436c-a8fd-8ab879db5999}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mesh\ParticleMesh">
+      <UniqueIdentifier>{0312042e-38bd-4a50-a1bd-6aea154e8a04}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -117,6 +132,21 @@
     <ClInclude Include="Shader.h">
       <Filter>Shader</Filter>
     </ClInclude>
+    <ClInclude Include="ItemObject.h">
+      <Filter>Object\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="HealObjectShader.h">
+      <Filter>Shader\HealObjectShader</Filter>
+    </ClInclude>
+    <ClInclude Include="PaticleShader.h">
+      <Filter>Shader\PaticleShader</Filter>
+    </ClInclude>
+    <ClInclude Include="CParticleObject.h">
+      <Filter>Object\ParticleObject</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleMesh.h">
+      <Filter>Mesh\ParticleMesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LabProject08-0-1.cpp">
@@ -176,6 +206,21 @@
     <ClCompile Include="GSBillBoardShader.cpp">
       <Filter>Shader\GSBillBoardShader</Filter>
     </ClCompile>
+    <ClCompile Include="ItemObject.cpp">
+      <Filter>Object\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="HealObjectShader.cpp">
+      <Filter>Shader\HealObjectShader</Filter>
+    </ClCompile>
+    <ClCompile Include="PaticleShader.cpp">
+      <Filter>Shader\PaticleShader</Filter>
+    </ClCompile>
+    <ClCompile Include="CParticleObject.cpp">
+      <Filter>Object\ParticleObject</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleMesh.cpp">
+      <Filter>Mesh\ParticleMesh</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="LabProject08-0-1.rc">
@@ -195,6 +240,9 @@
       <Filter>Shader\HLSL</Filter>
     </FxCompile>
     <FxCompile Include="Light.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="GeometryShader.hlsl">
       <Filter>Shader\HLSL</Filter>
     </FxCompile>
   </ItemGroup>

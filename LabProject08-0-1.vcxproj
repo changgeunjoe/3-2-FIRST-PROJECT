@@ -148,16 +148,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CParticleObject.h" />
     <ClInclude Include="DDSTextureLoader12.h" />
     <ClInclude Include="CMultiSpriteObject.h" />
     <ClInclude Include="GameFramework.h" />
     <ClInclude Include="GSBillBoardShader.h" />
+    <ClInclude Include="HealObjectShader.h" />
+    <ClInclude Include="ItemObject.h" />
     <ClInclude Include="LabProject08-0-1.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Missileobject.h" />
     <ClInclude Include="MissileObjectShader.h" />
     <ClInclude Include="MultiSpriteObjectsShader.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="ParticleMesh.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Scene.h" />
@@ -168,6 +172,7 @@
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="WICTextureLoader12.h" />
+    <ClInclude Include="PaticleShader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
@@ -175,12 +180,15 @@
     <ClCompile Include="CMultiSpriteObject.cpp" />
     <ClCompile Include="GameFramework.cpp" />
     <ClCompile Include="GSBillBoardShader.cpp" />
+    <ClCompile Include="HealObjectShader.cpp" />
+    <ClCompile Include="ItemObject.cpp" />
     <ClCompile Include="LabProject08-0-1.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Missileobject.cpp" />
     <ClCompile Include="MissileObjectShader.cpp" />
     <ClCompile Include="MultiSpriteObjectsShader.cpp" />
     <ClCompile Include="Object.cpp" />
+    <ClCompile Include="ParticleMesh.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="ServerError.cpp" />
@@ -194,6 +202,8 @@
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="WICTextureLoader12.cpp" />
+    <ClCompile Include="PaticleShader.cpp" />
+    <ClCompile Include="CParticleObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="LabProject08-0-1.rc" />
@@ -203,6 +213,17 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="GeometryShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="Light.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>

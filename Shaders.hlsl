@@ -28,8 +28,9 @@ cbuffer cbCameraInfo : register(b1)
 {
 	matrix		gmtxView : packoffset(c0);
 	matrix		gmtxProjection : packoffset(c4);
-	float3		gvCameraPosition : packoffset(c8);
-   // matrix		gmtxidentityView : packoffset(c12);
+    matrix   gmtxInverseView : packoffset(c8);
+	float3		gvCameraPosition : packoffset(c12);
+   
 };
 
 cbuffer cbGameObjectInfo : register(b2)
@@ -51,6 +52,16 @@ cbuffer cbTimerinfo : register(b5)
     float Alpha;
 };
 
+cbuffer cbFrameworkInfo : register(b7)
+{
+    float gfCurrentTime : packoffset(c0.x);
+    float gfElapsedTime : packoffset(c0.y);
+    float gfSecondsPerFirework : packoffset(c0.z);
+    int gnFlareParticlesToEmit : packoffset(c0.w);
+    float3 gf3Gravity : packoffset(c1.x);
+    int gnMaxFlareType2Particles : packoffset(c1.w);
+};
+
 #include "Light.hlsl"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -68,6 +79,9 @@ cbuffer cbTimerinfo : register(b5)
 #define _WITH_STANDARD_TEXTURE_MULTIPLE_DESCRIPTORS
 
 #ifdef _WITH_STANDARD_TEXTURE_MULTIPLE_DESCRIPTORS
+Texture2D gtxtTexture : register(t0);
+Texture2D gtxtTerrainBaseTexture : register(t1);
+Texture2DArray gtxtTextureArray : register(t4);
 Texture2D gtxtAlbedoTexture : register(t6);
 Texture2D gtxtSpecularTexture : register(t7);
 Texture2D gtxtNormalTexture : register(t8);
@@ -75,12 +89,19 @@ Texture2D gtxtMetallicTexture : register(t9);
 Texture2D gtxtEmissionTexture : register(t10);
 Texture2D gtxtDetailAlbedoTexture : register(t11);
 Texture2D gtxtDetailNormalTexture : register(t12);
+TextureCube gtxtSkyCubeTexture : register(t13);
+Texture2D<float4> gtxtParticleTexture : register(t14);
+//Texture1D<float4> gtxtRandom : register(t2);
+Buffer<float4> gRandomBuffer : register(t15);
+Buffer<float4> gRandomSphereBuffer : register(t16);
 #else
 Texture2D gtxtStandardTextures[7] : register(t6);
 #endif
 
 SamplerState gWrapSamplerState : register(s0);
 SamplerState gClampSamplerState : register(s1);
+SamplerState gMirrorSamplerState : register(s2);
+SamplerState gPointSamplerState : register(s3);
 
 struct VS_STANDARD_INPUT
 {
@@ -175,7 +196,7 @@ VS_SKYBOX_CUBEMAP_OUTPUT VSSkyBox(VS_SKYBOX_CUBEMAP_INPUT input)
 	return(output);
 }
 
-TextureCube gtxtSkyCubeTexture : register(t13);
+
 
 float4 PSSkyBox(VS_SKYBOX_CUBEMAP_OUTPUT input) : SV_TARGET
 {
@@ -229,7 +250,7 @@ float4 PSTextured(VS_SPRITE_TEXTURED_OUTPUT input, uint nPrimitiveID : SV_Primit
 	return(cColor);
 }
 */
-Texture2D gtxtTexture : register(t0);
+
 
 
 struct VS_TEXTURED_INPUT
@@ -305,7 +326,7 @@ float4 PSUITextured(VS_TEXTURED_OUTPUT input) : SV_TARGET
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-Texture2D gtxtTerrainBaseTexture : register(t1);
+
 
 struct VS_TERRAIN_INPUT
 {
@@ -359,7 +380,7 @@ float4 PSWaterTerrain(VS_TERRAIN_OUTPUT input) : SV_TARGET
     return (cColor);
 }
 //기하셰이더 빌보드 오브젝트
-Texture2DArray gtxtTextureArray : register(t4);
+
 
 struct VS_IN
 {
@@ -389,7 +410,7 @@ VS_OUT VS_Geometry(VS_IN input)
 }
 
 [maxvertexcount(4)]
-void GS_Geometry(point VS_OUT input[1], uint primID : SV_PrimitiveID, inout TriangleStream<GS_OUT> outStream)
+void GS(point VS_OUT input[1], uint primID : SV_PrimitiveID, inout TriangleStream<GS_OUT> outStream)
 {
     float3 vUp = float3(0.0f, 1.0f, 0.0f);
     float3 vLook = gvCameraPosition.xyz - input[0].centerW;

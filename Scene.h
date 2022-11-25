@@ -8,6 +8,8 @@
 #include "Player.h"
 #include"MissileObjectShader.h"
 #include"MultiSpriteObjectsShader.h"
+#include"GSBillBoardShader.h"
+#include"CParticleObject.h"
 #define MAX_LIGHTS			16 
 
 #define POINT_LIGHT			1
@@ -70,11 +72,17 @@ public:
     void AnimateObjects(float fTimeElapsed);
     void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera=NULL);
 
+	void RenderParticle(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
+	void OnPostRenderParticle();
+
 	void ReleaseUploadBuffers();
+	void CheckObjectByObjectCollisions(float ftimeelapsed);
 	CHeightMapTerrain* GetTerrain() { return(m_pTerrain); }
 
 	CPlayer								*m_pPlayer = NULL;
 	CBulletShader						*m_pBulletShader{ NULL };
+
+	CObjectsShader                      *pObjectsShader;
 
 public:
 	ID3D12RootSignature					*m_pd3dGraphicsRootSignature = NULL;
@@ -83,13 +91,18 @@ public:
 	CGameObject							**m_ppGameObjects = NULL;
 
 	int									m_nShaders = 0;
+	
+	int								m_nParticleObjects = 0;
+	CParticleObject** m_ppParticleObjects = NULL;
+
+
 	CShader								**m_ppShaders = NULL;
 
 	CSkyBox								*m_pSkyBox = NULL;
 	CHeightMapTerrain					*m_pTerrain = NULL;
 	CHeightMapTerrain					*m_pWater = NULL;
 	CMissileObjectsShader*				pMissileobjectShader;
-
+	CMultiSpriteObjectsShader    * pMultiSpriteObjectShader;
 	LIGHT								*m_pLights = NULL;
 	int									m_nLights = 0;
 
@@ -103,4 +116,5 @@ public:
 
 	float								fTimer = 5.0f;
 	float								fAlPha = 0.3f;
+	float								CollisionTimer = 0.0f;
 };

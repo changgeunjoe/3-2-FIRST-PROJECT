@@ -92,6 +92,17 @@ public:
 	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, int nSubSet);
 	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList);
 
+	virtual void CreateVertexBuffer(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList,
+		XMFLOAT3 xmf3Position, XMFLOAT3 xmf3Velocity, float fLifetime, XMFLOAT3 xmf3Acceleration, XMFLOAT3 xmf3Color, XMFLOAT2 xmf2Size) {};
+	virtual void CreateStreamOutputBuffer(ID3D12Device* pd3dDevice,
+		ID3D12GraphicsCommandList* pd3dCommandList, UINT nMaxParticles) {};
+
+	virtual void PreRender(ID3D12GraphicsCommandList* pd3dCommandList, int nPipelineState) {};
+	//virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, int nPipelineState) {};
+	virtual void PostRender(ID3D12GraphicsCommandList* pd3dCommandList, int nPipelineState) {};
+
+	virtual void OnPostRender(int nPipelineState) {};
+
 	BoundingOrientedBox GetBoundingBox() { return m_xmOOBB; }
 };
 

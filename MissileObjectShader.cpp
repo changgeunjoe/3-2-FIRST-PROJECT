@@ -87,7 +87,7 @@ void CMissileObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12Graphic
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 
 	//	CreateShader(pd3dDevice,  pd3dCommandList,pd3dGraphicsRootSignature);
-	CreateCbvSrvDescriptorHeaps(pd3dDevice, m_nObjects, 7);
+	CreateCbvSrvDescriptorHeaps(pd3dDevice, m_nObjects, 10);
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 	CreateConstantBufferViews(pd3dDevice, m_nObjects, m_pd3dcbGameObjects, ncbElementBytes);
 	CreateShaderResourceViews(pd3dDevice, m_pMissileTexture, 0, 11);
@@ -97,6 +97,7 @@ void CMissileObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12Graphic
 		pMissleObject = new CMissleObject();
 		pMissleObject->SetMesh(0, m_pMissileTexturedMesh);
 		pMissleObject->SetMaterial(0, m_pMissileMaterial);
+		pMissleObject->SetActive(false);
 		pMissleObject->SetPosition(0.f, 0.f, i);
 		pMissleObject->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * nObjects));
 		m_ppObjects[nObjects++] = pMissleObject;
@@ -201,8 +202,6 @@ bool CMissileObjectsShader::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessage
 			// 총알 발사 키
 		case VK_CONTROL:
 		{
-			 
-
 			if (m_pPlayer&& *fTimeelapsed>3)
 			{
 				*fTimeelapsed = 0.3;
@@ -211,7 +210,6 @@ bool CMissileObjectsShader::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessage
 				}
 				// ID는 1번부터 시작
 				m_ppObjects[m_MissileCount]->SetActive(true);
-				
 				m_ppObjects[m_MissileCount]->SetLook(m_pPlayer->GetLook());
 				// 플레이어의 Up벡터, Right벡터도 똑같이 설정해주어야 플레이어가 회전했을 때,
 				// 총알 모양도 회전이 된 모양으로 바뀐다.

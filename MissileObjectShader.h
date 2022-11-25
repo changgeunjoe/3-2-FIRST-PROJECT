@@ -29,7 +29,7 @@ public:
 	bool OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam, float* fTimeelpased);
 	void AnimateObjects(float fTimeElapsed);
 	void SetPlayer(CPlayer* pPlayer) { m_pPlayer = pPlayer; };
-
+	CMissleObject* pMissleObject = NULL;
 private:
 
 
@@ -40,10 +40,8 @@ private:
 	CTexture* m_pMissileTexture{ NULL };
 	CMaterial* m_pMissileMaterial{ NULL };
 	CPlayer* m_pPlayer{ NULL };
-	CMissleObject* pMissleObject = NULL;
+
 	list<CGameObject*>		m_MissileList;
-
-
 
 
 	const double					MaxBulletDistance = 250.f;
