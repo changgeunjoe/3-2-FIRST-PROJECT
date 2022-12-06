@@ -708,7 +708,6 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 		pMissileobjectShader->SetPlayer(m_pPlayer);
 	}*/
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->Render(pd3dCommandList, pCamera);
-	//if (m_ppShaders[6]) m_ppShaders[6]->Render(pd3dCommandList, pCamera,1);
 //	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Render(pd3dCommandList, pCamera);
 	//if (m_pWater) m_pWater->Render(pd3dCommandList, pCamera);
 	for (int i = 0; i < 10; i++) {
@@ -726,7 +725,7 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 	{
 		m_ppEnvironmentMappingShaders[i]->Render(pd3dCommandList, pCamera);
 	}
-	
+
 	//if (m_ppShaders[0])
 	//{
 	//	m_pOutlineShader->UpdateShaderVariable(pd3dCommandList);
