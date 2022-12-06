@@ -81,7 +81,7 @@ void CMissileObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12Graphic
 	m_pMissileMaterial->SetTexture(m_pMissileTexture);
 
 	m_pMissileTexturedMesh = new CCubeMeshTextured(pd3dDevice, pd3dCommandList, 10.f, 10.5f, 5.f);
-
+	CMesh* pMeshIlluminated = new CSphereMeshIlluminated(pd3dDevice, pd3dCommandList, 100.0f, 20, 20);
 	m_nObjects=10;
 	m_ppObjects = new CGameObject * [m_nObjects];
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
@@ -95,7 +95,7 @@ void CMissileObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12Graphic
 	int nObjects = 0;
 	for (int i = 0; i < m_nObjects; i++) {
 		pMissleObject = new CMissleObject();
-		pMissleObject->SetMesh(0, m_pMissileTexturedMesh);
+		pMissleObject->SetMesh(0, pMeshIlluminated);
 		pMissleObject->SetMaterial(0, m_pMissileMaterial);
 		pMissleObject->SetActive(false);
 		pMissleObject->SetPosition(0.f, 0.f, i);

@@ -168,7 +168,12 @@ ID3D12Resource* CTexture::CreateTexture(ID3D12Device* pd3dDevice, ID3D12Graphics
 	m_ppd3dTextures[nIndex] = ::CreateTexture2DResource(pd3dDevice, pd3dCommandList, nWidth, nHeight, nElements, nMipLevels, dxgiFormat, d3dResourceFlags, d3dResourceStates, pd3dClearValue);
 	return(m_ppd3dTextures[nIndex]);
 }
-
+ID3D12Resource* CTexture::CreateTexture(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, UINT nWidth, UINT nHeight, UINT nElements, UINT nMipLevels, DXGI_FORMAT dxgiFormat, D3D12_RESOURCE_FLAGS d3dResourceFlags, D3D12_RESOURCE_STATES d3dResourceStates, D3D12_CLEAR_VALUE* pd3dClearValue, UINT nResourceType, UINT nIndex)
+{
+	m_pnResourceTypes[nIndex] = nResourceType;
+	m_ppd3dTextures[nIndex] = ::CreateTexture2DResource(pd3dDevice, pd3dCommandList, nWidth, nHeight, nElements, nMipLevels, dxgiFormat, d3dResourceFlags, d3dResourceStates, pd3dClearValue);
+	return(m_ppd3dTextures[nIndex]);
+}
 int CTexture::LoadTextureFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, CGameObject* pParent, FILE* pInFile, CShader* pShader, UINT nIndex)
 {
 	char pstrTextureName[64] = { '\0' };
@@ -449,6 +454,8 @@ void CGameObject::SetChild(CGameObject *pChild)
 	}
 }
 
+
+
 void CGameObject::SetMesh(CMesh *pMesh)
 {
 	if (m_pMesh) m_pMesh->Release();
@@ -487,6 +494,46 @@ void CGameObject::SetMaterial(int nMaterial, CMaterial *pMaterial)
 	if (m_ppMaterials[nMaterial]) m_ppMaterials[nMaterial]->Release();
 	m_ppMaterials[nMaterial] = pMaterial;
 	if (m_ppMaterials[nMaterial]) m_ppMaterials[nMaterial]->AddRef();
+}
+
+void CGameObject::SetAlbedoColor(UINT nIndex, XMFLOAT4 xmf4Color)
+{
+	if ((nIndex >= 0) && (nIndex < m_nMaterials))
+	{
+		if (!m_ppMaterials[nIndex])
+		{
+			m_ppMaterials[nIndex] = new CMaterial();
+			m_ppMaterials[nIndex]->AddRef();
+		}
+		m_ppMaterials[nIndex]->SetAlbedoColor(xmf4Color);
+	}
+}
+
+void CGameObject::SetMaterial(UINT nIndex, UINT nReflection)
+{
+	if ((nIndex >= 0) && (nIndex < m_nMaterials))
+	{
+		if (!m_ppMaterials[nIndex])
+		{
+			m_ppMaterials[nIndex] = new CMaterial();
+			m_ppMaterials[nIndex]->AddRef();
+		}
+		m_ppMaterials[nIndex]->m_nMaterial = nReflection;
+	}
+}
+
+
+void CGameObject::SetEmissionColor(UINT nIndex, XMFLOAT4 xmf4Color)
+{
+	if ((nIndex >= 0) && (nIndex < m_nMaterials))
+	{
+		if (!m_ppMaterials[nIndex])
+		{
+			m_ppMaterials[nIndex] = new CMaterial();
+			m_ppMaterials[nIndex]->AddRef();
+		}
+		m_ppMaterials[nIndex]->SetEmissionColor(xmf4Color);
+	}
 }
 
 void CGameObject::Animate(float fTimeElapsed, XMFLOAT4X4 *pxmf4x4Parent)
@@ -549,6 +596,7 @@ void CGameObject::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12Graphics
 void CGameObject::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList)
 {
 	XMStoreFloat4x4(&m_pcbMappedGameObject->m_xmf4x4World, XMMatrixTranspose(XMLoadFloat4x4(&m_xmf4x4World)));
+	
 }
 
 void CGameObject::UpdateShaderVariable(ID3D12GraphicsCommandList *pd3dCommandList, XMFLOAT4X4 *pxmf4x4World)
@@ -589,6 +637,11 @@ void CGameObject::ReleaseUploadBuffers()
 
 	if (m_pSibling) m_pSibling->ReleaseUploadBuffers();
 	if (m_pChild) m_pChild->ReleaseUploadBuffers();
+}
+
+void CGameObject::OnPreRender(ID3D12GraphicsCommandList* pd3dCommandList, CScene* pScene)
+{
+
 }
 
 void CGameObject::UpdateTransform(XMFLOAT4X4 *pxmf4x4Parent)

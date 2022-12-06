@@ -80,13 +80,13 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_pWater = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Image/HeightMap2.raw"), 257, 257, 257, 257, xmf3Scale, xmf4Color,150);
 	m_pSkyBox = new CSkyBox(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
-	m_nShaders = 5;
+	m_nShaders = 6;
 	m_ppShaders = new CShader*[m_nShaders];
 
 	pObjectsShader = new CObjectsShader();
 	pObjectsShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	pObjectsShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, NULL);
-	m_ppShaders[3] = pObjectsShader;
+	m_ppShaders[0] = pObjectsShader;
 
 
 	/*CGSBillboardObjectsShader* pGSBillboardObjectShader = new CGSBillboardObjectsShader();
@@ -96,7 +96,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	CBillboardObjectsShader* pBillboardObjectShader = new CBillboardObjectsShader();
 	pBillboardObjectShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	pBillboardObjectShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature,m_pTerrain);
-	pBillboardObjectShader->SetActive(true);
+	pBillboardObjectShader->SetActive(false);
 	m_ppShaders[4] = pBillboardObjectShader;
 
 	pMissileobjectShader = new CMissileObjectsShader();
@@ -109,25 +109,43 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	C2dUIObjectsShader* p2dUIObjectShader = new C2dUIObjectsShader();
 	p2dUIObjectShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	p2dUIObjectShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, m_pTerrain);
+	p2dUIObjectShader->SetActive(false);
 	m_ppShaders[1] = p2dUIObjectShader;
 
 	pMultiSpriteObjectShader = new CMultiSpriteObjectsShader();
 	pMultiSpriteObjectShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	pMultiSpriteObjectShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	pMultiSpriteObjectShader->SetActive(false);
-	m_ppShaders[0] = pMultiSpriteObjectShader;
+	m_ppShaders[3] = pMultiSpriteObjectShader;
 
 	m_nParticleObjects = 1;
 
 	m_ppParticleObjects = new CParticleObject * [m_nParticleObjects];
 
-
-
 	m_ppParticleObjects[0] = new CParticleObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 65.0f, 0.0f), 0.0f, XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 0.0f, 0.0f), XMFLOAT2(8.0f, 8.0f), MAX_PARTICLES);
+	
+	m_nEnvironmentMappingShaders = 1;
+	m_ppEnvironmentMappingShaders = new CDynamicCubeMappingShader * [m_nEnvironmentMappingShaders];
+
+	m_ppEnvironmentMappingShaders[0] = new CDynamicCubeMappingShader(256);
+	m_ppEnvironmentMappingShaders[0]->CreateShader(pd3dDevice, pd3dCommandList,m_pd3dGraphicsRootSignature);
+	m_ppEnvironmentMappingShaders[0]->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
+	CSceneShader* pSceneShader = new CSceneShader();
+	pSceneShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	pSceneShader->BuildObjects(pd3dDevice, pd3dCommandList, "Models/Scene.bin");
+	m_ppShaders[5] = pSceneShader;
+
+	
+
+	m_pOutlineShader = new COutlineShader();
+	m_pOutlineShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	m_pOutlineShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
+	//m_pOutlineShader->pObjectsShader = pObjectsShader;
+
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
-	
-	
+
 	
 }
 
@@ -146,6 +164,12 @@ void CScene::ReleaseObjects()
 		delete[] m_ppShaders;
 	}
 
+	if (m_pOutlineShader)
+	{
+		m_pOutlineShader->ReleaseShaderVariables();
+		delete m_pOutlineShader;
+	}
+
 	if (m_pSkyBox)	delete m_pSkyBox;
 	if (m_pTerrain) delete m_pTerrain;
 	if (m_pWater)	delete	m_pWater;
@@ -161,6 +185,17 @@ void CScene::ReleaseObjects()
 	}
 	ReleaseShaderVariables();
 
+
+	if (m_ppEnvironmentMappingShaders)
+	{
+		for (int i = 0; i < m_nEnvironmentMappingShaders; i++)
+		{
+			m_ppEnvironmentMappingShaders[i]->ReleaseShaderVariables();
+			m_ppEnvironmentMappingShaders[i]->ReleaseObjects();
+			m_ppEnvironmentMappingShaders[i]->Release();
+		}
+		delete[] m_ppEnvironmentMappingShaders;
+	}
 	if (m_pLights) delete[] m_pLights;
 }
 
@@ -169,7 +204,7 @@ ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevic
 	ID3D12RootSignature *pd3dGraphicsRootSignature = NULL;
 
 #ifdef _WITH_STANDARD_TEXTURE_MULTIPLE_DESCRIPTORS
-	D3D12_DESCRIPTOR_RANGE pd3dDescriptorRanges[15];
+	D3D12_DESCRIPTOR_RANGE pd3dDescriptorRanges[16];
 	//vector<D3D12_DESCRIPTOR_RANGE>
 	pd3dDescriptorRanges[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 	pd3dDescriptorRanges[0].NumDescriptors = 1;
@@ -261,7 +296,14 @@ ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevic
 	pd3dDescriptorRanges[14].RegisterSpace = 0;
 	pd3dDescriptorRanges[14].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-	D3D12_ROOT_PARAMETER pd3dRootParameters[20];
+	pd3dDescriptorRanges[15].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+	pd3dDescriptorRanges[15].NumDescriptors = 1;
+	pd3dDescriptorRanges[15].BaseShaderRegister = 17; //t17: gtxtRandomOnSphereTexture
+	pd3dDescriptorRanges[15].RegisterSpace = 0;
+	pd3dDescriptorRanges[15].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+	
+	D3D12_ROOT_PARAMETER pd3dRootParameters[22];
 
 	pd3dRootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	pd3dRootParameters[0].Descriptor.ShaderRegister = 1; //Camera
@@ -364,6 +406,18 @@ ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevic
 	pd3dRootParameters[19].DescriptorTable.pDescriptorRanges = &pd3dDescriptorRanges[14]; //t16: gtxtRandomOnSphereTexture
 	pd3dRootParameters[19].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
+	pd3dRootParameters[20].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	pd3dRootParameters[20].DescriptorTable.NumDescriptorRanges = 1;
+	pd3dRootParameters[20].DescriptorTable.pDescriptorRanges = &pd3dDescriptorRanges[15]; //t17: gtxtRandomOnSphereTexture
+	pd3dRootParameters[20].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
+	pd3dRootParameters[21].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	pd3dRootParameters[21].Descriptor.ShaderRegister = 8; //Framework Info
+	pd3dRootParameters[21].Descriptor.RegisterSpace = 0;
+	pd3dRootParameters[21].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
+
+
 #else
 	D3D12_DESCRIPTOR_RANGE pd3dDescriptorRanges[2];
 
@@ -424,9 +478,9 @@ ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevic
 	pd3dSamplerDescs[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
 	pd3dSamplerDescs[1].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
-	pd3dSamplerDescs[1].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	pd3dSamplerDescs[1].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	pd3dSamplerDescs[1].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	pd3dSamplerDescs[1].AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+	pd3dSamplerDescs[1].AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+	pd3dSamplerDescs[1].AddressW = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
 	pd3dSamplerDescs[1].MipLODBias = 0;
 	pd3dSamplerDescs[1].MaxAnisotropy = 1;
 	pd3dSamplerDescs[1].ComparisonFunc = D3D12_COMPARISON_FUNC_ALWAYS;
@@ -529,7 +583,7 @@ void CScene::ReleaseUploadBuffers()
 	for (int i = 0; i < m_nShaders; i++) m_ppShaders[i]->ReleaseUploadBuffers();
 	for (int i = 0; i < m_nGameObjects; i++) m_ppGameObjects[i]->ReleaseUploadBuffers();
 	for (int i = 0; i < m_nParticleObjects; i++) m_ppParticleObjects[i]->ReleaseUploadBuffers();
-
+	for (int i = 0; i < m_nEnvironmentMappingShaders; i++) m_ppEnvironmentMappingShaders[i]->ReleaseUploadBuffers();
 }
 
 void CScene::CheckObjectByObjectCollisions(float ftimeelapsed)
@@ -578,12 +632,12 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 	case WM_KEYDOWN:
 		switch (wParam)
 		{
-		case 'W': m_ppGameObjects[0]->MoveForward(+1.0f); break;
-		case 'S': m_ppGameObjects[0]->MoveForward(-1.0f); break;
-		case 'A': m_ppGameObjects[0]->MoveStrafe(-1.0f); break;
-		case 'D': m_ppGameObjects[0]->MoveStrafe(+1.0f); break;
-		case 'Q': m_ppGameObjects[0]->MoveUp(+1.0f); break;
-		case 'R': m_ppGameObjects[0]->MoveUp(-1.0f); break;
+		case 'W': m_ppShaders[3]->m_ppObjects[1]->MoveForward(+1.0f); break;
+		case 'S': m_ppShaders[3]->m_ppObjects[1]->MoveForward(-1.0f); break;
+		case 'A': m_ppShaders[3]->m_ppObjects[1]->MoveStrafe(-1.0f); break;
+		case 'D': m_ppShaders[3]->m_ppObjects[1]->MoveStrafe(+1.0f); break;
+		case 'Q': m_ppShaders[3]->m_ppObjects[1]->MoveUp(+1.0f); break;
+		case 'R': m_ppShaders[3]->m_ppObjects[1]->MoveUp(-1.0f); break;
 
 		// 총알 발사 키
 		case VK_CONTROL:
@@ -642,20 +696,64 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 	D3D12_GPU_VIRTUAL_ADDRESS d3dcbTimerGpuVirtualAddress = m_pd3dcbTimer->GetGPUVirtualAddress();
 	pd3dCommandList->SetGraphicsRootConstantBufferView(14, d3dcbTimerGpuVirtualAddress); //Timer
 
-//	if (m_pSkyBox) m_pSkyBox->Render(pd3dCommandList, pCamera);
+
+	if (m_pSkyBox) m_pSkyBox->Render(pd3dCommandList, pCamera);
+
+	
 
 
-
-//	if (m_pTerrain) m_pTerrain->Render(pd3dCommandList, pCamera);
+	//if (m_pTerrain) m_pTerrain->Render(pd3dCommandList, pCamera);
 	
 	/*if (m_pPlayer && pMissileobjectShader) {
 		pMissileobjectShader->SetPlayer(m_pPlayer);
 	}*/
-//	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->Render(pd3dCommandList, pCamera);
+	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->Render(pd3dCommandList, pCamera);
+	//if (m_ppShaders[6]) m_ppShaders[6]->Render(pd3dCommandList, pCamera,1);
 //	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Render(pd3dCommandList, pCamera);
 	//if (m_pWater) m_pWater->Render(pd3dCommandList, pCamera);
+	for (int i = 0; i < 10; i++) {
+		if (m_ppShaders[0]->m_ppObjects[i])
+		{
+			m_pOutlineShader->UpdateShaderVariable(pd3dCommandList, m_ppShaders[0]->m_ppObjects[i]->m_pChild);
+			m_pOutlineShader->Render(pd3dCommandList, pCamera, 0);
+			m_ppShaders[0]->m_ppObjects[i]->Render(pd3dCommandList);
+			m_pOutlineShader->Render(pd3dCommandList, pCamera, 1);
+			m_ppShaders[0]->m_ppObjects[i]->Render(pd3dCommandList);
+		}
+	}
 
+	for (int i = 0; i < m_nEnvironmentMappingShaders; i++)
+	{
+		m_ppEnvironmentMappingShaders[i]->Render(pd3dCommandList, pCamera);
+	}
 	
+	//if (m_ppShaders[0])
+	//{
+	//	m_pOutlineShader->UpdateShaderVariable(pd3dCommandList);
+	//	m_pOutlineShader->Render(pd3dCommandList, pCamera, 0);
+	////	m_pSelectedObject->m_pMesh->Render(pd3dCommandList);
+	//	m_pOutlineShader->Render(pd3dCommandList, pCamera, 1);
+	//	//m_ppShaders[0]->m_ppObjects[1]->m_pMesh->Render(pd3dCommandList);
+	//}
+	
+}
+
+void CScene::OnPrepareRender(ID3D12GraphicsCommandList* pd3dCommandList)
+{
+	pd3dCommandList->SetGraphicsRootSignature(m_pd3dGraphicsRootSignature);
+
+	UpdateShaderVariables(pd3dCommandList);
+
+	if (m_pd3dcbLights)
+	{
+		D3D12_GPU_VIRTUAL_ADDRESS d3dcbLightsGpuVirtualAddress = m_pd3dcbLights->GetGPUVirtualAddress();
+		pd3dCommandList->SetGraphicsRootConstantBufferView(2, d3dcbLightsGpuVirtualAddress); //Lights
+	}
+	//if (m_pd3dcbMaterials)
+	//{
+	//	D3D12_GPU_VIRTUAL_ADDRESS d3dcbMaterialsGpuVirtualAddress = m_pd3dcbMaterials->GetGPUVirtualAddress();
+	//	pd3dCommandList->SetGraphicsRootConstantBufferView(3, d3dcbMaterialsGpuVirtualAddress); //Materials
+	//}
 }
 
 void CScene::RenderParticle(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
@@ -666,6 +764,14 @@ void CScene::RenderParticle(ID3D12GraphicsCommandList* pd3dCommandList, CCamera*
 void CScene::OnPostRenderParticle()
 {
 	for (int i = 0; i < m_nParticleObjects; i++) m_ppParticleObjects[i]->OnPostRender();
+}
+
+void CScene::OnPreRender(ID3D12Device* pd3dDevice, ID3D12CommandQueue* pd3dCommandQueue, ID3D12Fence* pd3dFence, HANDLE hFenceEvent)
+{
+	for (int i = 0; i < m_nEnvironmentMappingShaders; i++)
+	{
+		m_ppEnvironmentMappingShaders[i]->OnPreRender(pd3dDevice, pd3dCommandQueue, pd3dFence, hFenceEvent, this);
+	}
 }
 
 //state machine이 설정에 따라 달라지므로 배열로 바꾸면 된다. 오호 ->꿀

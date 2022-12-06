@@ -7,6 +7,7 @@
 #include "Mesh.h"
 #include "Camera.h"
 
+
 #define DIR_FORWARD					0x01
 #define DIR_BACKWARD				0x02
 #define DIR_LEFT					0x04
@@ -16,6 +17,7 @@
 
 class CShader;
 class CStandardShader;
+class CScene;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -58,7 +60,6 @@ public:
 	CTexture(int nTextureResources, UINT nResourceType, int nSamplers, int nRootParameters);
 	CTexture(int nTextureResources, UINT nResourceType, int nSamplers, int nRootParameters, int nRows , int nCols );
 	virtual ~CTexture();
-
 private:
 	int								m_nReferences = 0;
 
@@ -106,7 +107,7 @@ public:
 	void LoadTextureFromDDSFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, wchar_t* pszFileName, UINT nResourceType, UINT nIndex);
 	void LoadBuffer(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, void* pData, UINT nElements, UINT nStride, DXGI_FORMAT ndxgiFormat, UINT nIndex);
 	ID3D12Resource* CreateTexture(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, UINT nIndex, UINT nResourceType, UINT nWidth, UINT nHeight, UINT nElements, UINT nMipLevels, DXGI_FORMAT dxgiFormat, D3D12_RESOURCE_FLAGS d3dResourceFlags, D3D12_RESOURCE_STATES d3dResourceStates, D3D12_CLEAR_VALUE* pd3dClearValue);
-
+	ID3D12Resource* CreateTexture(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, UINT nWidth, UINT nHeight, UINT nElements, UINT nMipLevels, DXGI_FORMAT dxgiFormat, D3D12_RESOURCE_FLAGS d3dResourceFlags, D3D12_RESOURCE_STATES d3dResourceStates, D3D12_CLEAR_VALUE* pd3dClearValue, UINT nResourceType, UINT nIndex);
 	int LoadTextureFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, CGameObject* pParent, FILE* pInFile, CShader* pShader, UINT nIndex);
 	void LoadTextureFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, wchar_t* pszFileName, UINT nResourceType, UINT nIndex);
 	void SetRootParameterIndex(int nIndex, UINT nRootParameterIndex);
@@ -172,7 +173,9 @@ public:
 	void SetShader(CShader *pShader);
 	void SetMaterialType(UINT nType) { m_nType |= nType; }
 	void SetTexture(CTexture* pTexture);
-
+	void SetAlbedoColor(XMFLOAT4 xmf4Color) { m_xmf4AlbedoColor = xmf4Color; }
+	void SetEmissionColor(XMFLOAT4 xmf4Color) { m_xmf4EmissiveColor = xmf4Color; }
+	void SetMaterial(int nMaterial) { m_nMaterial = nMaterial; }
 	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList);
 	virtual void ReleaseShaderVariables();
 
@@ -180,7 +183,9 @@ public:
 
 
 public:
+	MATERIAL*						m_pReflection = NULL;
 	UINT							m_nType = 0x00;
+	int								m_nMaterial = 1;
 
 	float							m_fGlossiness = 0.0f;//??
 	float							m_fSmoothness = 0.0f;//??
@@ -201,6 +206,10 @@ public:
 	void Release();
 
 public:
+
+	char							m_pstrName[64] = { '\0' };
+
+
 	CGameObject();
 	CGameObject(int nMaterials);
 	CGameObject(int nMaterials, int meshes);
@@ -218,10 +227,11 @@ public:
 	CMesh							** m_ppMeshes;//->테리언
 	int								m_nMeshes;//->테리언
 
+
 	int								m_nMaterials = 0;
 	CMaterial						**m_ppMaterials = NULL;
 	//CMaterial						*m_pMaterial = NULL;
-
+	int								m_nMaterial = 1;
 	
 	D3D12_GPU_DESCRIPTOR_HANDLE		m_d3dCbvGPUDescriptorHandle;
 
@@ -257,7 +267,9 @@ public:
 	void SetShader(CShader *pShader);
 	void SetShader(int nMaterial, CShader *pShader);
 	void SetMaterial(int nMaterial, CMaterial *pMaterial);
-	
+	void SetMaterial(UINT nIndex, UINT nReflection);
+	void SetAlbedoColor(UINT nIndex, XMFLOAT4 xmf4Color);
+	void SetEmissionColor(UINT nIndex, XMFLOAT4 xmf4Color);
 
 	void SetCbvGPUDescriptorHandle(D3D12_GPU_DESCRIPTOR_HANDLE d3dCbvGPUDescriptorHandle) { m_d3dCbvGPUDescriptorHandle = d3dCbvGPUDescriptorHandle; }
 	void SetCbvGPUDescriptorHandlePtr(UINT64 nCbvGPUDescriptorHandlePtr) { m_d3dCbvGPUDescriptorHandle.ptr = nCbvGPUDescriptorHandlePtr; }
@@ -283,7 +295,7 @@ public:
 	virtual void UpdateShaderVariable(ID3D12GraphicsCommandList *pd3dCommandList, CMaterial *pMaterial);
 
 	virtual void ReleaseUploadBuffers();
-
+	virtual void OnPreRender(ID3D12GraphicsCommandList* pd3dCommandList, CScene* pScene);
 	XMFLOAT3 GetPosition();
 	XMFLOAT3 GetLook();
 	XMFLOAT3 GetUp();

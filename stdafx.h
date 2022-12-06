@@ -8,14 +8,15 @@
 #define WIN32_LEAN_AND_MEAN             // 거의 사용되지 않는 내용은 Windows 헤더에서 제외합니다.
 // Windows 헤더 파일:
 #include <windows.h>
-
+#include<cstdlib>
+#include<ctime>
 // C의 런타임 헤더 파일입니다.
 #include <stdlib.h>
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
 #include <math.h>
-
+#include<random>
 #include <string>
 #include <wrl.h>
 #include <shellapi.h>
@@ -70,7 +71,7 @@ using Microsoft::WRL::ComPtr;
 #define PIXELCOUNT				257
 #define FRAME_BUFFER_WIDTH		640
 #define FRAME_BUFFER_HEIGHT		480
-
+#define MAX_SCENE_MATERIALS		16 
 //#define _WITH_CB_GAMEOBJECT_32BIT_CONSTANTS
 //#define _WITH_CB_GAMEOBJECT_ROOT_DESCRIPTOR
 #define _WITH_CB_WORLD_MATRIX_DESCRIPTOR_TABLE
@@ -81,6 +82,8 @@ using Microsoft::WRL::ComPtr;
 #define PARAMETER_STANDARD_TEXTURE		3
 #ifdef _WITH_STANDARD_TEXTURE_MULTIPLE_DESCRIPTORS
 #define PARAMETER_SKYBOX_CUBE_TEXTURE	10
+
+#define _WITH_SCALING
 #else
 #define PARAMETER_SKYBOX_CUBE_TEXTURE	4
 #endif
@@ -92,6 +95,10 @@ using Microsoft::WRL::ComPtr;
 #pragma comment(lib, "dxguid.lib")
 
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.
+
+#include "Object.h"
+extern CGameObject** LoadGameObjectsFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, const char* pstrFileName, int* pnGameObjects);
+
 
 extern UINT gnCbvSrvDescriptorIncrementSize;
 extern UINT	gnRtvDescriptorIncrementSize;
@@ -106,7 +113,7 @@ extern ID3D12Resource *CreateTextureResourceFromWICFile(ID3D12Device *pd3dDevice
 extern ID3D12Resource* CreateTexture2DResource(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, UINT nWidth, UINT nHeight, UINT nElements, UINT nMipLevels, DXGI_FORMAT dxgiFormat, D3D12_RESOURCE_FLAGS d3dResourceFlags, D3D12_RESOURCE_STATES d3dResourceStates, D3D12_CLEAR_VALUE* pd3dClearValue);
 
 extern void SwapResourcePointer(ID3D12Resource** ppd3dResourceA, ID3D12Resource** ppd3dResourceB);
-
+extern void ExecuteCommandList(ID3D12GraphicsCommandList* pd3dCommandList, ID3D12CommandQueue* pd3dCommandQueue, ID3D12Fence* pd3dFence, UINT64 nFenceValue, HANDLE hFenceEvent);
 #define RANDOM_COLOR			XMFLOAT4(rand() / float(RAND_MAX), rand() / float(RAND_MAX), rand() / float(RAND_MAX), rand() / float(RAND_MAX))
 
 #define EPSILON					1.0e-10f

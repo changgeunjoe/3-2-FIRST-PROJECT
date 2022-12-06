@@ -28,7 +28,7 @@ cbuffer cbCameraInfo : register(b1)
 {
 	matrix		gmtxView : packoffset(c0);
 	matrix		gmtxProjection : packoffset(c4);
-    matrix   gmtxInverseView : packoffset(c8);
+    matrix      gmtxInverseView : packoffset(c8);
 	float3		gvCameraPosition : packoffset(c12);
    
 };
@@ -62,6 +62,14 @@ cbuffer cbFrameworkInfo : register(b7)
     int gnMaxFlareType2Particles : packoffset(c1.w);
 };
 
+cbuffer cbConstantsInfo : register(b8)
+{
+   // int gnMaterial : packoffset(c0.x);
+    float4 gcAlbedoColor : packoffset(c0);
+    float4 gcEmissionColor : packoffset(c1);
+};
+
+
 #include "Light.hlsl"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -94,6 +102,7 @@ Texture2D<float4> gtxtParticleTexture : register(t14);
 //Texture1D<float4> gtxtRandom : register(t2);
 Buffer<float4> gRandomBuffer : register(t15);
 Buffer<float4> gRandomSphereBuffer : register(t16);
+TextureCube gtxtCubeMap : register(t17);
 #else
 Texture2D gtxtStandardTextures[7] : register(t6);
 #endif
@@ -125,7 +134,6 @@ struct VS_STANDARD_OUTPUT
 VS_STANDARD_OUTPUT VSStandard(VS_STANDARD_INPUT input)
 {
 	VS_STANDARD_OUTPUT output;
-
 	output.positionW = (float3)mul(float4(input.position, 1.0f), gmtxGameObject);
 	output.normalW = mul(input.normal, (float3x3)gmtxGameObject);
 	output.tangentW = (float3)mul(float4(input.tangent, 1.0f), gmtxGameObject);
@@ -167,11 +175,13 @@ float4 PSStandard(VS_STANDARD_OUTPUT input) : SV_TARGET
 		float3 vNormal = normalize(cNormalColor.rgb * 2.0f - 1.0f); //[0, 1] ¡æ [-1, 1]
 		normalW = normalize(mul(vNormal, TBN));
 		cIllumination = Lighting(input.positionW, normalW);
-		cColor = lerp(cColor, cIllumination, 0.5f);
+		cColor = lerp(cColor, cIllumination, 1.0f);
 	}
-
+ 
 	return(cColor);
 }
+
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -280,7 +290,6 @@ float4 PSBillBoardTextured(VS_TEXTURED_OUTPUT input) : SV_TARGET
     float4 cColor = gtxtTexture.Sample(gWrapSamplerState, input.uv);
     
     //cColor.a = Alpha;
-	
     return (cColor);
 }
 VS_TEXTURED_OUTPUT VSSpriteAnimation(VS_TEXTURED_INPUT input)

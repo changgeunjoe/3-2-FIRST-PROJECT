@@ -1,8 +1,9 @@
 //------------------------------------------------------- ----------------------
 // File: Mesh.h
 //-----------------------------------------------------------------------------
-#include"Vertex.h"
+
 #pragma once
+#include"Vertex.h"
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -59,8 +60,11 @@ protected:
 
 	D3D12_VERTEX_BUFFER_VIEW		m_d3dVertexBufferView;
 	D3D12_INDEX_BUFFER_VIEW			m_d3dIndexBufferView;
-;
-
+;/////////////////////////////////////////////////////////////////////////////
+public:
+	BoundingBox						m_xmBoundingBox;
+	UINT							m_nSubsets = 0;
+/////////////////////////////////////////////////////////////
 	
 
 	UINT							m_nIndices = 0;
@@ -77,13 +81,34 @@ protected:
 	ID3D12Resource					*m_pd3dPositionUploadBuffer = NULL; //포지션 업로드 
 	D3D12_VERTEX_BUFFER_VIEW		m_d3dPositionBufferView; //포지션 업로드 주소 보는 뷰
 
-	int								m_nSubMeshes = 0;
-	int								*m_pnSubSetIndices = NULL;
+	UINT								m_nSubMeshes = 0;
+	UINT							*m_pnSubSetIndices = NULL;
 	UINT							**m_ppnSubSetIndices = NULL;
 
 	ID3D12Resource					**m_ppd3dSubSetIndexBuffers = NULL;
 	ID3D12Resource					**m_ppd3dSubSetIndexUploadBuffers = NULL;
 	D3D12_INDEX_BUFFER_VIEW			*m_pd3dSubSetIndexBufferViews = NULL;
+
+
+	XMFLOAT3* m_pxmf3Normals = NULL;
+	ID3D12Resource* m_pd3dNormalBuffer = NULL;
+	ID3D12Resource* m_pd3dNormalUploadBuffer = NULL;
+	UINT* m_pnSubSetStartIndices = NULL;
+
+
+	UINT							m_nVertexBufferViews = 0;
+	D3D12_VERTEX_BUFFER_VIEW* m_pd3dVertexBufferViews = NULL;
+
+	
+	UINT* m_pnIndices = NULL;
+
+
+
+	ID3D12Resource** m_ppd3dIndexBuffers = NULL;
+	ID3D12Resource** m_ppd3dIndexUploadBuffers = NULL;
+
+	D3D12_INDEX_BUFFER_VIEW* m_pd3dIndexBufferViews = NULL;
+
 
 public:
 	UINT GetType() { return(m_nType); }
@@ -113,6 +138,17 @@ class CSkyBoxMesh : public CMesh
 public:
 	CSkyBoxMesh(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, float fWidth = 20.0f, float fHeight = 20.0f, float fDepth = 20.0f);
 	virtual ~CSkyBoxMesh();
+};
+
+class CSceneMesh : public CMesh
+{
+public:
+	CSceneMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, char* pstrFileName = NULL);
+	virtual ~CSceneMesh();
+	void LoadMeshFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, char* pstrFileName);
+
+	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, int nSubset);
+
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

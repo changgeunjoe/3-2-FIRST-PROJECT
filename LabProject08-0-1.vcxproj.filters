@@ -67,38 +67,44 @@
     <Filter Include="Mesh\ParticleMesh">
       <UniqueIdentifier>{0312042e-38bd-4a50-a1bd-6aea154e8a04}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Mesh\MeshIlluminated">
+      <UniqueIdentifier>{1551486b-8796-45b8-9b7a-aa7d9e5a4fc7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\DynamicCubeMappingObject">
+      <UniqueIdentifier>{a3502800-33f2-49cf-b233-9dff09f7912f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\DynamicCubeMappingShader">
+      <UniqueIdentifier>{7545f025-4f7e-45a0-b007-69b23cbbac04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\2dUIObjectShader">
+      <UniqueIdentifier>{b4f5bdd7-5897-40f0-b115-5c5312a7f46c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\OutlineShader">
+      <UniqueIdentifier>{cef60dcf-7708-4630-a69a-9757d67da491}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Camera">
+      <UniqueIdentifier>{dd7a4ebb-8a6a-4e57-9d92-5c3c0fa8c29a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Player">
+      <UniqueIdentifier>{f7937895-5aa3-49b2-85a5-3cb3ddd0b4de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework">
+      <UniqueIdentifier>{e79cf227-e031-4d5e-9e3b-b7dd6eb5eed5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework\Scene">
+      <UniqueIdentifier>{cfae0d76-c78e-43cd-b283-b91f2df3517d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mesh\Vertex">
+      <UniqueIdentifier>{451ebdc1-b35f-4325-ab68-1884acdaab5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Timer">
+      <UniqueIdentifier>{a9bc1393-e5ee-4a02-a0cb-77d9e6e8c6bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\SceneShader">
+      <UniqueIdentifier>{4f4c9905-9656-48f2-b4c9-e1c102517023}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="targetver.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="LabProject08-0-1.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="GameFramework.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Timer.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Vertex.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="ServerError.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="DDSTextureLoader12.h">
       <Filter>TextureLoader\DDSTextureLoader</Filter>
     </ClInclude>
@@ -147,32 +153,56 @@
     <ClInclude Include="ParticleMesh.h">
       <Filter>Mesh\ParticleMesh</Filter>
     </ClInclude>
+    <ClInclude Include="CMeshIlluminated.h">
+      <Filter>Mesh\MeshIlluminated</Filter>
+    </ClInclude>
+    <ClInclude Include="CDynamicCubeMappingObject.h">
+      <Filter>Object\DynamicCubeMappingObject</Filter>
+    </ClInclude>
+    <ClInclude Include="CDynamicCubeMappingShader.h">
+      <Filter>Shader\DynamicCubeMappingShader</Filter>
+    </ClInclude>
+    <ClInclude Include="2dUIObjectsShader.h">
+      <Filter>Shader\2dUIObjectShader</Filter>
+    </ClInclude>
+    <ClInclude Include="COutlineShader.h">
+      <Filter>Shader\OutlineShader</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Object\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Object\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="GameFramework.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Framework\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>stdafx</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerError.h">
+      <Filter>stdafx</Filter>
+    </ClInclude>
+    <ClInclude Include="LabProject08-0-1.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>TextureLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneShader.h">
+      <Filter>Shader\SceneShader</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertex.h">
+      <Filter>Mesh\Vertex</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="LabProject08-0-1.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="GameFramework.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Timer.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Vertex.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="ServerError.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="DDSTextureLoader12.cpp">
       <Filter>TextureLoader\DDSTextureLoader</Filter>
     </ClCompile>
@@ -221,6 +251,48 @@
     <ClCompile Include="ParticleMesh.cpp">
       <Filter>Mesh\ParticleMesh</Filter>
     </ClCompile>
+    <ClCompile Include="CMeshIlluminated.cpp">
+      <Filter>Mesh\MeshIlluminated</Filter>
+    </ClCompile>
+    <ClCompile Include="CDynamicCubeMappingObject.cpp">
+      <Filter>Object\DynamicCubeMappingObject</Filter>
+    </ClCompile>
+    <ClCompile Include="CDynamicCubeMappingShader.cpp">
+      <Filter>Shader\DynamicCubeMappingShader</Filter>
+    </ClCompile>
+    <ClCompile Include="2dUIObjectsShader.cpp">
+      <Filter>Shader\2dUIObjectShader</Filter>
+    </ClCompile>
+    <ClCompile Include="COutlineShader.cpp">
+      <Filter>Shader\OutlineShader</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Object\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Object\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="GameFramework.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Framework\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerError.cpp">
+      <Filter>stdafx</Filter>
+    </ClCompile>
+    <ClCompile Include="Vertex.cpp">
+      <Filter>Mesh\Vertex</Filter>
+    </ClCompile>
+    <ClCompile Include="LabProject08-0-1.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneShader.cpp">
+      <Filter>Shader\SceneShader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="LabProject08-0-1.rc">
@@ -243,6 +315,15 @@
       <Filter>Shader\HLSL</Filter>
     </FxCompile>
     <FxCompile Include="GeometryShader.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="CubeMappingShader.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="OutlineShader.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="SceneShader.hlsl">
       <Filter>Shader\HLSL</Filter>
     </FxCompile>
   </ItemGroup>

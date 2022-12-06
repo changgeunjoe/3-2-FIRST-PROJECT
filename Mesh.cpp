@@ -505,7 +505,7 @@ void CStandardMesh::LoadMeshFromFile(ID3D12Device *pd3dDevice, ID3D12GraphicsCom
 			nReads = (UINT)::fread(&(m_nSubMeshes), sizeof(int), 1, pInFile);
 			if (m_nSubMeshes > 0)
 			{
-				m_pnSubSetIndices = new int[m_nSubMeshes];
+				m_pnSubSetIndices = new UINT[m_nSubMeshes];
 				m_ppnSubSetIndices = new UINT*[m_nSubMeshes];
 
 				m_ppd3dSubSetIndexBuffers = new ID3D12Resource*[m_nSubMeshes];
@@ -943,4 +943,151 @@ CCubeMeshTextured::CCubeMeshTextured(ID3D12Device* pd3dDevice, ID3D12GraphicsCom
 
 CCubeMeshTextured::~CCubeMeshTextured()
 {
+}
+
+CSceneMesh::CSceneMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, char* pstrFileName) :CMesh(pd3dDevice, pd3dCommandList)
+{
+	if (pstrFileName) LoadMeshFromFile(pd3dDevice, pd3dCommandList, pstrFileName);
+}
+
+CSceneMesh::~CSceneMesh()
+{
+}
+
+void CSceneMesh::LoadMeshFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, char* pstrFileName)
+{
+#ifdef _WITH_TEXT_MESH
+	ifstream InFile(pstrFileName);
+
+	char pstrToken[64] = { '\0' };
+
+	for (; ; )
+	{
+		InFile >> pstrToken;
+		if (!InFile) break;
+
+		if (!strcmp(pstrToken, "<Vertices>:"))
+		{
+			InFile >> m_nVertices;
+			m_pxmf3Positions = new XMFLOAT3[m_nVertices];
+			for (UINT i = 0; i < m_nVertices; i++) InFile >> m_pxmf3Positions[i].x >> m_pxmf3Positions[i].y >> m_pxmf3Positions[i].z;
+		}
+		else if (!strcmp(pstrToken, "<Normals>:"))
+		{
+			InFile >> pstrToken;
+			m_pxmf3Normals = new XMFLOAT3[m_nVertices];
+			for (UINT i = 0; i < m_nVertices; i++) InFile >> m_pxmf3Normals[i].x >> m_pxmf3Normals[i].y >> m_pxmf3Normals[i].z;
+		}
+		else if (!strcmp(pstrToken, "<Indices>:"))
+		{
+			InFile >> m_nIndices;
+			m_pnIndices = new UINT[m_nIndices];
+			for (UINT i = 0; i < m_nIndices; i++) InFile >> m_pnIndices[i];
+		}
+	}
+#else
+	FILE* pFile = NULL;
+	::fopen_s(&pFile, pstrFileName, "rb");
+	::rewind(pFile);
+
+	char pstrToken[64] = { '\0' };
+
+	BYTE nStrLength = 0;
+	UINT nReads = 0;
+
+	while (!::feof(pFile))
+	{
+		nReads = (UINT)::fread(&nStrLength, sizeof(BYTE), 1, pFile);
+		if (nReads == 0) break;
+		nReads = (UINT)::fread(pstrToken, sizeof(char), nStrLength, pFile);
+		pstrToken[nStrLength] = '\0';
+
+		if (!strcmp(pstrToken, "<BoundingBox>:"))
+		{
+			nReads = (UINT)::fread(&m_xmBoundingBox.Center, sizeof(float), 3, pFile);
+			nReads = (UINT)::fread(&m_xmBoundingBox.Extents, sizeof(float), 3, pFile);
+		}
+		else if (!strcmp(pstrToken, "<Vertices>:"))
+		{
+			nReads = (UINT)::fread(&m_nVertices, sizeof(int), 1, pFile);
+			m_pxmf3Positions = new XMFLOAT3[m_nVertices];
+			nReads = (UINT)::fread(m_pxmf3Positions, sizeof(float), 3 * m_nVertices, pFile);
+		}
+		else if (!strcmp(pstrToken, "<Normals>:"))
+		{
+			nReads = (UINT)::fread(&m_nVertices, sizeof(int), 1, pFile);
+			m_pxmf3Normals = new XMFLOAT3[m_nVertices];
+			nReads = (UINT)::fread(m_pxmf3Normals, sizeof(float), 3 * m_nVertices, pFile);
+		}
+		else if (!strcmp(pstrToken, "<Indices>:"))
+		{
+			nReads = (UINT)::fread(&m_nIndices, sizeof(int), 1, pFile);
+			m_pnIndices = new UINT[m_nIndices];
+			nReads = (UINT)::fread(m_pnIndices, sizeof(UINT), m_nIndices, pFile);
+		}
+		else if (!strcmp(pstrToken, "<SubMeshes>:"))
+		{
+			nReads = (UINT)::fread(&m_nSubsets, sizeof(int), 1, pFile);
+
+			m_pnSubSetIndices = new UINT[m_nSubsets];
+			m_pnSubSetStartIndices = new UINT[m_nSubsets];
+			m_ppnSubSetIndices = new UINT * [m_nSubsets];
+
+			for (UINT i = 0; i < m_nSubsets; i++)
+			{
+				nReads = (UINT)::fread(&m_pnSubSetStartIndices[i], sizeof(UINT), 1, pFile);
+				nReads = (UINT)::fread(&m_pnSubSetIndices[i], sizeof(UINT), 1, pFile);
+				nReads = (UINT)::fread(&m_nIndices, sizeof(int), 1, pFile);
+				m_ppnSubSetIndices[i] = new UINT[m_pnSubSetIndices[i]];
+				nReads = (UINT)::fread(m_ppnSubSetIndices[i], sizeof(UINT), m_pnSubSetIndices[i], pFile);
+			}
+
+			break;
+		}
+	}
+
+	::fclose(pFile);
+#endif
+
+	m_pd3dPositionBuffer = ::CreateBufferResource(pd3dDevice, pd3dCommandList, m_pxmf3Positions, sizeof(XMFLOAT3) * m_nVertices, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, &m_pd3dPositionUploadBuffer);
+	m_pd3dNormalBuffer = ::CreateBufferResource(pd3dDevice, pd3dCommandList, m_pxmf3Normals, sizeof(XMFLOAT3) * m_nVertices, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, &m_pd3dNormalUploadBuffer);
+
+	m_nVertexBufferViews = 2;
+	m_pd3dVertexBufferViews = new D3D12_VERTEX_BUFFER_VIEW[m_nVertexBufferViews];
+
+	m_pd3dVertexBufferViews[0].BufferLocation = m_pd3dPositionBuffer->GetGPUVirtualAddress();
+	m_pd3dVertexBufferViews[0].StrideInBytes = sizeof(XMFLOAT3);
+	m_pd3dVertexBufferViews[0].SizeInBytes = sizeof(XMFLOAT3) * m_nVertices;
+
+	m_pd3dVertexBufferViews[1].BufferLocation = m_pd3dNormalBuffer->GetGPUVirtualAddress();
+	m_pd3dVertexBufferViews[1].StrideInBytes = sizeof(XMFLOAT3);
+	m_pd3dVertexBufferViews[1].SizeInBytes = sizeof(XMFLOAT3) * m_nVertices;
+
+	m_ppd3dIndexBuffers = new ID3D12Resource * [m_nSubsets];
+	m_ppd3dIndexUploadBuffers = new ID3D12Resource * [m_nSubsets];
+	m_pd3dIndexBufferViews = new D3D12_INDEX_BUFFER_VIEW[m_nSubsets];
+
+	for (UINT i = 0; i < m_nSubsets; i++)
+	{
+		m_ppd3dIndexBuffers[i] = ::CreateBufferResource(pd3dDevice, pd3dCommandList, m_ppnSubSetIndices[i], sizeof(UINT) * m_pnSubSetIndices[i], D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_INDEX_BUFFER, &m_ppd3dIndexUploadBuffers[i]);
+
+		m_pd3dIndexBufferViews[i].BufferLocation = m_ppd3dIndexBuffers[i]->GetGPUVirtualAddress();
+		m_pd3dIndexBufferViews[i].Format = DXGI_FORMAT_R32_UINT;
+		m_pd3dIndexBufferViews[i].SizeInBytes = sizeof(UINT) * m_pnSubSetIndices[i];
+	}
+}
+
+void CSceneMesh::Render(ID3D12GraphicsCommandList* pd3dCommandList, int nSubset)
+{
+	pd3dCommandList->IASetPrimitiveTopology(m_d3dPrimitiveTopology);
+	pd3dCommandList->IASetVertexBuffers(m_nSlot, m_nVertexBufferViews, m_pd3dVertexBufferViews);
+	if (m_nSubsets > 0)
+	{
+		pd3dCommandList->IASetIndexBuffer(&m_pd3dIndexBufferViews[nSubset]);
+		pd3dCommandList->DrawIndexedInstanced(m_pnSubSetIndices[nSubset], 1, 0, 0, 0);
+	}
+	else
+	{
+		pd3dCommandList->DrawInstanced(m_nVertices, 1, m_nOffset, 0);
+	}
 }

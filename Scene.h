@@ -10,6 +10,11 @@
 #include"MultiSpriteObjectsShader.h"
 #include"GSBillBoardShader.h"
 #include"CParticleObject.h"
+#include"CMeshIlluminated.h"
+#include"CDynamicCubeMappingShader.h"
+#include"2dUIObjectsShader.h"
+#include"COutlineShader.h"
+#include"SceneShader.h"
 #define MAX_LIGHTS			16 
 
 #define POINT_LIGHT			1
@@ -71,9 +76,12 @@ public:
 	bool ProcessInput(UCHAR *pKeysBuffer);
     void AnimateObjects(float fTimeElapsed);
     void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera=NULL);
+	void OnPrepareRender(ID3D12GraphicsCommandList* pd3dCommandList);
+
 
 	void RenderParticle(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
 	void OnPostRenderParticle();
+	void OnPreRender(ID3D12Device* pd3dDevice, ID3D12CommandQueue* pd3dCommandQueue, ID3D12Fence* pd3dFence, HANDLE hFenceEvent);
 
 	void ReleaseUploadBuffers();
 	void CheckObjectByObjectCollisions(float ftimeelapsed);
@@ -83,6 +91,8 @@ public:
 	CBulletShader						*m_pBulletShader{ NULL };
 
 	CObjectsShader                      *pObjectsShader;
+
+	COutlineShader						*m_pOutlineShader = NULL;
 
 public:
 	ID3D12RootSignature					*m_pd3dGraphicsRootSignature = NULL;
@@ -117,4 +127,7 @@ public:
 	float								fTimer = 5.0f;
 	float								fAlPha = 0.3f;
 	float								CollisionTimer = 0.0f;
+
+	int							m_nEnvironmentMappingShaders = 0;
+	CDynamicCubeMappingShader** m_ppEnvironmentMappingShaders = NULL;
 };

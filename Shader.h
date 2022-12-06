@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: Shader.h
+//	File: Shader.h
 //-----------------------------------------------------------------------------
 
 #pragma once
@@ -8,6 +8,9 @@
 #include "Camera.h"
 #include "Player.h"
 #include"stdafx.h"
+#include "CMeshIlluminated.h"
+
+
 
 class CShader
 {
@@ -31,7 +34,7 @@ protected:
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC	m_d3dPipelineStateDesc;
 
 	ID3D12DescriptorHeap*				m_pd3dCbvSrvDescriptorHeap = NULL;
-
+	ID3D12RootSignature*				m_pd3dGraphicsRootSignature = NULL;
 	D3D12_CPU_DESCRIPTOR_HANDLE			m_d3dCbvCPUDescriptorStartHandle;
 	D3D12_GPU_DESCRIPTOR_HANDLE			m_d3dCbvGPUDescriptorStartHandle;
 	D3D12_CPU_DESCRIPTOR_HANDLE			m_d3dSrvCPUDescriptorStartHandle;
@@ -100,6 +103,7 @@ public:
 	virtual void ReleaseUploadBuffers() { }
 
 	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, void *pContext = NULL) { }
+	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, const char* pstrFileName, void* pContext = NULL) {};
 	virtual void AnimateObjects(float fTimeElapsed) { }
 	virtual void ReleaseObjects() { }
 
@@ -115,6 +119,9 @@ public:
 	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUCbvDescriptorStartHandle() { return(m_d3dCbvGPUDescriptorStartHandle); }
 	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUSrvDescriptorStartHandle() { return(m_d3dSrvCPUDescriptorStartHandle); }
 	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUSrvDescriptorStartHandle() { return(m_d3dSrvGPUDescriptorStartHandle); }
+
+	CGameObject** m_ppObjects = 0;
+	int								m_nObjects = 0;
 
 	int m_PositionArray[PIXELCOUNT][PIXELCOUNT];
 };
@@ -170,8 +177,7 @@ public:
 	virtual void ReleaseUploadBuffers();
 
 	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera, int nPipelineState=0);
-	CGameObject** m_ppObjects = 0;
-	int								m_nObjects = 0;
+	
 
 protected:
 
@@ -262,32 +268,7 @@ public:
 	CMaterial* m_ppFlowerMaterials[2] = { NULL, NULL };
 #endif
 };
-class C2dUIObjectsShader : public CObjectsShader
-{
-public:
 
-	C2dUIObjectsShader();
-	virtual ~C2dUIObjectsShader();
-
-	virtual D3D12_RASTERIZER_DESC CreateRasterizerState();
-	virtual D3D12_BLEND_DESC CreateBlendState();
-
-	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, void* pContext = NULL);
-	virtual void ReleaseObjects();
-	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera, int pipelinestate);
-
-	virtual void ReleaseUploadBuffers();
-	virtual void CreateShader(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature);
-
-	virtual D3D12_INPUT_LAYOUT_DESC CreateInputLayout();
-	virtual D3D12_SHADER_BYTECODE CreateVertexShader();
-	virtual D3D12_SHADER_BYTECODE CreatePixelShader();
-
-#ifdef _WITH_BATCH_MATERIAL
-	CMaterial* m_ppGrassMaterials[2] = { NULL, NULL };
-	CMaterial* m_ppFlowerMaterials[2] = { NULL, NULL };
-#endif
-};
 class CBulletShader : public CObjectsShader
 {
 public:
