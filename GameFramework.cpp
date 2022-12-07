@@ -577,28 +577,28 @@ void CGameFramework::FrameAdvance()
 	m_pd3dCommandList->OMSetRenderTargets(1, &d3dRtvCPUDescriptorHandle, TRUE, &d3dDsvCPUDescriptorHandle);
 
 
-
-	
+	m_pScene->OnPrepareRender(m_pd3dCommandList);
+	UpdateShaderVariables();
 	
 	if (m_pScene) m_pScene->Render(m_pd3dCommandList, m_pCamera);
-	UpdateShaderVariables();
+
 #ifdef _WITH_PLAYER_TOP
 	m_pd3dCommandList->ClearDepthStencilView(d3dDsvCPUDescriptorHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, NULL);
 #endif
 	if (m_pPlayer) m_pPlayer->Render(m_pd3dCommandList, m_pCamera);
-	if (m_pScene) m_pScene->RenderParticle(m_pd3dCommandList, m_pCamera);
+	//if (m_pScene) m_pScene->RenderParticle(m_pd3dCommandList, m_pCamera);
 	d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
 	d3dResourceBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-	m_pd3dCommandList->ResourceBarrier(1, &d3dResourceBarrier);
+//	m_pd3dCommandList->ResourceBarrier(1, &d3dResourceBarrier);
 
 	hResult = m_pd3dCommandList->Close();
 	
 	ID3D12CommandList *ppd3dCommandLists[] = { m_pd3dCommandList };
 	m_pd3dCommandQueue->ExecuteCommandLists(1, ppd3dCommandLists);
-
-	WaitForGpuComplete();
 	if (m_pScene) m_pScene->OnPostRenderParticle();
+	WaitForGpuComplete();
+	
 #ifdef _WITH_PRESENT_PARAMETERS
 	DXGI_PRESENT_PARAMETERS dxgiPresentParameters;
 	dxgiPresentParameters.DirtyRectsCount = 0;

@@ -110,7 +110,7 @@ void C2dUIObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCo
 
 
 	//CRawFormatImage* pRawFormatImage = new CRawFormatImage(L"BillboardImage/ObjectsMap.raw", 257, 257, true);
-	m_nObjects = 2;
+	m_nObjects = 1;
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 
 	//CreateShader(pd3dDevice,  pd3dCommandList,pd3dGraphicsRootSignature);
@@ -125,7 +125,7 @@ void C2dUIObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCo
 
 	m_ppObjects = new CGameObject * [m_nObjects];//UI오브젝트의 개수
 
-	CUiObject* pUiObject[4]{};
+	CUiObject* pUiObject[1]{};
 	CHPObject* pHpObject = NULL;
 	CMaterial* pMaterial = NULL;
 	CMesh* pMesh = NULL;
@@ -134,32 +134,32 @@ void C2dUIObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCo
 	pMesh = pGrassMesh;
 	pMaterial = ppGrassMaterials[0];*/
 	int i = 0;
+	//pUiObject[0] = new CUiObject();
+
+	//pUiObject[0]->SetMesh(0, pMiniMapMesh);
+	//pUiObject[0]->SetMaterial(0, ppMiniMapMaterials[0]);
+	//pUiObject[0]->SetPosition(15, 8.5, 30);
+	//pUiObject[0]->Rotate(0.0f, 180.0f, 0.0f);
+	//pUiObject[0]->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * nObjects));
+	//m_ppObjects[nObjects++] = pUiObject[0];
+
+	//pUiObject[1] = new CUiObject();
+
+	//pUiObject[1]->SetMesh(0, pHPBarMesh);
+	//pUiObject[1]->SetMaterial(0, ppHPBarMaterials[0]);
+	//pUiObject[1]->SetPosition(0, -15, 20);
+	//pUiObject[1]->Rotate(0.0f, 180.0f, 0.0f);
+	//pUiObject[1]->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * nObjects));
+	//m_ppObjects[nObjects++] = pUiObject[1];
+
 	pUiObject[0] = new CUiObject();
 
-	pUiObject[0]->SetMesh(0, pMiniMapMesh);
-	pUiObject[0]->SetMaterial(0, ppMiniMapMaterials[0]);
-	pUiObject[0]->SetPosition(15, 8.5, 30);
+	pUiObject[0]->SetMesh(0, pHeli2dUIBarMesh);
+	pUiObject[0]->SetMaterial(0, ppHeli2dUIMaterials[0]);
+	pUiObject[0]->SetPosition(0, 0, 10);
 	pUiObject[0]->Rotate(0.0f, 180.0f, 0.0f);
 	pUiObject[0]->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * nObjects));
 	m_ppObjects[nObjects++] = pUiObject[0];
-
-	pUiObject[1] = new CUiObject();
-
-	pUiObject[1]->SetMesh(0, pHPBarMesh);
-	pUiObject[1]->SetMaterial(0, ppHPBarMaterials[0]);
-	pUiObject[1]->SetPosition(0, -15, 20);
-	pUiObject[1]->Rotate(0.0f, 180.0f, 0.0f);
-	pUiObject[1]->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * nObjects));
-	m_ppObjects[nObjects++] = pUiObject[1];
-
-	/*pUiObject[2] = new CUiObject();
-
-	pUiObject[2]->SetMesh(0, pHeli2dUIBarMesh);
-	pUiObject[2]->SetMaterial(0, ppHeli2dUIMaterials[0]);
-	pUiObject[2]->SetPosition(0, 0, 10);
-	pUiObject[2]->Rotate(0.0f, 180.0f, 0.0f);
-	pUiObject[2]->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * nObjects));
-	m_ppObjects[nObjects++] = pUiObject[2];*/
 
 	/*pUiObject[3] = new CUiObject();
 

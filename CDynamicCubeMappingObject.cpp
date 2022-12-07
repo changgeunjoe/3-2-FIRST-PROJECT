@@ -95,7 +95,7 @@ void CDynamicCubeMappingObject::Render(ID3D12GraphicsCommandList* pd3dCommandLis
 {
 	OnPrepareRender();
 
-	if (m_ppMaterials)
+	//if (m_ppMaterials)
 	{
 		if (m_ppMaterials[0]->m_pShader)//->½¦ÀÌ´õ 
 		{

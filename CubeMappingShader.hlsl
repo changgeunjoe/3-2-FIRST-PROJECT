@@ -35,7 +35,7 @@ float4 PSCubeMapping(VS_LIGHTING_OUTPUT input) : SV_Target
     float3 vReflected = normalize(reflect(vFromCamera, input.normalW));
     float4 cCubeTextureColor = gtxtCubeMap.Sample(gWrapSamplerState, vReflected);
 
-//	return(float4(vReflected * 0.5f + 0.5f, 1.0f));
+	//return(float4(vReflected * 0.5f + 0.5f, 1.0f));
     return (cCubeTextureColor);
-//	return(cIllumination * cCubeTextureColor);
+	//return(cIllumination * cCubeTextureColor);
 }

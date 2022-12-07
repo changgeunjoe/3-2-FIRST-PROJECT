@@ -18,7 +18,7 @@ D3D12_INPUT_LAYOUT_DESC CDynamicCubeMappingShader::CreateInputLayout()
 	D3D12_INPUT_ELEMENT_DESC* pd3dInputElementDescs = new D3D12_INPUT_ELEMENT_DESC[nInputElementDescs];
 
 	pd3dInputElementDescs[0] = { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
-	pd3dInputElementDescs[1] = { "NORMAL", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
+	pd3dInputElementDescs[1] = { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
 
 	D3D12_INPUT_LAYOUT_DESC d3dInputLayoutDesc;
 	d3dInputLayoutDesc.pInputElementDescs = pd3dInputElementDescs;
@@ -68,7 +68,7 @@ void CDynamicCubeMappingShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12Gra
 
 	D3D12_CPU_DESCRIPTOR_HANDLE d3dRtvCPUDescriptorHandle = m_pd3dRtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
 //	CCubeMeshTextured* m_pMissileTexturedMesh = new CCubeMeshTextured(pd3dDevice, pd3dCommandList, 200.f, 200.f, 5.f);
-	CMesh* pMeshIlluminated = new CSphereMeshIlluminated(pd3dDevice, pd3dCommandList, 100.0f, 30, 30);
+	CMesh* pMeshIlluminated = new CSphereMeshIlluminated(pd3dDevice, pd3dCommandList, 20.0f, 20, 20);
 
 	CHeightMapTerrain* pTerrain = (CHeightMapTerrain*)pContext;
 	XMFLOAT2 xmf2TerrainCenter = XMFLOAT2(pTerrain->GetWidth() * 0.5f, pTerrain->GetLength() * 0.5f);
@@ -82,8 +82,8 @@ void CDynamicCubeMappingShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12Gra
 		float xPosition = xmf2TerrainCenter.x + ((i + 1) * 150.0f) * ((i % 2) ? +1.0f : -1.0f);
 		float zPosition = xmf2TerrainCenter.y + ((i + 1) * 150.0f) * ((i % 2) ? +1.0f : -1.0f);
 		float fHeight = pTerrain->GetHeight(xPosition, zPosition);
-		m_ppObjects[i]->SetPosition(xPosition, fHeight + 0.0f, zPosition);
-	//	m_ppObjects[i]->SetPosition(0, 100, 0);
+		//m_ppObjects[i]->SetPosition(xPosition, fHeight + 0.0f, zPosition);
+		m_ppObjects[i]->SetPosition(0, 50, 0);
 		m_ppObjects[i]->SetCbvGPUDescriptorHandlePtr(d3dCbvGPUDescriptorStartHandle.ptr);
 
 		d3dCbvGPUDescriptorStartHandle.ptr += ::gnCbvSrvDescriptorIncrementSize;

@@ -699,18 +699,18 @@ void CObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 	m_nObjects = 10;
 	m_ppObjects = new CGameObject*[m_nObjects];
 
-	CreateCbvSrvDescriptorHeaps(pd3dDevice, 0, 17 + 50); //SuperCobra(17), Gunship(2)
+	CreateCbvSrvDescriptorHeaps(pd3dDevice, 0, 170); //SuperCobra(17), Gunship(2)
 
-	CGameObject *pSuperCobraModel = CGameObject::LoadGeometryFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/SuperCobra.bin", this);
+	CGameObject* pSuperCobraModel[10];
 	
-
 	int nObjects = 0;
     for (int h = 0; h < m_nObjects; h++)
     {
+			pSuperCobraModel[h]= CGameObject::LoadGeometryFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/SuperCobra.bin", this);
 			m_ppObjects[h] = new CSuperCobraObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
-			m_ppObjects[h]->SetChild(pSuperCobraModel);
-			pSuperCobraModel->AddRef();
-			m_ppObjects[h]->SetPosition(200,500,0+180+h*10);
+			m_ppObjects[h]->SetChild(pSuperCobraModel[h]);
+			pSuperCobraModel[h]->AddRef();
+			m_ppObjects[h]->SetPosition(0,8,0-200+h*10);
 			m_ppObjects[h]->SetOOBB(m_ppObjects[h]->GetPosition(), XMFLOAT3(5, 5, 5), XMFLOAT4(0., 0., 0., 1.));
 			m_ppObjects[h]->Rotate(0.0f, 90.0f, 0.0f);
 			m_ppObjects[h]->PrepareAnimate();

@@ -16,51 +16,114 @@ CScene::~CScene()
 
 void CScene::BuildDefaultLightsAndMaterials()
 {
-	m_nLights = 4;
+	m_nLights = 50;
 	m_pLights = new LIGHT[m_nLights];
 	::ZeroMemory(m_pLights, sizeof(LIGHT) * m_nLights);
 
 	m_xmf4GlobalAmbient = XMFLOAT4(0.15f, 0.15f, 0.15f, 1.0f);
 
-	m_pLights[0].m_bEnable = true;
-	m_pLights[0].m_nType = POINT_LIGHT;
-	m_pLights[0].m_fRange = 1000.0f;
-	m_pLights[0].m_xmf4Ambient = XMFLOAT4(0.1f, 0.0f, 0.0f, 1.0f);
-	m_pLights[0].m_xmf4Diffuse = XMFLOAT4(0.8f, 0.0f, 0.0f, 1.0f);
-	m_pLights[0].m_xmf4Specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f);
-	m_pLights[0].m_xmf3Position = XMFLOAT3(30.0f, 30.0f, 30.0f);
+	m_pLights[0].m_bEnable = false;
+	m_pLights[0].m_nType = SPOT_LIGHT;
+	m_pLights[0].m_fRange = 150.0f;
+	m_pLights[0].m_xmf4Ambient = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
+	m_pLights[0].m_xmf4Diffuse = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+	m_pLights[0].m_xmf4Specular = XMFLOAT4(0.1f, 0.1f, 0.1f, 0.0f);
+	m_pLights[0].m_xmf3Position = XMFLOAT3(130.0f, 30.0f, 30.0f);
 	m_pLights[0].m_xmf3Direction = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_pLights[0].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.001f, 0.0001f);
-	m_pLights[1].m_bEnable = true;
-	m_pLights[1].m_nType = SPOT_LIGHT;
-	m_pLights[1].m_fRange = 500.0f;
+	m_pLights[1].m_bEnable = false;
+	m_pLights[1].m_nType = POINT_LIGHT;
+	m_pLights[1].m_fRange = 900.0f;
 	m_pLights[1].m_xmf4Ambient = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
-	m_pLights[1].m_xmf4Diffuse = XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
-	m_pLights[1].m_xmf4Specular = XMFLOAT4(0.3f, 0.3f, 0.3f, 0.0f);
+	m_pLights[1].m_xmf4Diffuse = XMFLOAT4(5.0f, 5.0f, 5.0f, 1.0f);
+	m_pLights[1].m_xmf4Specular = XMFLOAT4(0.1f, 0.1f, 0.1f, 0.0f);
 	m_pLights[1].m_xmf3Position = XMFLOAT3(-50.0f, 20.0f, -5.0f);
 	m_pLights[1].m_xmf3Direction = XMFLOAT3(0.0f, 0.0f, 1.0f);
 	m_pLights[1].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
 	m_pLights[1].m_fFalloff = 8.0f;
 	m_pLights[1].m_fPhi = (float)cos(XMConvertToRadians(40.0f));
 	m_pLights[1].m_fTheta = (float)cos(XMConvertToRadians(20.0f));
-	m_pLights[2].m_bEnable = true;
+	m_pLights[2].m_bEnable = false;
 	m_pLights[2].m_nType = DIRECTIONAL_LIGHT;
-	m_pLights[2].m_xmf4Ambient = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
-	m_pLights[2].m_xmf4Diffuse = XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
-	m_pLights[2].m_xmf4Specular = XMFLOAT4(0.4f, 0.4f, 0.4f, 0.0f);
-	m_pLights[2].m_xmf3Direction = XMFLOAT3(1.0f, 0.0f, 0.0f);
+	m_pLights[2].m_xmf4Ambient = XMFLOAT4(0.053f, 0.053f, 0.053f, 1.0f);
+	m_pLights[2].m_xmf4Diffuse = XMFLOAT4(0.0f, 0.17f, 0.17f, 1.0f);
+	m_pLights[2].m_xmf4Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+	m_pLights[2].m_xmf3Direction = XMFLOAT3(1.0f, 0.0f, 1.0f);
 	m_pLights[3].m_bEnable = true;
-	m_pLights[3].m_nType = SPOT_LIGHT;
-	m_pLights[3].m_fRange = 600.0f;
+	m_pLights[3].m_nType = DIRECTIONAL_LIGHT;
 	m_pLights[3].m_xmf4Ambient = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
-	m_pLights[3].m_xmf4Diffuse = XMFLOAT4(0.3f, 0.7f, 0.0f, 1.0f);
-	m_pLights[3].m_xmf4Specular = XMFLOAT4(0.3f, 0.3f, 0.3f, 0.0f);
-	m_pLights[3].m_xmf3Position = XMFLOAT3(50.0f, 30.0f, 30.0f);
-	m_pLights[3].m_xmf3Direction = XMFLOAT3(0.0f, 1.0f, 1.0f);
-	m_pLights[3].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
-	m_pLights[3].m_fFalloff = 8.0f;
-	m_pLights[3].m_fPhi = (float)cos(XMConvertToRadians(90.0f));
-	m_pLights[3].m_fTheta = (float)cos(XMConvertToRadians(30.0f));
+	m_pLights[3].m_xmf3Position = XMFLOAT3(0.0f, 300.0f, 0.0f);
+	m_pLights[3].m_xmf4Diffuse = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
+	m_pLights[3].m_xmf4Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+	m_pLights[3].m_xmf3Direction = XMFLOAT3(0.0f, -1.0f, 1.0f);
+	m_pLights[4].m_bEnable = false;
+	m_pLights[4].m_nType = SPOT_LIGHT;
+	m_pLights[4].m_fRange = 30.0f;
+	m_pLights[4].m_xmf4Ambient = XMFLOAT4(0.012f, 0.012f, 0.012f, 1.0f);
+	m_pLights[4].m_xmf4Diffuse = XMFLOAT4(0.24f, 0.14f, 0.24f, 1.0f);
+	m_pLights[4].m_xmf4Specular = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
+	m_pLights[4].m_xmf3Position = XMFLOAT3(0.0f, 5.0f, -7.0f);
+	m_pLights[4].m_xmf3Direction = XMFLOAT3(0.0f, 0.0f, 1.0f);
+	m_pLights[4].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.25f, 0.05f);
+	m_pLights[4].m_fFalloff = 1.0f;
+	m_pLights[4].m_fPhi = (float)cos(XMConvertToRadians(10.0f));
+	m_pLights[4].m_fTheta = (float)cos(XMConvertToRadians(5.0f));
+	for (int i = 5; i < 27; i++) {
+		m_pLights[i].m_bEnable = false;
+		m_pLights[i].m_nType = SPOT_LIGHT;
+		m_pLights[i].m_fRange = 50.0f;
+		m_pLights[i].m_xmf4Ambient = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
+		m_pLights[i].m_xmf4Diffuse = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+		m_pLights[i].m_xmf4Specular = XMFLOAT4(0.1f, 0.1f, 0.1f, 0.0f);
+		m_pLights[i].m_xmf3Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		m_pLights[i].m_xmf3Direction = XMFLOAT3(0.0f, -1.0f, 0.0f);
+		m_pLights[i].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
+		m_pLights[i].m_fFalloff = 8.0f;
+		m_pLights[i].m_fPhi = (float)cos(XMConvertToRadians(90.0f));
+		m_pLights[i].m_fTheta = (float)cos(XMConvertToRadians(20.0f));
+	}
+	for (int i = 27; i < 39; i++) {
+		m_pLights[i].m_bEnable = false;
+		m_pLights[i].m_nType = SPOT_LIGHT;
+		m_pLights[i].m_fRange = 10.0f;
+		m_pLights[i].m_xmf4Ambient = XMFLOAT4(0.0f, 0.0f, 0.4f, 1.0f);
+		m_pLights[i].m_xmf4Diffuse = XMFLOAT4(0.0f, 0.0f, 0.5f, 1.0f);
+		m_pLights[i].m_xmf4Specular = XMFLOAT4(0.0f, 0.0f, 0.5f, 0.0f);
+		m_pLights[i].m_xmf3Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		m_pLights[i].m_xmf3Direction = XMFLOAT3(0.0f, 0.0f, -1.0f);
+		m_pLights[i].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
+		m_pLights[i].m_fFalloff = 8.0f;
+		m_pLights[i].m_fPhi = (float)cos(XMConvertToRadians(20.0f));
+		m_pLights[i].m_fTheta = (float)cos(XMConvertToRadians(10.0f));
+	}
+	for (int i = 39; i < 43; i++) {
+		m_pLights[i].m_bEnable = false;
+		m_pLights[i].m_nType = SPOT_LIGHT;
+		m_pLights[i].m_fRange = 30.0f;
+		m_pLights[i].m_xmf4Ambient = XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+		m_pLights[i].m_xmf4Diffuse = XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+		m_pLights[i].m_xmf4Specular = XMFLOAT4(0.1f, 0.1f, 0.1f, 0.0f);
+		m_pLights[i].m_xmf3Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		m_pLights[i].m_xmf3Direction = XMFLOAT3(0.0f, 0.0f, -1.0f);
+		m_pLights[i].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
+		m_pLights[i].m_fFalloff = 1.0f;
+		m_pLights[i].m_fPhi = (float)cos(XMConvertToRadians(30.0f));
+		m_pLights[i].m_fTheta = (float)cos(XMConvertToRadians(10.0f));
+	}
+	for (int i = 43; i < 50; i++) {
+		m_pLights[i].m_bEnable = false;
+		m_pLights[i].m_nType = SPOT_LIGHT;
+		m_pLights[i].m_fRange = 17.0f;
+		m_pLights[i].m_xmf4Ambient = XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+		m_pLights[i].m_xmf4Diffuse = XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
+		m_pLights[i].m_xmf4Specular = XMFLOAT4(0.1f, 0.1f, 0.1f, 0.0f);
+		m_pLights[i].m_xmf3Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		m_pLights[i].m_xmf3Direction = XMFLOAT3(1.0f, 0.0f, 0.0f);
+		m_pLights[i].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
+		m_pLights[i].m_fFalloff = 8.0f;
+		m_pLights[i].m_fPhi = (float)cos(XMConvertToRadians(90.0f));
+		m_pLights[i].m_fTheta = (float)cos(XMConvertToRadians(70.0f));
+	}
 }
 
 void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
@@ -138,9 +201,9 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 
 	
 
-	m_pOutlineShader = new COutlineShader();
+	/*m_pOutlineShader = new COutlineShader();
 	m_pOutlineShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
-	m_pOutlineShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
+	m_pOutlineShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);*/
 	//m_pOutlineShader->pObjectsShader = pObjectsShader;
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
@@ -648,6 +711,15 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 				pMissileobjectShader->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam,&fTimer);
 			}
 			break;
+		case VK_F1:
+			m_ppShaders[1]->SetActive(true);
+			break;
+		case VK_F2:
+			m_ppShaders[1]->SetActive(true);
+			break;
+		case VK_F3:
+			m_ppShaders[1]->SetActive(true);
+			break;
 		default:
 			break;
 		}
@@ -677,8 +749,209 @@ void CScene::AnimateObjects(float fTimeElapsed)
 	{
 		m_pLights[1].m_xmf3Position = m_pPlayer->GetPosition();
 		m_pLights[1].m_xmf3Direction = m_pPlayer->GetLookVector();
-	}
+		m_pLights[4].m_xmf3Position = Vector3::Add(m_pPlayer->GetPosition(), Vector3::Add(Vector3::ScalarProduct(m_pPlayer->GetLookVector(), -15.0f, false), XMFLOAT3(0.0f, 5.0f, 0.0f)));
+		m_pLights[4].m_xmf3Direction = m_pPlayer->GetLookVector();
+		int j = 5;
 
+
+		for (int i = 0; i < m_ppShaders[5]->m_nObjects; i++) {
+			char light2[100] = {};
+			std::string light = "light";
+			std::string num = std::to_string(i + 1);
+			light = light + num;
+			//strcpy_s(light2, );
+			for (int k = 0; k < m_ppShaders[5]->m_nObjects; k++)
+				if (strcmp(m_ppShaders[5]->m_ppObjects[k]->m_pstrName, light.c_str()) == 0) {
+					m_pLights[j].m_bEnable = true;
+					m_pLights[j].m_xmf3Position = m_ppShaders[5]->m_ppObjects[k]->GetPosition();
+					m_pLights[j].m_xmf3Position.y = m_ppShaders[5]->m_ppObjects[k]->GetPosition().y + 0.3;
+					j++;
+					break;
+				}
+			if (strcmp(m_ppShaders[5]->m_ppObjects[i]->m_pstrName, "lightblue1") == 0) {
+				m_pLights[27].m_bEnable = true;
+				//m_pLights[27].m_lightcolor = "blue";
+				m_pLights[27].m_xmf3Position = m_ppShaders[5]->m_ppObjects[i]->GetPosition();
+				m_pLights[27].m_xmf3Position.z = m_ppShaders[5]->m_ppObjects[i]->GetPosition().z + 0.6f;
+			}
+			if (strcmp(m_ppShaders[5]->m_ppObjects[i]->m_pstrName, "lightgreen1") == 0) {
+				m_pLights[28].m_xmf4Ambient = XMFLOAT4(0.0f, 0.5f, 0.0f, 1.0f);
+				m_pLights[28].m_xmf4Diffuse = XMFLOAT4(0.0f, 0.5f, 0.0f, 1.0f);
+				m_pLights[28].m_xmf4Specular = XMFLOAT4(0.0f, 0.5f, 0.0f, 0.0f);
+				m_pLights[28].m_bEnable = true;
+				//m_pLights[28].lightcolor = "green";
+				m_pLights[28].m_xmf3Position = m_ppShaders[5]->m_ppObjects[i]->GetPosition();
+				m_pLights[28].m_xmf3Position.z = m_ppShaders[5]->m_ppObjects[i]->GetPosition().z + 0.6f;
+			}
+			if (strcmp(m_ppShaders[5]->m_ppObjects[i]->m_pstrName, "lightred1") == 0) {
+				m_pLights[29].m_xmf4Ambient = XMFLOAT4(0.5f, 0.0f, 0.0f, 1.0f);
+				m_pLights[29].m_xmf4Diffuse = XMFLOAT4(0.5f, 0.0f, 0.0f, 1.0f);
+				m_pLights[29].m_xmf4Specular = XMFLOAT4(0.5f, 0.0f, 0.0f, 0.0f);
+				m_pLights[29].m_bEnable = true;
+				m_pLights[29].m_xmf3Position = m_ppShaders[5]->m_ppObjects[i]->GetPosition();
+				m_pLights[29].m_xmf3Position.z = m_ppShaders[5]->m_ppObjects[i]->GetPosition().z + 0.6f;
+			}
+			if (strcmp(m_ppShaders[5]->m_ppObjects[i]->m_pstrName, "lightblue2") == 0) {
+				m_pLights[32].m_xmf4Ambient = XMFLOAT4(0.0f, 0.0f, 0.5f, 1.0f);
+				m_pLights[32].m_xmf4Diffuse = XMFLOAT4(0.0f, 0.0f, 0.5f, 1.0f);
+				m_pLights[32].m_xmf4Specular = XMFLOAT4(0.0f, 0.0f, 0.5f, 0.0f);
+				m_pLights[32].m_xmf3Direction = XMFLOAT3(-1.0f, 0.0f, 0.0f);
+				m_pLights[32].m_bEnable = true;
+				m_pLights[32].m_xmf3Position = m_ppShaders[5]->m_ppObjects[i]->GetPosition();
+				m_pLights[32].m_xmf3Position.x = m_ppShaders[5]->m_ppObjects[i]->GetPosition().x + 0.6f;
+			}
+			if (strcmp(m_ppShaders[5]->m_ppObjects[i]->m_pstrName, "lightgreen2") == 0) {
+				m_pLights[30].m_xmf4Ambient = XMFLOAT4(0.0f, 0.5f, 0.0f, 1.0f);
+				m_pLights[30].m_xmf4Diffuse = XMFLOAT4(0.0f, 0.5f, 0.0f, 1.0f);
+				m_pLights[30].m_xmf4Specular = XMFLOAT4(0.0f, 0.5f, 0.0f, 0.0f);
+				m_pLights[30].m_xmf3Direction = XMFLOAT3(-1.0f, 0.0f, 0.0f);
+				m_pLights[30].m_bEnable = true;
+				m_pLights[30].m_xmf3Position = m_ppShaders[5]->m_ppObjects[i]->GetPosition();
+				m_pLights[30].m_xmf3Position.x = m_ppShaders[5]->m_ppObjects[i]->GetPosition().x + 0.6f;
+			}
+			if (strcmp(m_ppShaders[5]->m_ppObjects[i]->m_pstrName, "lightred2") == 0) {
+				m_pLights[31].m_xmf4Ambient = XMFLOAT4(0.5f, 0.0f, 0.0f, 1.0f);
+				m_pLights[31].m_xmf4Diffuse = XMFLOAT4(0.5f, 0.0f, 0.0f, 1.0f);
+				m_pLights[31].m_xmf4Specular = XMFLOAT4(0.5f, 0.0f, 0.0f, 0.0f);
+				m_pLights[31].m_xmf3Direction = XMFLOAT3(-1.0f, 0.0f, 0.0f);
+				m_pLights[31].m_bEnable = true;
+				m_pLights[31].m_xmf3Position = m_ppShaders[5]->m_ppObjects[i]->GetPosition();
+				m_pLights[31].m_xmf3Position.x = m_ppShaders[5]->m_ppObjects[i]->GetPosition().x + 0.6f;
+			}
+			if (strcmp(m_ppShaders[5]->m_ppObjects[i]->m_pstrName, "lightblue3") == 0) {
+				m_pLights[34].m_xmf4Ambient = XMFLOAT4(0.0f, 0.0f, 0.5f, 1.0f);
+				m_pLights[34].m_xmf4Diffuse = XMFLOAT4(0.0f, 0.0f, 0.5f, 1.0f);
+				m_pLights[34].m_xmf4Specular = XMFLOAT4(0.0f, 0.0f, 0.5f, 0.0f);
+				m_pLights[34].m_xmf3Direction = XMFLOAT3(1.0f, 0.0f, 0.0f);
+				m_pLights[34].m_bEnable = true;
+				m_pLights[34].m_xmf3Position = m_ppShaders[5]->m_ppObjects[i]->GetPosition();
+				m_pLights[34].m_xmf3Position.x = m_ppShaders[5]->m_ppObjects[i]->GetPosition().x - 0.6f;
+			}
+			if (strcmp(m_ppShaders[5]->m_ppObjects[i]->m_pstrName, "lightgreen3") == 0) {
+				m_pLights[35].m_xmf4Ambient = XMFLOAT4(0.0f, 0.5f, 0.0f, 1.0f);
+				m_pLights[35].m_xmf4Diffuse = XMFLOAT4(0.0f, 0.5f, 0.0f, 1.0f);
+				m_pLights[35].m_xmf4Specular = XMFLOAT4(0.0f, 0.5f, 0.0f, 0.0f);
+				m_pLights[35].m_xmf3Direction = XMFLOAT3(1.0f, 0.0f, 0.0f);
+				m_pLights[35].m_bEnable = true;
+				m_pLights[35].m_xmf3Position = m_ppShaders[5]->m_ppObjects[i]->GetPosition();
+				m_pLights[35].m_xmf3Position.x = m_ppShaders[5]->m_ppObjects[i]->GetPosition().x - 0.6f;
+			}
+			if (strcmp(m_ppShaders[5]->m_ppObjects[i]->m_pstrName, "lightred3") == 0) {
+				m_pLights[33].m_xmf4Ambient = XMFLOAT4(0.5f, 0.0f, 0.0f, 1.0f);
+				m_pLights[33].m_xmf4Diffuse = XMFLOAT4(0.5f, 0.0f, 0.0f, 1.0f);
+				m_pLights[33].m_xmf4Specular = XMFLOAT4(0.5f, 0.0f, 0.0f, 0.0f);
+				m_pLights[33].m_xmf3Direction = XMFLOAT3(1.0f, 0.0f, 0.0f);
+				m_pLights[33].m_bEnable = true;
+				m_pLights[33].m_xmf3Position = m_ppShaders[5]->m_ppObjects[i]->GetPosition();
+				m_pLights[33].m_xmf3Position.x = m_ppShaders[5]->m_ppObjects[i]->GetPosition().x - 0.6f;
+			}
+			if (strcmp(m_ppShaders[5]->m_ppObjects[i]->m_pstrName, "lightblue4") == 0) {
+				m_pLights[36].m_xmf4Ambient = XMFLOAT4(0.0f, 0.0f, 0.5f, 1.0f);
+				m_pLights[36].m_xmf4Diffuse = XMFLOAT4(0.0f, 0.0f, 0.5f, 1.0f);
+				m_pLights[36].m_xmf4Specular = XMFLOAT4(0.0f, 0.0f, 0.5f, 0.0f);
+				m_pLights[36].m_xmf3Direction = XMFLOAT3(0.0f, 0.0f, 1.0f);
+				m_pLights[36].m_bEnable = true;
+				m_pLights[36].m_xmf3Position = m_ppShaders[5]->m_ppObjects[i]->GetPosition();
+				m_pLights[36].m_xmf3Position.z = m_ppShaders[5]->m_ppObjects[i]->GetPosition().z - 0.6f;
+			}
+			if (strcmp(m_ppShaders[5]->m_ppObjects[i]->m_pstrName, "lightgreen4") == 0) {
+				m_pLights[37].m_xmf4Ambient = XMFLOAT4(0.0f, 0.5f, 0.0f, 1.0f);
+				m_pLights[37].m_xmf4Diffuse = XMFLOAT4(0.0f, 0.5f, 0.0f, 1.0f);
+				m_pLights[37].m_xmf4Specular = XMFLOAT4(0.0f, 0.5f, 0.0f, 0.0f);
+				m_pLights[37].m_xmf3Direction = XMFLOAT3(0.0f, 0.0f, 1.0f);
+				m_pLights[37].m_bEnable = true;
+				m_pLights[37].m_xmf3Position = m_ppShaders[5]->m_ppObjects[i]->GetPosition();
+				m_pLights[37].m_xmf3Position.z = m_ppShaders[5]->m_ppObjects[i]->GetPosition().z - 0.6f;
+			}
+			if (strcmp(m_ppShaders[5]->m_ppObjects[i]->m_pstrName, "lightred4") == 0) {
+				m_pLights[38].m_xmf4Ambient = XMFLOAT4(0.5f, 0.0f, 0.0f, 1.0f);
+				m_pLights[38].m_xmf4Diffuse = XMFLOAT4(0.5f, 0.0f, 0.0f, 1.0f);
+				m_pLights[38].m_xmf4Specular = XMFLOAT4(0.5f, 0.0f, 0.0f, 0.0f);
+				m_pLights[38].m_xmf3Direction = XMFLOAT3(0.0f, 0.0f, 1.0f);
+				m_pLights[38].m_bEnable = true;
+				m_pLights[38].m_xmf3Position = m_ppShaders[5]->m_ppObjects[i]->GetPosition();
+				m_pLights[38].m_xmf3Position.z = m_ppShaders[5]->m_ppObjects[i]->GetPosition().z - 0.6f;
+			}
+			if (strcmp(m_ppShaders[5]->m_ppObjects[i]->m_pstrName, "CAR1") == 0) {
+				m_pLights[39].m_xmf3Direction = XMFLOAT3(0.0f, 0.0f, -1.0f);
+				m_pLights[39].m_bEnable = true;
+				m_pLights[39].m_xmf3Position = m_ppShaders[5]->m_ppObjects[i]->GetPosition();
+				//m_pLights[38].m_xmf3Position.z = m_ppShaders[5]->m_ppObjects[i]->GetPosition().z - 0.6f;
+			}
+			if (strcmp(m_ppShaders[5]->m_ppObjects[i]->m_pstrName, "CAR2") == 0) {
+				m_pLights[40].m_xmf3Direction = XMFLOAT3(0.0f, 0.0f, 1.0f);
+				m_pLights[40].m_bEnable = true;
+				m_pLights[40].m_xmf3Position = m_ppShaders[5]->m_ppObjects[i]->GetPosition();
+				//m_pLights[38].m_xmf3Position.z = m_ppShaders[5]->m_ppObjects[i]->GetPosition().z - 0.6f;
+			}
+			if (strcmp(m_ppShaders[5]->m_ppObjects[i]->m_pstrName, "CAR3") == 0) {
+				m_pLights[41].m_xmf3Direction = XMFLOAT3(-1.0f, 0.0f, 0.0f);
+				m_pLights[41].m_bEnable = true;
+				m_pLights[41].m_xmf3Position = m_ppShaders[5]->m_ppObjects[i]->GetPosition();
+				//m_pLights[38].m_xmf3Position.z = m_ppShaders[5]->m_ppObjects[i]->GetPosition().z - 0.6f;
+			}
+			if (strcmp(m_ppShaders[5]->m_ppObjects[i]->m_pstrName, "CAR4") == 0) {
+				m_pLights[42].m_xmf3Direction = XMFLOAT3(1.0f, 0.0f, 0.0f);
+				m_pLights[42].m_bEnable = true;
+				m_pLights[42].m_xmf3Position = m_ppShaders[5]->m_ppObjects[i]->GetPosition();
+				//m_pLights[38].m_xmf3Position.z = m_ppShaders[5]->m_ppObjects[i]->GetPosition().z - 0.6f;
+			}
+			if (strcmp(m_ppShaders[5]->m_ppObjects[i]->m_pstrName, "LightWindow") == 0) {
+				m_pLights[43].m_bEnable = true;
+				m_pLights[43].m_xmf3Direction = XMFLOAT3(1.0f, 0.0f, 0.0f);
+				//	m_pLights[43].m_bEnable = true;
+				m_pLights[43].m_xmf3Position = m_ppShaders[5]->m_ppObjects[i]->GetPosition();
+				m_pLights[43].m_xmf3Position.x = m_ppShaders[5]->m_ppObjects[i]->GetPosition().x + 7;
+				//m_pLights[43].m_xmf3Position.y = m_ppShaders[5]->m_ppObjects[i]->GetPosition().y + 1.25;
+				//m_pLights[43].m_xmf3Position.z = m_ppShaders[5]->m_ppObjects[i]->GetPosition().z + -0.60;
+			}
+			//	
+			//}
+			/*if (m_bNight = true) {
+				m_pLights[43].m_bEnable = true;
+				m_pLights[43].m_xmf3Position = XMFLOAT3(-10.0f, 98.8, -393.0f);
+			}*/
+			for (int i = 27; i < 39; i++) {
+				if (m_ftimesecond > 0 && m_ftimesecond < 5) {
+					if (i % 3 == 0) {
+						m_pLights[i].m_bEnable = true;
+					}
+					else
+					{
+						m_pLights[i].m_bEnable = false;
+					}
+				}
+				if (m_ftimesecond > 5 && m_ftimesecond < 10) {
+					if (i % 3 == 1) {
+						m_pLights[i].m_bEnable = true;
+					}
+					else
+					{
+						m_pLights[i].m_bEnable = false;
+					}
+				}
+				if (m_ftimesecond > 10 && m_ftimesecond < 15) {
+					if (i % 3 == 2) {
+						m_pLights[i].m_bEnable = true;
+					}
+					else
+					{
+						m_pLights[i].m_bEnable = false;
+					}
+				}
+				if (m_ftimesecond > 15) {
+					m_ftimesecond = 0;
+				}
+			}
+
+		}
+
+	}
+	CarMove();
+	CarMove2();
+	CarMove3();
+	CarMove4();
+	m_ftimesecond += fTimeElapsed;
 }
 
 void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
@@ -710,7 +983,7 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->Render(pd3dCommandList, pCamera);
 //	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Render(pd3dCommandList, pCamera);
 	//if (m_pWater) m_pWater->Render(pd3dCommandList, pCamera);
-	for (int i = 0; i < 10; i++) {
+	/*for (int i = 0; i < 10; i++) {
 		if (m_ppShaders[0]->m_ppObjects[i])
 		{
 			m_pOutlineShader->UpdateShaderVariable(pd3dCommandList, m_ppShaders[0]->m_ppObjects[i]->m_pChild);
@@ -719,7 +992,7 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 			m_pOutlineShader->Render(pd3dCommandList, pCamera, 1);
 			m_ppShaders[0]->m_ppObjects[i]->Render(pd3dCommandList);
 		}
-	}
+	}*/
 
 	for (int i = 0; i < m_nEnvironmentMappingShaders; i++)
 	{
@@ -770,6 +1043,144 @@ void CScene::OnPreRender(ID3D12Device* pd3dDevice, ID3D12CommandQueue* pd3dComma
 	for (int i = 0; i < m_nEnvironmentMappingShaders; i++)
 	{
 		m_ppEnvironmentMappingShaders[i]->OnPreRender(pd3dDevice, pd3dCommandQueue, pd3dFence, hFenceEvent, this);
+	}
+}
+
+void CScene::CarMove()
+{
+	bool m_Stop = false;
+	for (int i = 0; i < m_ppShaders[5]->m_nObjects; i++) {
+		if (m_ppShaders[5]->m_ppObjects[i]->m_pstrName[0] == 'C') {
+			if (m_ppShaders[5]->m_ppObjects[i]->m_pstrName[3] == '1') {
+				XMFLOAT3 TempPosition = m_ppShaders[5]->m_ppObjects[i]->GetPosition();
+				if (m_pLights[29].m_bEnable && TempPosition.z<-95 && TempPosition.z > -100) {
+					m_Stop = true;
+					break;
+				}
+			}
+		}
+	}
+	for (int i = 0; i < m_ppShaders[5]->m_nObjects; i++) {
+		if (m_ppShaders[5]->m_ppObjects[i]->m_pstrName[0] == 'C' && m_ppShaders[5]->m_ppObjects[i]->m_pstrName[3] == '1') {
+			XMFLOAT3 TempPosition = m_ppShaders[5]->m_ppObjects[i]->GetPosition();
+			if (!m_Stop) {
+				m_ppShaders[5]->m_ppObjects[i]->SetPosition(TempPosition.x,
+					TempPosition.y,
+					TempPosition.z - 0.5);
+				if (m_ppShaders[5]->m_ppObjects[i]->m_pstrName[4] == 'w') {
+					m_ppShaders[5]->m_ppObjects[i]->Rotate(10, 0, 0);
+				}
+			}
+			if (m_ppShaders[5]->m_ppObjects[i]->GetPosition().z < -150) {
+				m_ppShaders[5]->m_ppObjects[i]->SetPosition(TempPosition.x,
+					TempPosition.y
+					, 0);
+
+			}
+		}
+
+	}
+}
+
+void CScene::CarMove2()
+{
+	bool m_Stop = false;
+	for (int i = 0; i < m_ppShaders[5]->m_nObjects; i++) {
+		if (m_ppShaders[5]->m_ppObjects[i]->m_pstrName[0] == 'C') {
+			if (m_ppShaders[5]->m_ppObjects[i]->m_pstrName[3] == '2') {
+				XMFLOAT3 TempPosition = m_ppShaders[5]->m_ppObjects[i]->GetPosition();
+				if (m_pLights[38].m_bEnable && TempPosition.z > -165 && TempPosition.z < -150) {
+					m_Stop = true;
+					break;
+				}
+			}
+		}
+	}
+	for (int i = 0; i < m_ppShaders[5]->m_nObjects; i++) {
+		if (m_ppShaders[5]->m_ppObjects[i]->m_pstrName[0] == 'C' && m_ppShaders[5]->m_ppObjects[i]->m_pstrName[3] == '2') {
+			XMFLOAT3 TempPosition = m_ppShaders[5]->m_ppObjects[i]->GetPosition();
+			if (!m_Stop) {
+				m_ppShaders[5]->m_ppObjects[i]->SetPosition(TempPosition.x,
+					TempPosition.y,
+					TempPosition.z + 0.5);
+				if (m_ppShaders[5]->m_ppObjects[i]->m_pstrName[4] == 'w') {
+					m_ppShaders[5]->m_ppObjects[i]->Rotate(-10, 0, 0);
+				}
+			}
+			if (m_ppShaders[5]->m_ppObjects[i]->GetPosition().z > 20) {
+				m_ppShaders[5]->m_ppObjects[i]->SetPosition(TempPosition.x,
+					TempPosition.y
+					, -220);
+			}
+		}
+	}
+
+
+}
+void CScene::CarMove3()
+{
+	bool m_Stop = false;
+	for (int i = 0; i < m_ppShaders[5]->m_nObjects; i++) {
+		if (m_ppShaders[5]->m_ppObjects[i]->m_pstrName[0] == 'C') {
+			if (m_ppShaders[5]->m_ppObjects[i]->m_pstrName[3] == '3') {
+				XMFLOAT3 TempPosition = m_ppShaders[5]->m_ppObjects[i]->GetPosition();
+				if (m_pLights[31].m_bEnable && TempPosition.x > 1 && TempPosition.x < 10) {
+					m_Stop = true;
+					break;
+				}
+			}
+		}
+	}
+	for (int i = 0; i < m_ppShaders[5]->m_nObjects; i++) {
+		if (m_ppShaders[5]->m_ppObjects[i]->m_pstrName[0] == 'C' && m_ppShaders[5]->m_ppObjects[i]->m_pstrName[3] == '3') {
+			XMFLOAT3 TempPosition = m_ppShaders[5]->m_ppObjects[i]->GetPosition();
+			if (!m_Stop) {
+				m_ppShaders[5]->m_ppObjects[i]->SetPosition(TempPosition.x - 0.5,
+					TempPosition.y,
+					TempPosition.z);
+				if (m_ppShaders[5]->m_ppObjects[i]->m_pstrName[4] == 'w') {
+					m_ppShaders[5]->m_ppObjects[i]->Rotate(10, 0, 0);
+				}
+			}
+			if (m_ppShaders[5]->m_ppObjects[i]->GetPosition().x < -140) {
+				m_ppShaders[5]->m_ppObjects[i]->SetPosition(60,
+					TempPosition.y
+					, TempPosition.z);
+			}
+		}
+	}
+}
+void CScene::CarMove4()
+{
+	bool m_Stop = false;
+	for (int i = 0; i < m_ppShaders[5]->m_nObjects; i++) {
+		if (m_ppShaders[5]->m_ppObjects[i]->m_pstrName[0] == 'C') {
+			if (m_ppShaders[5]->m_ppObjects[i]->m_pstrName[3] == '4') {
+				XMFLOAT3 TempPosition = m_ppShaders[5]->m_ppObjects[i]->GetPosition();
+				if (m_pLights[33].m_bEnable && TempPosition.x > -85 && TempPosition.x < -77) {
+					m_Stop = true;
+					break;
+				}
+			}
+		}
+	}
+	for (int i = 0; i < m_ppShaders[5]->m_nObjects; i++) {
+		if (m_ppShaders[5]->m_ppObjects[i]->m_pstrName[0] == 'C' && m_ppShaders[5]->m_ppObjects[i]->m_pstrName[3] == '4') {
+			XMFLOAT3 TempPosition = m_ppShaders[5]->m_ppObjects[i]->GetPosition();
+			if (!m_Stop) {
+				m_ppShaders[5]->m_ppObjects[i]->SetPosition(TempPosition.x + 0.5,
+					TempPosition.y,
+					TempPosition.z);
+				if (m_ppShaders[5]->m_ppObjects[i]->m_pstrName[4] == 'w') {
+					m_ppShaders[5]->m_ppObjects[i]->Rotate(10, 0, 0);
+				}
+			}
+			if (m_ppShaders[5]->m_ppObjects[i]->GetPosition().x > 50) {
+				m_ppShaders[5]->m_ppObjects[i]->SetPosition(-140,
+					TempPosition.y
+					, TempPosition.z);
+			}
+		}
 	}
 }
 

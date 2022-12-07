@@ -130,7 +130,7 @@ void COutlineShader::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera*
 	CShader::Render(pd3dCommandList, pCamera, nPipelineState);
 
 	D3D12_GPU_VIRTUAL_ADDRESS d3dGpuVirtualAddress = m_pd3dcbGameObject->GetGPUVirtualAddress();
-	pd3dCommandList->SetGraphicsRootConstantBufferView(1, d3dGpuVirtualAddress);
+	//pd3dCommandList->SetGraphicsRootConstantBufferView(1, d3dGpuVirtualAddress);
 
 	
 }

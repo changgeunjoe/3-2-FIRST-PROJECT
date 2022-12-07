@@ -15,7 +15,7 @@
 #include"2dUIObjectsShader.h"
 #include"COutlineShader.h"
 #include"SceneShader.h"
-#define MAX_LIGHTS			16 
+#define MAX_LIGHTS			50
 
 #define POINT_LIGHT			1
 #define SPOT_LIGHT			2
@@ -87,6 +87,10 @@ public:
 	void CheckObjectByObjectCollisions(float ftimeelapsed);
 	CHeightMapTerrain* GetTerrain() { return(m_pTerrain); }
 
+	void CarMove();
+	void CarMove2();
+	void CarMove3();
+	void CarMove4();
 	CPlayer								*m_pPlayer = NULL;
 	CBulletShader						*m_pBulletShader{ NULL };
 
@@ -127,7 +131,7 @@ public:
 	float								fTimer = 5.0f;
 	float								fAlPha = 0.3f;
 	float								CollisionTimer = 0.0f;
-
+	float								m_ftimesecond = 0.0f;
 	int							m_nEnvironmentMappingShaders = 0;
 	CDynamicCubeMappingShader** m_ppEnvironmentMappingShaders = NULL;
 };
