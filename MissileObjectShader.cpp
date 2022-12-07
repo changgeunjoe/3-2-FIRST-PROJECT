@@ -95,7 +95,7 @@ void CMissileObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12Graphic
 	int nObjects = 0;
 	for (int i = 0; i < m_nObjects; i++) {
 		pMissleObject = new CMissleObject();
-		pMissleObject->SetMesh(0, pMeshIlluminated);
+		pMissleObject->SetMesh(0, m_pMissileTexturedMesh);
 		pMissleObject->SetMaterial(0, m_pMissileMaterial);
 		pMissleObject->SetActive(false);
 		pMissleObject->SetPosition(0.f, 0.f, i);

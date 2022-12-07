@@ -43,7 +43,7 @@ void CDynamicCubeMappingShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12Gra
 	pd3dDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, m_pd3dCommandAllocator, NULL, __uuidof(ID3D12GraphicsCommandList), (void**)&m_pd3dCommandList);
 	m_pd3dCommandList->Close();
 
-	m_nObjects = 1;
+	m_nObjects = 2;
 	m_ppObjects = new CGameObject * [m_nObjects];
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
@@ -90,6 +90,8 @@ void CDynamicCubeMappingShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12Gra
 		d3dDsvCPUDescriptorHandle.ptr += ::gnDsvDescriptorIncrementSize;
 		d3dRtvCPUDescriptorHandle.ptr += (::gnRtvDescriptorIncrementSize * 6);
 	}
+	m_ppObjects[0]->SetPosition(0, 50, 0);
+	m_ppObjects[1]->SetPosition(-40, 50, -120);
 }
 
 void CDynamicCubeMappingShader::ReleaseObjects()

@@ -85,7 +85,7 @@ void CDynamicCubeMappingObject::OnPreRender(ID3D12GraphicsCommandList* pd3dComma
 
 		pd3dCommandList->OMSetRenderTargets(1, &m_pd3dRtvCPUDescriptorHandles[j], TRUE, &m_d3dDsvCPUDescriptorHandle);
 
-		pScene->Render(pd3dCommandList, m_ppCameras[j]);
+		pScene->CubeMappingRender(pd3dCommandList, m_ppCameras[j]);
 	}
 
 	::SynchronizeResourceTransition(pd3dCommandList, m_ppMaterials[0]->m_pTexture->GetResource(0), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_GENERIC_READ);
