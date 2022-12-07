@@ -738,12 +738,25 @@ bool CScene::ProcessInput(UCHAR *pKeysBuffer)
 
 void CScene::AnimateObjects(float fTimeElapsed)
 {
+
+
 	fTimer += fTimeElapsed;
+
 	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Animate(fTimeElapsed, NULL);
 	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->UpdateTransform(NULL);
 	if (m_pPlayer&& pMissileobjectShader) {
 		pMissileobjectShader->SetPlayer(m_pPlayer);
 	}
+	for (int i = 0; i < m_ppShaders[0]->m_nObjects; i++) {
+		m_ppShaders[0]->m_ppObjects[i]->MoveForward(0.25);
+		if (m_ppShaders[0]->m_ppObjects[i]->GetPosition().x<-150) {
+			m_ppShaders[0]->m_ppObjects[i]->Rotate(0,180,0);
+		}
+		if (m_ppShaders[0]->m_ppObjects[i]->GetPosition().x > 60) {
+			m_ppShaders[0]->m_ppObjects[i]->Rotate(0, 180, 0);
+		}
+	}
+
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->AnimateObjects(fTimeElapsed);
 	CheckObjectByObjectCollisions(fTimeElapsed);
 	if (m_pLights)
